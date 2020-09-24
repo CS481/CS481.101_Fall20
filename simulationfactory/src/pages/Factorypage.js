@@ -4,13 +4,13 @@ import Card from "@material-ui/core/Card";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
-import { List, ListItem, ListItemText, TextField, Typography } from "@material-ui/core";
+import { Tabs, Tab, TextField } from "@material-ui/core";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
-import Topbar from "../components/Topbar"
-import Navbar from "../components/Navbar"
+import Topbar from "../components/Topbar";
+import Navbar from "../components/Navbar";
+import TabPanel from "../components/TabPanel";
 
 const drawerWidth = 240;
 
@@ -57,6 +57,7 @@ function Factorypage(props) {
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
+  const [value, setValue] = React.useState(0);
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -87,21 +88,30 @@ function Factorypage(props) {
             </Grid>
           </Grid>
           <Grid item xs={12} sm={6}>
-            
-            <Card className={classes.root}>
-              <CardContent>
-              </CardContent>
-              <CardActions>
-                <form>
-                  <Select>
-                    <MenuItem value={10}>Player 1 Cash</MenuItem>
-                    <MenuItem value={20}>Player 2 Cash</MenuItem>
-                    <MenuItem value={30}>Shared Resource</MenuItem>
-                  </Select>
-                  <TextField id="standard-basic" label="Standard" />
-                </form>
-              </CardActions>
-            </Card>
+            <Tabs value={value} onChange={(_, newValue) => setValue(newValue)}>
+              <Tab label="Event 1"/>
+              <Tab label="Response 1"/>?
+            </Tabs>
+            <TabPanel index={0} value={value}>
+              <Card className={classes.root}>
+                <CardActions>
+                  <form>
+                    <TextField id="standard-basic" label="Title" />
+                    <br/>
+                    <Select style={{padding: theme.spacing(2)}}>
+                      <MenuItem value={10}>Player 1 Cash</MenuItem>
+                      <MenuItem value={20}>Player 2 Cash</MenuItem>
+                      <MenuItem value={30}>Shared Resource</MenuItem>
+                    </Select>
+                    <TextField id="standard-basic" label="Change" />
+                    <div style={{color: "blue"}}>
+                      + add an effect
+                    </div>
+                    <TextField id="standard-basic" label="Rounds" />
+                  </form>
+                </CardActions>
+              </Card>
+            </TabPanel>
           </Grid>
         </Grid>
       </main>
