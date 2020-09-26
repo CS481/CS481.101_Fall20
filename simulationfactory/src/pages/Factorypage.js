@@ -11,6 +11,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
 import TabPanel from "../components/TabPanel";
+import {RegisterRoutes} from "../util/RouteBuilder";
 
 const drawerWidth = 240;
 
@@ -118,5 +119,6 @@ function Factorypage(props) {
     </div>
   );
 }
+RegisterRoutes(Factorypage, "/factory", "/Factory", "/factoryPage", "/FactoryPage");
 
 export default Factorypage;
