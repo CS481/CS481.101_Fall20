@@ -13,12 +13,11 @@ import FactoryPage from './pages/Factorypage';
 
 class App extends Component {
   render() {
-    let RouteRenderer = BuildRoutes();
     return (
       <div>
         <BrowserRouter>
           <Navbar/>
-          <RouteRenderer/>
+          <BuildRoutes/>
         </BrowserRouter>
       </div>
     );

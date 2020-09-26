@@ -3,6 +3,12 @@ import {Route, Switch} from "react-router-dom";
 
 let pages = new Map();
 
+/**
+   * Registers all of the routes that should lead to the given page
+   * @param  {React.Component} page The page to register routes for
+   * @param  {String} route The route to register for this page
+   * @param  {String} ...aliases All the other routes to register for this page
+*/
 function RegisterRoutes(page, route, ...aliases) {
     if (page === undefined) {
         throw new Error("page in RouteBuilder.RegisterRoute has not been supplied");
@@ -19,12 +25,13 @@ function RegisterRoutes(page, route, ...aliases) {
     }
 }
 
+/**
+   * Builds all of the route tags required to link between pages
+*/
 function BuildRoutes() {
-    return function() {
-        let routes = [];
-        pages.forEach((Value, Key) => routes.push(<Route exact path={Key}><Value/></Route>));
-        return <Switch>{routes}</Switch>;
-    }
+    let routes = [];
+    pages.forEach((Value, Key) => routes.push(<Route exact path={Key}><Value/></Route>));
+    return <Switch>{routes}</Switch>;
 }
 
 export {RegisterRoutes, BuildRoutes}
