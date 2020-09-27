@@ -70,7 +70,7 @@ function Navbar(props) {
                     <Link to = "/factory" >Create Simulation</Link>
                 </ListItem>
                 <ListItem>
-                    <ListItemText primary="Join Simulation" />
+                    <Link to = "/player" >Join Simulation</Link>
                 </ListItem>
                 <ListItem>
                     <ListItemText primary="My Simulations" />
