@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {BrowserRouter, Route, Link, Switch} from "react-router-dom";
 import Homepage from './pages/Homepage'
 import FactoryPage from './pages/Factorypage'
+import PlayerPage from './pages/PlayerPage'
 import Navbar from './components/Navbar'
 class App extends Component {
   render() {
@@ -19,6 +20,7 @@ class App extends Component {
           <Route exact path="/factory"><FactoryPage/></Route> 
           <Route exact path="/"><Homepage/></Route>
           <Route exact path="/home"><Homepage/></Route>
+          <Route exact path="/player"><PlayerPage/></Route>
           </Switch>
         </BrowserRouter>
       </div>
