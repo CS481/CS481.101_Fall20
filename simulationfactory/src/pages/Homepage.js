@@ -127,6 +127,6 @@ function Homepage(props) {
     </div>
   );
 }
-RegisterRoutes(Homepage, "/", "/home", "/Home", "/Homepage", "/homepage", "/HomePage", "/homePage");
 
+RegisterRoutes(Homepage, "/", "/home", "/Home", "/Homepage", "/homepage", "/HomePage", "/homePage");
 export default Homepage;

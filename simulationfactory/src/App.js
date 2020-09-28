@@ -10,6 +10,7 @@ import {BuildRoutes} from './util/RouteBuilder';
 */
 import HomePage from './pages/Homepage';
 import FactoryPage from './pages/Factorypage';
+import PlayerPage from './pages/Playerpage'
 
 class App extends Component {
   render() {
