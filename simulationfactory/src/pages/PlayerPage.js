@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -17,53 +16,12 @@ import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
+import CreateStyles from "../util/stylesheet";
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
 
-const drawerWidth = 240;
-
-const useStyles = makeStyles((theme) => ({
-root: {
-    flexGrow: 1,
-    display: "flex",
-},
-card: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-},
-drawer: {
-    [theme.breakpoints.up("sm")]: {
-    width: drawerWidth,
-    flexShrink: 0,
-    },
-},
-appBar: {
-    [theme.breakpoints.up("sm")]: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    },
-},
-menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
-    display: "none",
-    },
-},
-// necessary for content to be below app bar
-toolbar: theme.mixins.toolbar,
-drawerPaper: {
-    width: drawerWidth,
-},
-content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-},
-}));
-
 export default function CheckboxesGroup() {
-    const classes = useStyles();
+    const Styles = CreateStyles();
     let [state, setState] = React.useState({
         checkbox1: true,
         checkbox2: false,
@@ -90,13 +48,13 @@ const handleChangeRadio = (event) => {
 
 
 return (
-    <div className={classes.root}>
+    <div className={Styles.root}>
       <Topbar message="Simulation Player"/>
       <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
 
-      <main className={classes.content}>
-        <div className={classes.toolbar} /> {/* Why is this necessary */}
-        <Card className={classes.root}>
+      <main className={Styles.content}>
+        <div className={Styles.toolbar} /> {/* Why is this necessary */}
+        <Card className={Styles.root}>
             <CardHeader
             title="Prompt:"
             />
@@ -107,8 +65,8 @@ return (
             </CardContent>
             <CardActions>
                 <IconButton
-                    className={clsx(classes.expand, {
-                        [classes.expandOpen]: expanded,
+                    className={clsx(Styles.expand, {
+                        [Styles.expandOpen]: expanded,
                     })}
                     onClick={handleExpandClick}
                     aria-expanded={expanded}
@@ -119,7 +77,7 @@ return (
             </CardActions>
             <Collapse in={expanded} timeout="auto" unmountOnExit>
                 <CardContent>
-                    <form className={classes.root} noValidate autoComplete="off">
+                    <form className={Styles.root} noValidate autoComplete="off">
                         <TextField id="response-form" label="response-1" variant="filled" />
                         <TextField id="response-form" label="response-2" variant="filled" />
                         <TextField id="response-form" label="response-3" variant="filled" />
@@ -132,7 +90,7 @@ return (
                             <FormControlLabel value="thirdChoice" control={<Radio />} label="third" />
                         </RadioGroup>
                     </FormControl>
-                    <FormControl component="fieldset" className={classes.formControl}>
+                    <FormControl component="fieldset" className={Styles.formControl}>
                         <FormLabel component="legend">Checkboxes</FormLabel>
                         <FormGroup>
                         <FormControlLabel
