@@ -9,6 +9,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 
 import Topbar from "../components/Topbar"
 import Navbar from "../components/Navbar"
+import {RegisterRoutes} from "../util/RouteBuilder";
 
 const drawerWidth = 240;
 
@@ -51,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ResponsiveDrawer(props) {
+function Homepage(props) {
   const { window } = props;
   const classes = useStyles();
   const theme = useTheme();
@@ -127,4 +128,5 @@ function ResponsiveDrawer(props) {
   );
 }
 
-export default ResponsiveDrawer;
+RegisterRoutes(Homepage, "/", "/home", "/Home", "/Homepage", "/homepage", "/HomePage", "/homePage");
+export default Homepage;
