@@ -8,8 +8,9 @@ import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
 import CreateStyles from "../util/stylesheet";
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
+import {RegisterRoutes} from "../util/RouteBuilder";
 
-function ResponsiveDrawer(props) {
+function Homepage(props) {
   const { window } = props;
   const Styles = CreateStyles();
 
@@ -83,4 +84,5 @@ function ResponsiveDrawer(props) {
   );
 }
 
-export default ResponsiveDrawer;
+RegisterRoutes(Homepage, "/", "/home", "/Home", "/Homepage", "/homepage", "/HomePage", "/homePage");
+export default Homepage;

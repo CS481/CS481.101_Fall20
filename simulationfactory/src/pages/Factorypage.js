@@ -10,6 +10,7 @@ import CreateStyles from "../util/stylesheet";
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
 import TabPanel from "../components/TabPanel";
+import {RegisterRoutes} from "../util/RouteBuilder";
 
 function Factorypage(props) {
   const { window } = props;
@@ -74,5 +75,6 @@ function Factorypage(props) {
     </div>
   );
 }
+RegisterRoutes(Factorypage, "/factory", "/Factory", "/factoryPage", "/FactoryPage");
 
 export default Factorypage;
