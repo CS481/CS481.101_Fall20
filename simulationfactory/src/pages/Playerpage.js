@@ -21,50 +21,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
 import {RegisterRoutes} from "../util/RouteBuilder";
-
-const drawerWidth = 240;
-
-const useStyles = makeStyles((theme) => ({
-root: {
-    flexGrow: 1,
-    display: "flex",
-},
-card: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-},
-drawer: {
-    [theme.breakpoints.up("sm")]: {
-    width: drawerWidth,
-    flexShrink: 0,
-    },
-},
-appBar: {
-    [theme.breakpoints.up("sm")]: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    },
-},
-menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
-    display: "none",
-    },
-},
-// necessary for content to be below app bar
-toolbar: theme.mixins.toolbar,
-drawerPaper: {
-    width: drawerWidth,
-},
-content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-},
-}));
+import CreateStyles from "../util/stylesheet";
 
 function Playerpage() {
-    const classes = useStyles();
+    const Styles = CreateStyles();
     let [state, setState] = React.useState({
         checkbox1: true,
         checkbox2: false,
@@ -90,13 +50,13 @@ function Playerpage() {
     };
 
     return (
-        <div className={classes.root}>
+        <div className={Styles.root}>
         <Topbar message="Simulation Player"/>
         <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
 
-        <main className={classes.content}>
-            <div className={classes.toolbar} /> {/* Why is this necessary */}
-            <Card className={classes.root}>
+        <main className={Styles.content}>
+            <div className={Styles.toolbar} /> {/* Why is this necessary */}
+            <Card className={Styles.root}>
                 <CardHeader
                 title="Prompt:"
                 />
@@ -107,8 +67,8 @@ function Playerpage() {
                 </CardContent>
                 <CardActions>
                     <IconButton
-                        className={clsx(classes.expand, {
-                            [classes.expandOpen]: expanded,
+                        className={clsx(Styles.expand, {
+                            [Styles.expandOpen]: expanded,
                         })}
                         onClick={handleExpandClick}
                         aria-expanded={expanded}
@@ -119,7 +79,7 @@ function Playerpage() {
                 </CardActions>
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <CardContent>
-                        <form className={classes.root} noValidate autoComplete="off">
+                        <form className={Styles.root} noValidate autoComplete="off">
                             <TextField id="response-form" label="response-1" variant="filled" />
                             <TextField id="response-form" label="response-2" variant="filled" />
                             <TextField id="response-form" label="response-3" variant="filled" />
@@ -132,7 +92,7 @@ function Playerpage() {
                                 <FormControlLabel value="thirdChoice" control={<Radio />} label="third" />
                             </RadioGroup>
                         </FormControl>
-                        <FormControl component="fieldset" className={classes.formControl}>
+                        <FormControl component="fieldset" className={Styles.formControl}>
                             <FormLabel component="legend">Checkboxes</FormLabel>
                             <FormGroup>
                             <FormControlLabel
