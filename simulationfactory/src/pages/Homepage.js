@@ -5,7 +5,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
-import CreateStyles from "../util/stylesheet";
+import CreateStyles from "../util/Stylesheet";
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
 import {RegisterRoutes} from "../util/RouteBuilder";

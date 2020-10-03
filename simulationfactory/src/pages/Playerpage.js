@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -21,7 +20,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
 import {RegisterRoutes} from "../util/RouteBuilder";
-import CreateStyles from "../util/stylesheet";
+import CreateStyles from "../util/Stylesheet";
+import Resource from "../schema/Resource";
+
 
 function Playerpage() {
     const Styles = CreateStyles();
@@ -49,71 +50,73 @@ function Playerpage() {
         setSelectedValue(event.target.value);
     };
 
+
+
     return (
         <div className={Styles.root}>
-        <Topbar message="Simulation Player"/>
-        <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
+            <Topbar message="Simulation Player"/>
+            <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
 
-        <main className={Styles.content}>
-            <div className={Styles.toolbar} /> {/* Why is this necessary */}
-            <Card className={Styles.root}>
-                <CardHeader
-                title="Prompt:"
-                />
-                <CardContent>
-                    <Typography variant="h2" component="p">
-                        This is where our prompts will go.
-                    </Typography>
-                </CardContent>
-                <CardActions>
-                    <IconButton
-                        className={clsx(Styles.expand, {
-                            [Styles.expandOpen]: expanded,
-                        })}
-                        onClick={handleExpandClick}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                    >
-                    <ExpandMoreIcon />
-                    </IconButton>
-                </CardActions>
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <main className={Styles.content}>
+                <div className={Styles.toolbar} /> {/* Why is this necessary */}
+                <Card className={Styles.root}>
+                    <CardHeader
+                    title="Prompt:"
+                    />
                     <CardContent>
-                        <form className={Styles.root} noValidate autoComplete="off">
-                            <TextField id="response-form" label="response-1" variant="filled" />
-                            <TextField id="response-form" label="response-2" variant="filled" />
-                            <TextField id="response-form" label="response-3" variant="filled" />
-                        </form>
-                        <FormControl component="fieldset">
-                            <FormLabel component="legend">Multiple Choice</FormLabel>
-                            <RadioGroup aria-label="options" name="options1" value={value} onChange={handleChangeRadio}>
-                                <FormControlLabel value="firstChoice" control={<Radio />} label="first" />
-                                <FormControlLabel value="secondChoice" control={<Radio />} label="second" />
-                                <FormControlLabel value="thirdChoice" control={<Radio />} label="third" />
-                            </RadioGroup>
-                        </FormControl>
-                        <FormControl component="fieldset" className={Styles.formControl}>
-                            <FormLabel component="legend">Checkboxes</FormLabel>
-                            <FormGroup>
-                            <FormControlLabel
-                                control={<Checkbox checked={checkbox1} onChange={handleChangeCheck} name="checkbox1" />}
-                                label="Checkbox 1"
-                            />
-                            <FormControlLabel
-                                control={<Checkbox checked={checkbox2} onChange={handleChangeCheck} name="checkbox2" />}
-                                label="Checkbox 2"
-                            />
-                            <FormControlLabel
-                                control={<Checkbox checked={checkbox3} onChange={handleChangeCheck} name="checkbox3" />}
-                                label="Checkbox 3"
-                            />
-                        </FormGroup>
-                        
-                    </FormControl>
+                        <Typography variant="h2" component="p">
+                            {JSON.stringify(Resource.FromJSON('{"name": "yolo", "amount": 1}'))}
+                        </Typography>
                     </CardContent>
-                </Collapse>
-            </Card>
-        </main>
+                    <CardActions>
+                        <IconButton
+                            className={clsx(Styles.expand, {
+                                [Styles.expandOpen]: expanded,
+                            })}
+                            onClick={handleExpandClick}
+                            aria-expanded={expanded}
+                            aria-label="show more"
+                        >
+                        <ExpandMoreIcon />
+                        </IconButton>
+                    </CardActions>
+                    <Collapse in={expanded} timeout="auto" unmountOnExit>
+                        <CardContent>
+                            <form className={Styles.root} noValidate autoComplete="off">
+                                <TextField id="response-form" label="response-1" variant="filled" />
+                                <TextField id="response-form" label="response-2" variant="filled" />
+                                <TextField id="response-form" label="response-3" variant="filled" />
+                            </form>
+                            <FormControl component="fieldset">
+                                <FormLabel component="legend">Multiple Choice</FormLabel>
+                                <RadioGroup aria-label="options" name="options1" value={value} onChange={handleChangeRadio}>
+                                    <FormControlLabel value="firstChoice" control={<Radio />} label="first" />
+                                    <FormControlLabel value="secondChoice" control={<Radio />} label="second" />
+                                    <FormControlLabel value="thirdChoice" control={<Radio />} label="third" />
+                                </RadioGroup>
+                            </FormControl>
+                            <FormControl component="fieldset" className={Styles.formControl}>
+                                <FormLabel component="legend">Checkboxes</FormLabel>
+                                <FormGroup>
+                                <FormControlLabel
+                                    control={<Checkbox checked={checkbox1} onChange={handleChangeCheck} name="checkbox1" />}
+                                    label="Checkbox 1"
+                                />
+                                <FormControlLabel
+                                    control={<Checkbox checked={checkbox2} onChange={handleChangeCheck} name="checkbox2" />}
+                                    label="Checkbox 2"
+                                />
+                                <FormControlLabel
+                                    control={<Checkbox checked={checkbox3} onChange={handleChangeCheck} name="checkbox3" />}
+                                    label="Checkbox 3"
+                                />
+                            </FormGroup>
+                            
+                        </FormControl>
+                        </CardContent>
+                    </Collapse>
+                </Card>
+            </main>
         </div>
     );
 }
