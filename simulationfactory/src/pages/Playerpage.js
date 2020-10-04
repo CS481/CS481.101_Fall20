@@ -24,7 +24,6 @@ class SimulationPlayer extends React.Component {
         };
     }
     render() {
-        let Styles = this.props.Styles;
         if (this.state.simState.user_waiting) {
             return this.renderUserWaiting();
         } else {
