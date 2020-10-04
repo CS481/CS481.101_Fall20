@@ -8,11 +8,14 @@ export default class Schema {
     }
     static FromJSON(json) {
         let parsedObject = JSON.parse(json);
-        if(Validator.validate(this.GetSchema(), parsedObject)) {
-            return parsedObject
+        return this.Validate(parsedObject);
+    }
+    static Validate(schemaObject) {
+        if(Validator.validate(this.GetSchema(), schemaObject)) {
+            return schemaObject
         } else {
-            throw new Error("JSON string failed validation against schema " + this.name);
-        }
+            throw new Error(`JavaScript object failed validation against schema ${this.name}. Error: ${JSON.stringify(Validator.errors)}`);
+        }    
     }
     static RegisterSchema() {
         Validator.addSchema(this.schema, this.name);

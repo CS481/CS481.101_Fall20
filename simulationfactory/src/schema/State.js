@@ -16,17 +16,20 @@ export default class State extends Schema {
                 "format": "date-time"
             },
             "resources": {
-                "type": "array",
-                "items": {"$ref": "Resource"},
-                "uniqueItems": true
+                "type": "object",
+                "patternProperties": {
+                    "^.*$": {"type": "number"}
+                }
             },
             "resource_deltas": {
-                "type": "array",
-                "items": {"$ref": "Resource"},
-                "uniqueItems": true
+                "type": "object",
+                "patternProperties": {
+                    "^.*$": {"type": "number"}
+                }
             },
             "active_frame": {
                 "type": "object",
+                "required":["prompt", "responses"],
                 "properties": {
                     "prompt": {
                         "type": "string"
