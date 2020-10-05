@@ -33,6 +33,9 @@ function Navbar(props) {
                     <Link to = "/player" >Join Simulation</Link>
                 </ListItem>
                 <ListItem>
+                    <Link to = "/loginsignup" >Login/SignUp</Link>
+                </ListItem>
+                <ListItem>
                     <ListItemText primary="My Simulations" />
                 </ListItem>
                 <ListItem>

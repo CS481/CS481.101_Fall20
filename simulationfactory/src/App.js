@@ -11,6 +11,7 @@ import {BuildRoutes} from './util/RouteBuilder';
 import HomePage from './pages/Homepage';
 import FactoryPage from './pages/Factorypage';
 import PlayerPage from './pages/Playerpage'
+import LoginSignUpPage from './pages/Loginsignuppage'
 
 class App extends Component {
   render() {
