@@ -12,6 +12,7 @@ import HomePage from './pages/Homepage';
 import FactoryPage from './pages/Factorypage';
 import PlayerPage from './pages/Playerpage'
 import LoginSignUpPage from './pages/Loginsignuppage'
+import AccountPage from './pages/Accountpage'
 
 class App extends Component {
   render() {
