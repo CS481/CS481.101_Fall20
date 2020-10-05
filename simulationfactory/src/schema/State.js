@@ -3,45 +3,45 @@ import Schema from "../schema/Schema";
 // Schema that represents the simulation's state
 export default class State extends Schema {
     static schema = {
-        "$id": "State",
-        "type": "object",
-        "required": ["is_user_waiting"],
-        "properties": {
-            "turn_number": {
-                "type": "number",
-                "mimimum": "0"
+        $id: "State",
+        type: "object",
+        required: ["is_user_waiting"],
+        properties: {
+            turn_number: {
+                type: "number",
+                mimimum: "0"
             },
-            "response_deadline": {
-                "type": "string",
-                "format": "date-time"
+            response_deadline: {
+                type: "string",
+                format: "date-time"
             },
-            "resources": {
-                "type": "object",
-                "patternProperties": {
+            resources: {
+                type: "object",
+                patternProperties: {
                     "^.*$": {"type": "number"}
                 }
             },
-            "resource_deltas": {
-                "type": "object",
-                "patternProperties": {
+            resource_deltas: {
+                type: "object",
+                patternProperties: {
                     "^.*$": {"type": "number"}
                 }
             },
-            "active_frame": {
-                "type": "object",
-                "required":["prompt", "responses"],
-                "properties": {
-                    "prompt": {
-                        "type": "string"
+            active_frame: {
+                type: "object",
+                required:["prompt", "responses"],
+                properties: {
+                    prompt: {
+                        type: "string"
                     },
-                    "responses": {
-                        "type": "array",
-                        "items": {"type" : "string"}
+                    responses: {
+                        type: "array",
+                        items: {"type" : "string"}
                     }
                 }
             },
-            "user_waiting": {
-                "type": "boolean"
+            user_waiting: {
+                type: "boolean"
             }
         }
     }

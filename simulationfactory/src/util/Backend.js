@@ -1,4 +1,5 @@
-import SimulationInstance from "../schema/SimulationInstance"
+import SimulationInstance from "../schema/SimulationInstance";
+import UserResponse from "../schema/UserResponse";
 import State from "../schema/State";
 
 let state_to_return = 0;
@@ -40,6 +41,11 @@ export function GetState(simulationInstance) {
             '}' +
         '}'
     ];
-    state_to_return = (state_to_return+1)%2
+    state_to_return = (state_to_return+1)%2;
     return State.FromJSON(instances[state_to_return]);
+}
+
+export function SubmitResponse(response) {
+    UserResponse.Validate(response);
+    //TODO: Post data to backend, and get result
 }

@@ -12,28 +12,20 @@ import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
 import {RegisterRoutes} from "../util/RouteBuilder";
 import CreateStyles from "../util/Stylesheet";
-import {GetState} from "../util/Backend";
+import {GetState, SubmitResponse} from "../util/Backend";
 import FormatString from "../util/FormatString";
 
 class SimulationPlayer extends React.Component {
     constructor(props) {
         super(props);
+        let instance_id = {"instance_id": "1", "user_id": "player"}
         this.state = {
             radioValue: -1,
-            simState: GetState({"instance_id": "1", "user_id": "player"})
+            instance_id: instance_id,
+            simState: GetState(instance_id)
         };
     }
     render() {
-        if (this.state.simState.user_waiting) {
-            return this.renderUserWaiting();
-        } else {
-            return this.renderUserReady();
-        }
-    }
-    renderUserWaiting() {
-        throw new Error(`renderUserWaiting unimplemented`);
-    }
-    renderUserReady() {
         let Styles = this.props.Styles;
         return (
             <main className={Styles.content}>
@@ -80,7 +72,12 @@ class SimulationPlayer extends React.Component {
         });
     }
     submitResponse() {
-        this.setState({simState: GetState({"instance_id": "1", "user_id": "player"})})
+        // Do nothing if the user has not chosen a response
+        if (this.state.radioValue == -1) {
+            return
+        }
+        SubmitResponse({instance: this.state.instance_id, response: this.state.radioValue});
+        this.setState({radioValue: -1, simState: GetState({"instance_id": "1", "user_id": "player"})})
     }
 }
 
@@ -90,7 +87,7 @@ function Playerpage() {
         <div className={Styles.root}>
             <Topbar message="Simulation Player"/>
             <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
-            <SimulationPlayer Styles={Styles}/> {/* Not sure why, but we can't rebuild our classes inside this component */}
+            <SimulationPlayer Styles={Styles}/> {/* Not sure why, but we can't rebuild our classes inside this Class component */}
         </div>
     );
 }
