@@ -1,6 +1,6 @@
-import SimulationInstance from "../schema/SimulationInstance";
-import UserResponse from "../schema/UserResponse";
-import State from "../schema/State";
+import SimulationInstance from "../simulation-schema/SimulationInstance";
+import UserResponse from "../simulation-schema/UserResponse";
+import State from "../simulation-schema/State";
 
 let state_to_return = 0;
 export function GetState(simulationInstance) {
