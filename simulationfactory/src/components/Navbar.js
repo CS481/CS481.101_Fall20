@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import { List, ListItem, ListItemText } from "@material-ui/core";
 import {useTheme} from "@material-ui/core/styles";
-import CreateStyles from "../util/stylesheet";
+import CreateStyles from "../util/Stylesheet";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";

@@ -1,119 +1,93 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import FormLabel from '@material-ui/core/FormLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import TextField from '@material-ui/core/TextField';
-import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Button from "@material-ui/core/Button";
 
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
 import {RegisterRoutes} from "../util/RouteBuilder";
-import CreateStyles from "../util/stylesheet";
+import CreateStyles from "../util/Stylesheet";
+import {GetState, SubmitResponse} from "../util/Backend";
+import FormatString from "../util/FormatString";
+
+class SimulationPlayer extends React.Component {
+    constructor(props) {
+        super(props);
+        let instance_id = {"instance_id": "1", "user_id": "player"}
+        this.state = {
+            radioValue: -1,
+            instance_id: instance_id,
+            simState: GetState(instance_id)
+        };
+    }
+    render() {
+        let Styles = this.props.Styles;
+        return (
+            <main className={Styles.content}>
+                <div className={Styles.toolbar} /> {/* Why is this necessary */}
+                <Card className={Styles.root}>
+                    <CardContent>
+                        <Typography variant="h2" component="p">
+                            {FormatString(this.state.simState.active_frame.prompt, this.state.simState)}
+                        </Typography>
+                    </CardContent>
+                </Card>
+                <Card className={Styles.root}>
+                    <CardContent>
+                        {this.renderResponses(Styles)}
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardContent>
+                        <Button variant="contained" color="primary" size="medium" 
+                        onClick={() => this.submitResponse()}> {/* 'this' is undefined if you try to write the callback the obvious way */}
+                            Submit
+                        </Button>
+                    </CardContent>
+                </Card>
+            </main>
+        )
+    }
+    renderResponses() {
+        return (
+            <FormControl component="fieldset">
+                <RadioGroup aria-label="options" name="options1" value={this.state.radioValue}
+                    onChange={(event) => {this.setState({radioValue: event.target.value})}}>
+                    {this.renderResponseButtons()}
+                </RadioGroup>
+            </FormControl>
+        )
+    }
+    renderResponseButtons() {
+        let responses = this.state.simState.active_frame.responses;
+        let i = -1;
+        return responses.map((response) => {
+            i++;
+            return <FormControlLabel value={i} control={<Radio/>} label={response} checked={this.state.radioValue==i} />
+        });
+    }
+    submitResponse() {
+        // Do nothing if the user has not chosen a response
+        if (this.state.radioValue == -1) {
+            return
+        }
+        SubmitResponse({instance: this.state.instance_id, response: this.state.radioValue});
+        this.setState({radioValue: -1, simState: GetState({"instance_id": "1", "user_id": "player"})})
+    }
+}
 
 function Playerpage() {
     const Styles = CreateStyles();
-    let [state, setState] = React.useState({
-        checkbox1: true,
-        checkbox2: false,
-        checkbox3: false,
-    });
-
-    const handleChangeCheck = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
-    };
-
-    let { checkbox1, checkbox2, checkbox3 } = state;
-    let error = [checkbox1, checkbox2, checkbox3].filter((v) => v).length !== 2;
-
-    let [expanded, setExpanded, value] = React.useState(false);
-
-    let [selectedValue, setSelectedValue] = React.useState('a');
-
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    }
-    const handleChangeRadio = (event) => {
-        setSelectedValue(event.target.value);
-    };
-
     return (
         <div className={Styles.root}>
-        <Topbar message="Simulation Player"/>
-        <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
-
-        <main className={Styles.content}>
-            <div className={Styles.toolbar} /> {/* Why is this necessary */}
-            <Card className={Styles.root}>
-                <CardHeader
-                title="Prompt:"
-                />
-                <CardContent>
-                    <Typography variant="h2" component="p">
-                        This is where our prompts will go.
-                    </Typography>
-                </CardContent>
-                <CardActions>
-                    <IconButton
-                        className={clsx(Styles.expand, {
-                            [Styles.expandOpen]: expanded,
-                        })}
-                        onClick={handleExpandClick}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                    >
-                    <ExpandMoreIcon />
-                    </IconButton>
-                </CardActions>
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    <CardContent>
-                        <form className={Styles.root} noValidate autoComplete="off">
-                            <TextField id="response-form" label="response-1" variant="filled" />
-                            <TextField id="response-form" label="response-2" variant="filled" />
-                            <TextField id="response-form" label="response-3" variant="filled" />
-                        </form>
-                        <FormControl component="fieldset">
-                            <FormLabel component="legend">Multiple Choice</FormLabel>
-                            <RadioGroup aria-label="options" name="options1" value={value} onChange={handleChangeRadio}>
-                                <FormControlLabel value="firstChoice" control={<Radio />} label="first" />
-                                <FormControlLabel value="secondChoice" control={<Radio />} label="second" />
-                                <FormControlLabel value="thirdChoice" control={<Radio />} label="third" />
-                            </RadioGroup>
-                        </FormControl>
-                        <FormControl component="fieldset" className={Styles.formControl}>
-                            <FormLabel component="legend">Checkboxes</FormLabel>
-                            <FormGroup>
-                            <FormControlLabel
-                                control={<Checkbox checked={checkbox1} onChange={handleChangeCheck} name="checkbox1" />}
-                                label="Checkbox 1"
-                            />
-                            <FormControlLabel
-                                control={<Checkbox checked={checkbox2} onChange={handleChangeCheck} name="checkbox2" />}
-                                label="Checkbox 2"
-                            />
-                            <FormControlLabel
-                                control={<Checkbox checked={checkbox3} onChange={handleChangeCheck} name="checkbox3" />}
-                                label="Checkbox 3"
-                            />
-                        </FormGroup>
-                        
-                    </FormControl>
-                    </CardContent>
-                </Collapse>
-            </Card>
-        </main>
+            <Topbar message="Simulation Player"/>
+            <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
+            <SimulationPlayer Styles={Styles}/> {/* Not sure why, but we can't rebuild our classes inside this Class component */}
         </div>
     );
 }

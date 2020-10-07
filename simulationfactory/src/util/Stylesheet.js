@@ -43,7 +43,13 @@ function CreateStyles() {
     },
     blue: {
       color: "blue",
-    }
+    },
+    defaultButton: {
+      variant: "contained",
+      color: "primary",
+      size: "medium"
+    },
+
   }))
   return styles()
 };
