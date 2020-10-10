@@ -22,9 +22,10 @@ class SimulationPlayer extends React.Component {
         this.state = {
             radioValue: -1,
             instance_id: instance_id,
-            simState: GetState(instance_id),
             text: "UwU"
         };
+        GetState({"instance_id": "1", "user_id": "player"}, (state) => {this.setState({text: state, radioValue: -1});});
+
     }
     render() {
         let Styles = this.props.Styles;
@@ -35,7 +36,7 @@ class SimulationPlayer extends React.Component {
                     <CardContent>
                         <Typography variant="h2" component="p">
                             {/* FormatString(this.state.simState.active_frame.prompt, this.state.simState) */}
-                            {this.text}
+                            {this.state.text}
                         </Typography>
                     </CardContent>
                 </Card>

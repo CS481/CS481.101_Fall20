@@ -44,16 +44,16 @@ export async function GetState(simulationInstance, callback) {
     state_to_return = (state_to_return+1)%2;
     let fetch_url = `http://98.235.235.188/reactTestPost.php`;
     let fetch_body = {
-        method: "GET",
-        body: instances[state_to_return]
+        method: "POST",
+        headers: new Headers(),
+        body: JSON.stringify({UwU: "h-hewwo? :3"})
     };
     try {
         let response = await fetch(fetch_url, fetch_body);
-        callback((await response.text()));
+        callback((await response.json()));
     } catch (error) {
         throw new Error(error);
     }
-    //return State.FromJSON(instances[state_to_return]);
 }
 
 export function SubmitResponse(response) {
