@@ -3,7 +3,7 @@ import UserResponse from "../simulation-schema/UserResponse";
 import State from "../simulation-schema/State";
 
 let state_to_return = 0;
-export function GetState(simulationInstance) {
+export async function GetState(simulationInstance, callback) {
     SimulationInstance.Validate(simulationInstance);
     //TODO: Post data to backend, and get result
 
@@ -42,7 +42,18 @@ export function GetState(simulationInstance) {
         '}'
     ];
     state_to_return = (state_to_return+1)%2;
-    return State.FromJSON(instances[state_to_return]);
+    let fetch_url = `http://98.235.235.188/reactTestPost.php`;
+    let fetch_body = {
+        method: "GET",
+        body: instances[state_to_return]
+    };
+    try {
+        let response = await fetch(fetch_url, fetch_body);
+        callback((await response.text()));
+    } catch (error) {
+        throw new Error(error);
+    }
+    //return State.FromJSON(instances[state_to_return]);
 }
 
 export function SubmitResponse(response) {

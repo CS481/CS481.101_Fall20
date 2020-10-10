@@ -22,7 +22,8 @@ class SimulationPlayer extends React.Component {
         this.state = {
             radioValue: -1,
             instance_id: instance_id,
-            simState: GetState(instance_id)
+            simState: GetState(instance_id),
+            text: "UwU"
         };
     }
     render() {
@@ -33,13 +34,14 @@ class SimulationPlayer extends React.Component {
                 <Card className={Styles.root}>
                     <CardContent>
                         <Typography variant="h2" component="p">
-                            {FormatString(this.state.simState.active_frame.prompt, this.state.simState)}
+                            {/* FormatString(this.state.simState.active_frame.prompt, this.state.simState) */}
+                            {this.text}
                         </Typography>
                     </CardContent>
                 </Card>
                 <Card className={Styles.root}>
                     <CardContent>
-                        {this.renderResponses(Styles)}
+                        {/* this.renderResponses(Styles) */}
                     </CardContent>
                 </Card>
                 <Card>
@@ -77,7 +79,7 @@ class SimulationPlayer extends React.Component {
             return
         }
         SubmitResponse({instance: this.state.instance_id, response: this.state.radioValue});
-        this.setState({radioValue: -1, simState: GetState({"instance_id": "1", "user_id": "player"})})
+        GetState({"instance_id": "1", "user_id": "player"}, (state) => {this.setState({text: state, radioValue: -1});});
     }
 }
 
