@@ -19,12 +19,19 @@ class SimulationPlayer extends React.Component {
     constructor(props) {
         super(props);
         let instance_id = {"instance_id": "1", "user_id": "player"}
+        let default_state = {
+            user_waiting: true,
+            active_frame: {
+                prompt: "waiting...",
+                responses: []
+            }
+        };
         this.state = {
             radioValue: -1,
             instance_id: instance_id,
-            text: "UwU"
+            simState: default_state
         };
-        GetState({"instance_id": "1", "user_id": "player"}, (state) => {this.setState({text: state, radioValue: -1});});
+        GetState({"instance_id": "1", "user_id": "player"}, (state) => {this.setState({simState: state, radioValue: -1});});
 
     }
     render() {
@@ -35,14 +42,13 @@ class SimulationPlayer extends React.Component {
                 <Card className={Styles.root}>
                     <CardContent>
                         <Typography variant="h2" component="p">
-                            {/* FormatString(this.state.simState.active_frame.prompt, this.state.simState) */}
-                            {this.state.text}
+                            {FormatString(this.state.simState.active_frame.prompt, this.state.simState)}
                         </Typography>
                     </CardContent>
                 </Card>
                 <Card className={Styles.root}>
                     <CardContent>
-                        {/* this.renderResponses(Styles) */}
+                        { this.renderResponses(Styles) }
                     </CardContent>
                 </Card>
                 <Card>
@@ -80,7 +86,7 @@ class SimulationPlayer extends React.Component {
             return
         }
         SubmitResponse({instance: this.state.instance_id, response: this.state.radioValue});
-        GetState({"instance_id": "1", "user_id": "player"}, (state) => {this.setState({text: state, radioValue: -1});});
+        GetState({"instance_id": "1", "user_id": "player"}, (state) => {this.setState({simState: state, radioValue: -1});});
     }
 }
 
