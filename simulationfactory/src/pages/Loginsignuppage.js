@@ -7,8 +7,7 @@ import CardContent from "@material-ui/core/CardContent";
 import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 
-import Topbar from "../components/Topbar";
-import Navbar from "../components/Navbar";
+import Navigation from "../components/Navigation";
 
 import {RegisterRoutes} from "../util/RouteBuilder";
 
@@ -19,8 +18,7 @@ function Loginsignuppage() {
 
     return (
         <div className={Styles.root}>
-            <Topbar message="Login/Signup!"/>
-            <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
+            <Navigation TopbarMessage="Login/Signup!" Styles={Styles}/>
             <main className={Styles.content}>
                 <div className={Styles.toolbar} />
                 <Grid container spacing={3}>

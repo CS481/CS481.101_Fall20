@@ -1,6 +1,6 @@
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 function CreateStyles() {
   const theme = useTheme();
@@ -17,7 +17,6 @@ function CreateStyles() {
     drawer: {
       [theme.breakpoints.up("sm")]: {
         width: drawerWidth,
-        flexShrink: 0,
       },
     },
     appBar: {
@@ -32,6 +31,9 @@ function CreateStyles() {
         display: "none",
       },
     },
+    blue: {
+      color: "blue",
+    },
     // necessary for content to be below app bar
     toolbar: theme.mixins.toolbar,
     drawerPaper: {
@@ -41,15 +43,6 @@ function CreateStyles() {
       flexGrow: 1,
       padding: theme.spacing(3),
     },
-    blue: {
-      color: "blue",
-    },
-    defaultButton: {
-      variant: "contained",
-      color: "primary",
-      size: "medium"
-    },
-
   }))
   return styles()
 };

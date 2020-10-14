@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import {BrowserRouter} from "react-router-dom";
 
-
-import Navbar from './components/Navbar';
 import {BuildRoutes} from './util/RouteBuilder';
 
 /*  This is the only real weirdness with my solution. You MUST import all of the pages here, or the routes will not be built
@@ -17,12 +15,9 @@ import AccountPage from './pages/Accountpage'
 class App extends Component {
   render() {
     return (
-      <div>
-        <BrowserRouter>
-          <Navbar/>
-          <BuildRoutes/>
-        </BrowserRouter>
-      </div>
+      <BrowserRouter>
+        <BuildRoutes/>
+      </BrowserRouter>
     );
   }
 }

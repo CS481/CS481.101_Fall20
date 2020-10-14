@@ -7,8 +7,7 @@ import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import { Tabs, Tab, TextField } from "@material-ui/core";
 import CreateStyles from "../util/Stylesheet";
-import Topbar from "../components/Topbar";
-import Navbar from "../components/Navbar";
+import Navigation from "../components/Navigation";
 import TabPanel from "../components/TabPanel";
 import {RegisterRoutes} from "../util/RouteBuilder";
 
@@ -22,7 +21,7 @@ function Factorypage(props) {
   
   return (
     <div className={Styles.root}>
-      <Topbar message="Simulation Builder"/>
+      <Navigation TopbarMessage="Simulation Builder" Styles={Styles}/>
 
       <main className={Styles.content}>
         <div className={Styles.toolbar} /> {/* Why is this necessary */}
