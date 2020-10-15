@@ -12,7 +12,7 @@ function Topbar(props) {
     const Styles = CreateStyles();
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
-      };
+        };
     return (
         
         <AppBar position="fixed" className={Styles.appBar}>
@@ -28,7 +28,7 @@ function Topbar(props) {
             </IconButton>
             <Typography variant="h6" noWrap>{props.message}</Typography>
         </Toolbar>
-      </AppBar>
+        </AppBar>
     );
 }
 

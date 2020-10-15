@@ -10,9 +10,9 @@ import Button from "@material-ui/core/Button";
 
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
-import {RegisterRoutes} from "../util/RouteBuilder";
-import CreateStyles from "../util/Stylesheet";
-import {GetState, SubmitResponse} from "../util/Backend";
+import { RegisterRoutes } from "../util/RouteBuilder";
+import styles from "../util/Stylesheet";
+import { GetState, SubmitResponse } from "../util/Backend";
 import FormatString from "../util/FormatString";
 
 class SimulationPlayer extends React.Component {
@@ -82,7 +82,7 @@ class SimulationPlayer extends React.Component {
 }
 
 function Playerpage() {
-    const Styles = CreateStyles();
+    const Styles = styles();
     return (
         <div className={Styles.root}>
             <Topbar message="Simulation Player"/>

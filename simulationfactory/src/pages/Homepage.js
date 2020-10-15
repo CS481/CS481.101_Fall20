@@ -5,14 +5,14 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
-import CreateStyles from "../util/Stylesheet";
+import styles from "../util/Stylesheet";
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
-import {RegisterRoutes} from "../util/RouteBuilder";
+import { RegisterRoutes } from "../util/RouteBuilder";
 
 function Homepage(props) {
   const { window } = props;
-  const Styles = CreateStyles();
+  const Styles = styles();
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -45,7 +45,7 @@ function Homepage(props) {
                 </div>
               </CardContent>
               <CardActions>
-                <Button variant="contained" color="primary" size="medium">
+                <Button className={Styles.defaultButton} variant="contained" color="primary" size="medium">
                   Create Simulation
                 </Button>
               </CardActions>

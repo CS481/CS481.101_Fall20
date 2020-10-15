@@ -6,6 +6,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
+import Button from "@material-ui/core/Button";
 
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
@@ -52,6 +53,12 @@ function Accountpage() {
                                                 <form className={Styles.root} noValidate autoComplete="off">
                                                     <TextField id="outlined-account-password" label="Password" variant="outlined" />
                                                 </form>
+                                                
+                                        </ListItem>
+                                        <ListItem>
+                                            <Button className={Styles.defaultButton} variant="contained" color="primary" size="medium">
+                                                Submit
+                                            </Button>
                                         </ListItem>
                                     </List>
                                 </div>
@@ -75,6 +82,11 @@ function Accountpage() {
                                                 <form className={Styles.root} noValidate autoComplete="off">
                                                     <TextField id="outlined-account-password-new" label="New Password" variant="outlined" />
                                                 </form>
+                                        </ListItem>
+                                        <ListItem>
+                                        <Button className={Styles.defaultButton} variant="contained" color="primary" size="medium">
+                                            Submit
+                                        </Button>
                                         </ListItem>
                                     </List>
                                 </div>

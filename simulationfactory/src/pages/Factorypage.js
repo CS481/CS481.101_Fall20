@@ -10,7 +10,7 @@ import CreateStyles from "../util/Stylesheet";
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
 import TabPanel from "../components/TabPanel";
-import {RegisterRoutes} from "../util/RouteBuilder";
+import { RegisterRoutes } from "../util/RouteBuilder";
 
 function Factorypage(props) {
   const { window } = props;
