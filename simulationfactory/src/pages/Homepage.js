@@ -5,16 +5,14 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
-import CreateStyles from "../util/Stylesheet";
+import styles from "../util/Stylesheet";
 import Navigation from "../components/Navigation";
-import {RegisterRoutes} from "../util/RouteBuilder";
+import {Link} from "react-router-dom";
+
+import { RegisterRoutes } from "../util/RouteBuilder";
 
 function Homepage(props) {
-  const { window } = props;
-  const Styles = CreateStyles();
-
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
+  const Styles = styles();
 
   return (
     <div className={Styles.root}>
@@ -23,57 +21,61 @@ function Homepage(props) {
         <div className={Styles.toolbar} />
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
-            <Card className={Styles.root}>
+            <Card className={Styles.card}>
               <CardContent>
                 <Typography className={Styles.title} variant="h2">
                   Simulation Factory
                 </Typography>
-                <div className={Styles.list}>
-                  <List>
-                    <ListItem>
-                      <ListItemText primary="Create your simulation" />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText primary="Run your simulation real-time or asyncronous" />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText primary="Get analytics and feedback from participants" />
-                    </ListItem>
-                  </List>
-                </div>
+                <List>
+                  <ListItem>
+                    <ListItemText primary="Create your simulation" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Run your simulation real-time or asyncronous" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Get analytics and feedback from participants" />
+                  </ListItem>
+                  <ListItem >
+                    <CardActions>
+                    <Link to="/factory" className={Styles.noDecoration}>
+                      <Button color="primary" variant="contained" size="medium">
+                        Create Simulation
+                      </Button>
+                    </Link>
+                    </CardActions> 
+                  </ListItem>
+                </List>
               </CardContent>
-              <CardActions>
-                <Button variant="contained" color="primary" size="medium">
-                  Create Simulation
-                </Button>
-              </CardActions>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Card className={Styles.root}>
+            <Card className={Styles.card}>
               <CardContent>
                 <Typography className={Styles.title} variant="h2">
                   Join Simulation
                 </Typography>
-                <div className={Styles.list}>
-                  <List>
-                    <ListItem>
-                      <ListItemText primary="Participate in Simulation" />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText primary="Join with partner or run by yourself" />
-                    </ListItem>
-                    <ListItem>
-                      <ListItemText primary="Contribute to research studies" />
-                    </ListItem>
-                  </List>
-                </div>
+                <List>
+                  <ListItem>
+                    <ListItemText primary="Participate in Simulation" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Join with partner or run by yourself" />
+                  </ListItem>
+                  <ListItem>
+                    <ListItemText primary="Contribute to research studies" />
+                  </ListItem>
+                  <ListItem>
+                    <CardActions>
+                      <Link to="/player" className={Styles.noDecoration}>
+                        <Button variant="contained" color="primary" size="medium">
+                          Join Simulation
+                        </Button>
+                      </Link>
+                    </CardActions>
+                  </ListItem>
+                </List>
               </CardContent>
-              <CardActions>
-                <Button variant="contained" color="primary" size="medium">
-                  Join Simulation
-                </Button>
-              </CardActions>
             </Card>
           </Grid>
         </Grid>

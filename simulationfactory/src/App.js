@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter} from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 
 import {BuildRoutes} from './util/RouteBuilder';
 
@@ -8,16 +8,21 @@ import {BuildRoutes} from './util/RouteBuilder';
 */
 import HomePage from './pages/Homepage';
 import FactoryPage from './pages/Factorypage';
-import PlayerPage from './pages/Playerpage'
-import LoginSignUpPage from './pages/Loginsignuppage'
-import AccountPage from './pages/Accountpage'
+import PlayerPage from './pages/Playerpage';
+import LoginSignUpPage from './pages/Loginsignuppage';
+import AccountPage from './pages/Accountpage';
+import AboutPage from './pages/Aboutpage'
+import { ThemeProvider } from '@material-ui/core';
+import { Theme } from "./util/Stylesheet"
 
 class App extends Component {
   render() {
     return (
-      <BrowserRouter>
-        <BuildRoutes/>
-      </BrowserRouter>
+      <ThemeProvider theme={ Theme }> 
+          <BrowserRouter>
+            <BuildRoutes/>
+          </BrowserRouter>
+      </ThemeProvider>
     );
   }
 }

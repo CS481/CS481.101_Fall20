@@ -1,33 +1,42 @@
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { createMuiTheme, makeStyles, responsiveFontSizes } from "@material-ui/core/styles";
+import palette from "./palette.json"
 
 const drawerWidth = 200;
 
 function CreateStyles() {
-  const theme = useTheme();
-  let styles = makeStyles((theme) => ({
+
+  const styles = makeStyles((Theme) => ({
     root: {
       flexGrow: 1,
-      display: "flex",
+      display: "flex"
+    },
+    title: {
+      color: Theme.palette.primary.main,
     },
     card: {
-      padding: theme.spacing(2),
-      textAlign: "center",
-      color: theme.palette.text.secondary,
+      //flexGrow: 1,
+      //display: "flex",
+      //padding: Theme.spacing(2),
+      //textAlign: "center"
     },
     drawer: {
-      [theme.breakpoints.up("sm")]: {
+      [Theme.breakpoints.up("sm")]: {
         width: drawerWidth,
+        flexShrink: 0
       },
     },
+    drawerPaper: {
+      width: drawerWidth,
+    },
     appBar: {
-      [theme.breakpoints.up("sm")]: {
+      [Theme.breakpoints.up("sm")]: {
         width: `calc(100% - ${drawerWidth}px)`,
-        marginLeft: drawerWidth,
+        marginLeft: drawerWidth
       },
     },
     menuButton: {
-      marginRight: theme.spacing(2),
-      [theme.breakpoints.up("sm")]: {
+      marginRight: Theme.spacing(2),
+      [Theme.breakpoints.up("sm")]: {
         display: "none",
       },
     },
@@ -35,16 +44,17 @@ function CreateStyles() {
       color: "blue",
     },
     // necessary for content to be below app bar
-    toolbar: theme.mixins.toolbar,
-    drawerPaper: {
-      width: drawerWidth,
-    },
+    toolbar: Theme.mixins.toolbar,
     content: {
       flexGrow: 1,
-      padding: theme.spacing(3),
+      padding: Theme.spacing(3)
     },
+    noDecoration: {
+      textDecoration: 'none'
+    }
   }))
   return styles()
 };
 
+export const Theme = responsiveFontSizes(createMuiTheme(palette));
 export default CreateStyles

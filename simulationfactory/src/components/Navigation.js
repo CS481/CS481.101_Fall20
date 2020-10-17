@@ -87,7 +87,7 @@ class Navigation extends React.Component {
                         <ListItemText primary="My Simulations" />
                     </ListItem>
                     <ListItem>
-                        <ListItemText primary="About" />
+                        <Link to = "/about" >About</Link>
                     </ListItem>
                 </List>
             </React.Fragment>

@@ -9,7 +9,7 @@ import { Tabs, Tab, TextField } from "@material-ui/core";
 import CreateStyles from "../util/Stylesheet";
 import Navigation from "../components/Navigation";
 import TabPanel from "../components/TabPanel";
-import {RegisterRoutes} from "../util/RouteBuilder";
+import { RegisterRoutes } from "../util/RouteBuilder";
 
 function Factorypage(props) {
   const { window } = props;
