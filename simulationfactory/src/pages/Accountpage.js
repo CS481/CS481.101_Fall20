@@ -7,8 +7,7 @@ import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import Button from "@material-ui/core/Button";
 
-import Topbar from "../components/Topbar";
-import Navbar from "../components/Navbar";
+import Navigation from "../components/Navigation";
 
 import {RegisterRoutes} from "../util/RouteBuilder";
 
@@ -19,8 +18,7 @@ function Accountpage() {
 
     return (
         <div className={Styles.root}>
-            <Topbar message="My Account"/>
-            <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
+            <Navigation TopbarMessage="My Account" Styles={Styles}/>
             <main className={Styles.content}>
                 <div className={Styles.toolbar}/>
                 <Grid container spacing={3}>

@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter } from "react-router-dom";
 
-
-import Navbar from './components/Navbar';
-import { BuildRoutes } from './util/RouteBuilder';
+import {BuildRoutes} from './util/RouteBuilder';
 
 /*  This is the only real weirdness with my solution. You MUST import all of the pages here, or the routes will not be built
     Fortunately, importing for side effects isn't entirely unheard of *cough* jsx *cough* 
@@ -21,12 +19,9 @@ class App extends Component {
   render() {
     return (
       <ThemeProvider theme={ Theme }> 
-        <div>
           <BrowserRouter>
-            <Navbar/>
             <BuildRoutes/>
           </BrowserRouter>
-        </div>
       </ThemeProvider>
     );
   }

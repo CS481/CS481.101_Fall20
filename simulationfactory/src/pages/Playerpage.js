@@ -8,8 +8,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Button from "@material-ui/core/Button";
 
-import Topbar from "../components/Topbar";
-import Navbar from "../components/Navbar";
+import Navigation from "../components/Navigation";
 import { RegisterRoutes } from "../util/RouteBuilder";
 import styles from "../util/Stylesheet";
 import { GetState, SubmitResponse } from "../util/Backend";
@@ -85,8 +84,7 @@ function Playerpage() {
     const Styles = styles();
     return (
         <div className={Styles.root}>
-            <Topbar message="Simulation Player"/>
-            <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
+            <Navigation TopbarMessage="Simulation Player" Styles={Styles}/>
             <SimulationPlayer Styles={Styles}/> {/* Not sure why, but we can't rebuild our classes inside this Class component */}
         </div>
     );

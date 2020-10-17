@@ -2,20 +2,18 @@ import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import Topbar from "../components/Topbar";
-import Navbar from "../components/Navbar";
-import CreateStyles from "../util/Stylesheet";
+import Navigation from "../components/Navigation";
+import styles from "../util/Stylesheet";
 import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
 import { RegisterRoutes } from "../util/RouteBuilder";
 
 function Aboutpage() {
 
-    const Styles = CreateStyles();
+    const Styles = styles();
     
     return (
         <div className={Styles.root}>
-            <Topbar message="About"/>
-            <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
+            <Navigation TopbarMessage="About" Styles={Styles}/>
             <main className={Styles.content}>
                 <div className={Styles.toolbar} />
                 <Grid container spacing={3} >

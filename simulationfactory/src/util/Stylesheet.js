@@ -1,7 +1,7 @@
-import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
+import { createMuiTheme, makeStyles, responsiveFontSizes } from "@material-ui/core/styles";
 import palette from "./palette.json"
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 function CreateStyles() {
 
@@ -25,6 +25,9 @@ function CreateStyles() {
         flexShrink: 0
       },
     },
+    drawerPaper: {
+      width: drawerWidth,
+    },
     appBar: {
       [Theme.breakpoints.up("sm")]: {
         width: `calc(100% - ${drawerWidth}px)`,
@@ -37,15 +40,21 @@ function CreateStyles() {
         display: "none",
       },
     },
+    blue: {
+      color: "blue",
+    },
     // necessary for content to be below app bar
     toolbar: Theme.mixins.toolbar,
     content: {
       flexGrow: 1,
       padding: Theme.spacing(3)
     },
+    noDecoration: {
+      textDecoration: 'none'
+    }
   }))
   return styles()
 };
 
-export const Theme = createMuiTheme(palette);
+export const Theme = responsiveFontSizes(createMuiTheme(palette));
 export default CreateStyles
