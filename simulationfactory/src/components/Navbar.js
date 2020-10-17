@@ -42,7 +42,7 @@ function Navbar(props) {
                     <ListItemText primary="My Simulations" />
                 </ListItem>
                 <ListItem>
-                    <ListItemText primary="About" />
+                    <Link to = "/about">About</Link>
                 </ListItem>
             </List>
         </div>

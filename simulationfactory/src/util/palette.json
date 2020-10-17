@@ -2,7 +2,8 @@
     "palette":{ 
         "common":{
             "black":"#000",
-            "white":"#fff"
+            "white":"#fff",
+            "green":"rgba(57, 145, 67, 1)"
         },
         "background":{
             "paper":"#fff",

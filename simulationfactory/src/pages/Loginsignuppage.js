@@ -21,40 +21,34 @@ function Loginsignuppage() {
     return (
         <div className={Styles.root}>
             <Topbar message="Login/Signup!"/>
-            <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
+            <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand  */}
             <main className={Styles.content}>
                 <div className={Styles.toolbar} />
-                <Grid container spacing={3}>
-                    <Grid item xs={12} sm={6}>
-                        <Card className={Styles.root}>
+                <Grid container spacing={3} >
+                    <Grid item xs={12} sm={6} >
+                        <Card className={Styles.card}>
                             <CardContent>
                                 <Typography className={Styles.title} variant="h2">
                                     Login or Signup
                                 </Typography>
-                                <div ClassName={Styles.list}>
-                                    <List>
-                                        <ListItem>
-                                            <form className={Styles.root} noValidate autoComplete="off">
-                                                <TextField id="outlined-login-user-id" label="User ID" variant="outlined" />
-                                            </form>
-                                        </ListItem>
-                                        <ListItem>
-                                            <form className={Styles.root} noValidate autoComplete="off">
-                                                <TextField id="outlined-login-user-password" label="Password" variant="outlined" />
-                                            </form>
-                                        </ListItem>
-                                        <ListItem>
-                                            <Button className={Styles.defaultButton} variant="contained" color="primary" size="medium">
-                                                Submit
-                                            </Button>
-                                        </ListItem>
-                                        <ListItem>
-                                            <Button className={Styles.defaultButton} variant="contained" color="primary" size="medium">
-                                                Signup
-                                            </Button>
-                                        </ListItem>
-                                    </List>
-                                </div>
+                                <List>
+                                    <ListItem>
+                                            <TextField id="outlined-login-user-id" label="User ID" variant="outlined" />
+                                    </ListItem>
+                                    <ListItem>
+                                            <TextField id="outlined-login-user-password" label="Password" variant="outlined" />
+                                    </ListItem>
+                                    <ListItem>
+                                        <Button variant="contained" color="primary" size="medium">
+                                            Submit
+                                        </Button>
+                                    </ListItem>
+                                    <ListItem>
+                                        <Button variant="contained" color="primary" size="medium">
+                                            Signup
+                                        </Button>
+                                    </ListItem>
+                                </List>
                             </CardContent>
                         </Card>
                     </Grid>

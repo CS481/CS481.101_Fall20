@@ -13,6 +13,7 @@ import FactoryPage from './pages/Factorypage';
 import PlayerPage from './pages/Playerpage';
 import LoginSignUpPage from './pages/Loginsignuppage';
 import AccountPage from './pages/Accountpage';
+import AboutPage from './pages/Aboutpage'
 import { ThemeProvider } from '@material-ui/core';
 import { Theme } from "./util/Stylesheet"
 
