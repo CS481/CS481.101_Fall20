@@ -2,15 +2,16 @@ import React from 'react';
 import CreateStyles from "../util/Stylesheet";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
+import { List, ListItem, Typography } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
+
+import Button from "@material-ui/core/Button";
 
 import Topbar from "../components/Topbar";
 import Navbar from "../components/Navbar";
 
-import {RegisterRoutes} from "../util/RouteBuilder";
+import { RegisterRoutes } from "../util/RouteBuilder";
 
 
 function Loginsignuppage() {
@@ -20,62 +21,40 @@ function Loginsignuppage() {
     return (
         <div className={Styles.root}>
             <Topbar message="Login/Signup!"/>
-            <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand */}
+            <Navbar/> {/* This is necessary for some styling reason I'm too backend to understand  */}
             <main className={Styles.content}>
                 <div className={Styles.toolbar} />
-                <Grid container spacing={3}>
-                    <Grid item xs={12} sm={6}>
-                        <Card className={Styles.root}>
+                <Grid container spacing={3} >
+                    <Grid item xs={12} sm={6} >
+                        <Card className={Styles.card}>
                             <CardContent>
                                 <Typography className={Styles.title} variant="h2">
-                                    Login
+                                    Login or Signup
                                 </Typography>
-                                <div ClassName={Styles.list}>
-                                    <List>
-                                        <ListItem>
-                                            <ListItemText primary="User ID: " />
-                                                <form className={Styles.root} noValidate autoComplete="off">
-                                                    <TextField id="outlined-login-user-id" label="User ID" variant="outlined" />
-                                                </form>
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemText primary="Password: " />
-                                                <form className={Styles.root} noValidate autoComplete="off">
-                                                    <TextField id="outlined-login-user-password" label="Password" variant="outlined" />
-                                                </form>
-                                        </ListItem>
-                                    </List>
-                                </div>
-                            </CardContent>
-                        </Card>
-                        <Card className={Styles.root}>
-                            <CardContent>
-                                <Typography className={Styles.title} variant="h2">
-                                    Signup
-                                </Typography>
-                                <div ClassName={Styles.list}>
-                                    <List>
-                                        <ListItem>
-                                            <ListItemText primary="User ID: " />
-                                                <form className={Styles.root} noValidate autoComplete="off">
-                                                    <TextField id="outlined-signup-user-id" label="User ID" variant="outlined" />
-                                                </form>
-                                        </ListItem>
-                                        <ListItem>
-                                            <ListItemText primary="Password: " />
-                                                <form className={Styles.root} noValidate autoComplete="off">
-                                                    <TextField id="outlined-signup-user-password" label="Password" variant="outlined" />
-                                                </form>
-                                        </ListItem>
-                                    </List>
-                                </div>
+                                <List>
+                                    <ListItem>
+                                            <TextField id="outlined-login-user-id" label="User ID" variant="outlined" />
+                                    </ListItem>
+                                    <ListItem>
+                                            <TextField id="outlined-login-user-password" label="Password" variant="outlined" />
+                                    </ListItem>
+                                    <ListItem>
+                                        <Button variant="contained" color="primary" size="medium">
+                                            Submit
+                                        </Button>
+                                    </ListItem>
+                                    <ListItem>
+                                        <Button variant="contained" color="primary" size="medium">
+                                            Signup
+                                        </Button>
+                                    </ListItem>
+                                </List>
                             </CardContent>
                         </Card>
                     </Grid>
                 </Grid>
             </main>
         </div>
-
     );
 }
 

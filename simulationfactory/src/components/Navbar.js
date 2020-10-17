@@ -1,21 +1,21 @@
 import React from 'react';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { List, ListItem, ListItemText } from "@material-ui/core";
-import {useTheme} from "@material-ui/core/styles";
 import CreateStyles from "../util/Stylesheet";
 import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
+import Theme from "../util/Stylesheet";
 
 function Navbar(props) {
     const { window } = props;
     const Styles = CreateStyles();
-    const theme = useTheme();
+    const theme = Theme;
     const container = window !== undefined ? () => window().document.body : undefined;
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
     const handleDrawerToggle = () => {
-      setMobileOpen(!mobileOpen);
+        setMobileOpen(!mobileOpen);
     };
 
     const drawer = (
@@ -42,7 +42,7 @@ function Navbar(props) {
                     <ListItemText primary="My Simulations" />
                 </ListItem>
                 <ListItem>
-                    <ListItemText primary="About" />
+                    <Link to = "/about">About</Link>
                 </ListItem>
             </List>
         </div>
