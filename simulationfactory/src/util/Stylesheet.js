@@ -51,7 +51,10 @@ function CreateStyles() {
     },
     noDecoration: {
       textDecoration: 'none'
-    }
+    },
+    tabs: {
+      borderRight: `1px solid ${Theme.palette.divider}`,
+    },
   }))
   return styles()
 };
