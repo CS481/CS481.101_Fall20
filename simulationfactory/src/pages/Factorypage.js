@@ -5,12 +5,19 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
+import Menu from "@material-ui/core/Menu";
+import { HotTable } from '@handsontable/react';
+
 import {
   Tabs,
   Tab,
   TextField,
   CardContent,
   Typography,
+  AppBar,
+  Toolbar,
+  Dialog,
+  DialogTitle,
 } from "@material-ui/core";
 import CreateStyles from "../util/Stylesheet";
 import Navigation from "../components/Navigation";
@@ -22,6 +29,7 @@ function Factorypage(props) {
   const { window } = props;
   const Styles = CreateStyles();
   const [value, setValue] = React.useState(0);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -33,11 +41,15 @@ function Factorypage(props) {
     },
   ]);
 
-  
-
+  const players = {};
+  const resources = {
+    player1_money: 0,
+    player2_money: 0,
+    env_money: 0,
+  };
 
   const [tabValue, setTabValue] = useState(0);
-
+  const [open, setOpen] = React.useState(false);
   function a11yProps(index) {
     return {
       id: `vertical-tab-${index}`,
@@ -47,7 +59,18 @@ function Factorypage(props) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const handleSheetOpen = (event) => {
+    setOpen(true);
+  }
+  const handleSheetClose = (event) => {
+    setOpen(false);
+  }
   const addPrompt = () => {
     let id = tabList[tabList.length - 1].id + 1;
     setTabList([...tabList, { key: id, id: id, type: 0 }]);
@@ -101,7 +124,7 @@ function Factorypage(props) {
             </CardContent>
             <CardActions>
               <form>
-                <TextField id="prompt" label="Prompt" variant="filled"/>
+                <TextField id="prompt" label="Prompt" variant="filled" />
               </form>
             </CardActions>
           </Card>
@@ -109,9 +132,7 @@ function Factorypage(props) {
       case 1:
         return (
           <Card className={Styles.root}>
-            <CardContent>
-              
-            </CardContent>
+            <CardContent></CardContent>
           </Card>
         );
       case 2:
@@ -127,8 +148,35 @@ function Factorypage(props) {
 
   return (
     <div className={Styles.root}>
-      <Navigation TopbarMessage="Simulation Builder" Styles={Styles} />
+      <Navigation TopbarMessage="Simulation Builder" Styles={Styles}>
+        <Button
+          className="SimMenuButton"
+          aria-controls="sim-menu"
+          aria-haspopup="true"
+          onClick={handleMenuClick}
+        >
+          Simulation Settings
+        </Button>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleSheetOpen}>Import Lookup Table</MenuItem>
+          <Dialog onClose={handleSheetClose} aria-labeledby="lookup-table-dialog" open={open}>
+            <DialogTitle id="lookup-table-title" onClose={handleSheetClose}>
+              Lookup Table Entry
+            </DialogTitle>
+            <DialogContent dividers>
 
+            </DialogContent>
+          </Dialog>
+          <MenuItem onClick={handleMenuClose}>Add Player</MenuItem>
+          <MenuItem onClick={handleMenuClose}>Add Resource</MenuItem>
+        </Menu>
+      </Navigation>
       <main className={Styles.content}>
         <div className={Styles.toolbar} /> {/* Why is this necessary */}
         <Grid container spacing={3} justify="center">
