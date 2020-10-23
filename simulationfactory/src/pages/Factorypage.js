@@ -29,8 +29,12 @@ function Factorypage(props) {
     {
       key: 0,
       id: 0,
+      type: 0,
     },
   ]);
+
+  
+
 
   const [tabValue, setTabValue] = useState(0);
 
@@ -44,9 +48,19 @@ function Factorypage(props) {
     setValue(newValue);
   };
 
-  const addTab = () => {
+  const addPrompt = () => {
     let id = tabList[tabList.length - 1].id + 1;
-    setTabList([...tabList, { key: id, id: id }]);
+    setTabList([...tabList, { key: id, id: id, type: 0 }]);
+  };
+
+  const addResponse = () => {
+    let id = tabList[tabList.length - 1].id + 1;
+    setTabList([...tabList, { key: id, id: id, type: 1 }]);
+  };
+
+  const addEvent = () => {
+    let id = tabList[tabList.length - 1].id + 1;
+    setTabList([...tabList, { key: id, id: id, type: 2 }]);
   };
 
   const deleteTab = (e) => {
@@ -77,6 +91,40 @@ function Factorypage(props) {
     setTabList(tabs);
   };
 
+  function renderCard(tab) {
+    switch (tab.type) {
+      case 0:
+        return (
+          <Card className={Styles.root}>
+            <CardContent>
+              <Typography>Enter User Prompt:</Typography>
+            </CardContent>
+            <CardActions>
+              <form>
+                <TextField id="prompt" label="Prompt" variant="filled"/>
+              </form>
+            </CardActions>
+          </Card>
+        );
+      case 1:
+        return (
+          <Card className={Styles.root}>
+            <CardContent>
+              
+            </CardContent>
+          </Card>
+        );
+      case 2:
+        return (
+          <Card className={Styles.root}>
+            <CardContent>
+              <Typography>Event</Typography>
+            </CardContent>
+          </Card>
+        );
+    }
+  }
+
   return (
     <div className={Styles.root}>
       <Navigation TopbarMessage="Simulation Builder" Styles={Styles} />
@@ -90,7 +138,7 @@ function Factorypage(props) {
                 variant="contained"
                 color="primary"
                 size="medium"
-                onClick={addTab}
+                onClick={addEvent}
               >
                 Add event
               </Button>
@@ -100,7 +148,7 @@ function Factorypage(props) {
                 variant="contained"
                 color="primary"
                 size="medium"
-                onClick={addTab}
+                onClick={addPrompt}
               >
                 Add prompt
               </Button>
@@ -110,7 +158,7 @@ function Factorypage(props) {
                 variant="contained"
                 color="primary"
                 size="medium"
-                onClick={addTab}
+                onClick={addResponse}
               >
                 Add response
               </Button>
@@ -137,13 +185,7 @@ function Factorypage(props) {
               </Tabs>
               {tabList.map((tab) => (
                 <TabPanel value={value} index={tab.key}>
-                  <Card className={Styles.root}>
-                    <CardContent>
-                      <Typography>
-                        This is Card {tab.key}
-                      </Typography>
-                    </CardContent>
-                  </Card>
+                  {renderCard(tab)}
                 </TabPanel>
               ))}
             </div>
