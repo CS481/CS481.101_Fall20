@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
-/*
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-*/
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import {
@@ -21,6 +17,10 @@ import { RegisterRoutes } from "../util/RouteBuilder";
 import Close from "@material-ui/icons/Close";
 
 function Factorypage(props) {
+  const [inputList, setInputList] = useState([]);
+    const onAddResponseClick = event => {
+      setInputList(inputList.concat(<TextField id="prompt" label="Prompt" variant="filled" key={inputList.length} />));
+    };
 
   const Styles = CreateStyles();
   const [value, setValue] = React.useState(0);
@@ -112,26 +112,14 @@ function Factorypage(props) {
             <CardActions>
               <Grid>
                 <form>
-                  <TextField id="prompt1" label="Prompt 1" variant="filled"/>
+                  <TextField id="Response1" label="Response 1" variant="filled"/>
                 </form>
-                <form>
-                  <TextField id="prompt2" label="Prompt 2" variant="filled"/>
-                </form>
-                <form>
-                  <TextField id="prompt3" label="Prompt 3" variant="filled"/>
-                </form>
-                <form>
-                  <TextField id="prompt4" label="Prompt 4" variant="filled"/>
-                </form>
-                <form>
-                  <TextField id="prompt5" label="Prompt 5" variant="filled"/>
-                </form>
-                <form>
-                  <TextField id="prompt6" label="Prompt 6" variant="filled"/>
-                </form>
-                <form>
-                  <TextField id="prompt7" label="Prompt 7" variant="filled"/>
-                </form>
+                <div>
+                  <Button onClick={onAddResponseClick}>Add Response</Button>
+                </div>
+                <div>
+                {inputList}
+                </div>
               </Grid>
             </CardActions>
           </Card>
