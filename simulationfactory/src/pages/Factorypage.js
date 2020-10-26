@@ -3,12 +3,22 @@ import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
+import Menu from "@material-ui/core/Menu";
+
+import Table from '../components/Table'
+
+
 import {
   Tabs,
   Tab,
   TextField,
   CardContent,
   Typography,
+  AppBar,
+  Toolbar,
+  Dialog,
+  DialogContent,
+  DialogTitle,
 } from "@material-ui/core";
 import CreateStyles from "../util/Stylesheet";
 import Navigation from "../components/Navigation";
@@ -17,6 +27,10 @@ import { RegisterRoutes } from "../util/RouteBuilder";
 import Close from "@material-ui/icons/Close";
 
 function Factorypage(props) {
+
+  const { window } = props;
+  const { useState } = React;
+
   const [inputList, setInputList] = useState([]);
     const onAddResponseClick = event => {
       setInputList(inputList.concat(<TextField id="prompt" label="Prompt" variant="filled" key={inputList.length} />));
@@ -24,6 +38,7 @@ function Factorypage(props) {
 
   const Styles = CreateStyles();
   const [value, setValue] = React.useState(0);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [tabList, setTabList] = useState([
     {
@@ -33,12 +48,34 @@ function Factorypage(props) {
     },
   ]);
 
+
+  const players = {};
+  const resources = {
+    player1_money: 0,
+    player2_money: 0,
+    env_money: 0,
+  };
+
   const [tabValue, setTabValue] = useState(0);
+  const [open, setOpen] = React.useState(false);
+ 
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const handleSheetOpen = (event) => {
+    setOpen(true);
+  };
+  const handleSheetClose = (event) => {
+    setOpen(false);
+  };
   const addPrompt = () => {
     let id = tabList[tabList.length - 1].id + 1;
     setTabList([...tabList, { key: id, id: id, type: 0 }]);
@@ -95,7 +132,7 @@ function Factorypage(props) {
             </CardContent>
             <CardActions>
               <form>
-                <TextField id="prompt" label="Prompt" variant="filled"/>
+                <TextField id="prompt" label="Prompt" variant="filled" />
               </form>
             </CardActions>
           </Card>
@@ -108,6 +145,7 @@ function Factorypage(props) {
               <Typography>
                 Enter Response:
               </Typography>
+
             </CardContent>
             <CardActions>
               <Grid>
@@ -143,10 +181,65 @@ function Factorypage(props) {
     }
   }
 
+  const [columns, setColumns] = useState([
+    { title: "Name", field: "name" },
+    {
+      title: "Surname",
+      field: "surname",
+      initialEditValue: "initial edit value",
+    },
+    { title: "Birth Year", field: "birthYear", type: "numeric" },
+    {
+      title: "Birth Place",
+      field: "birthCity",
+      lookup: { 34: "İstanbul", 63: "Şanlıurfa" },
+    },
+  ]);
+
+  const [data, setData] = useState([
+    { name: "Mehmet", surname: "Baran", birthYear: 1987, birthCity: 63 },
+    { name: "Zerya Betül", surname: "Baran", birthYear: 2017, birthCity: 34 },
+  ]);
+
   return (
     <div className={Styles.root}>
-      <Navigation TopbarMessage="Simulation Builder" Styles={Styles} />
-
+      <script src="xlsx.full.min.js"></script>
+      <Navigation TopbarMessage="Simulation Builder" Styles={Styles}>
+        <Button
+          className="SimMenuButton"
+          aria-controls="sim-menu"
+          aria-haspopup="true"
+          onClick={handleMenuClick}
+        >
+          Simulation Settings
+        </Button>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleSheetOpen}>Import Lookup Table</MenuItem>
+          <Dialog
+            onClose={handleSheetClose}
+            aria-labeledby="lookup-table-dialog"
+            open={open}
+          >
+            <DialogTitle id="lookup-table-title" onClose={handleSheetClose}>
+              Lookup Table Entry
+            </DialogTitle>
+            <DialogContent dividers>
+              <div style={{ width: "max-content" }}>
+                <Table x={25} y={25} />
+                
+              </div>
+            </DialogContent>
+          </Dialog>
+          <MenuItem onClick={handleMenuClose}>Add Player</MenuItem>
+          <MenuItem onClick={handleMenuClose}>Add Resource</MenuItem>
+        </Menu>
+      </Navigation>
       <main className={Styles.content}>
         <div className={Styles.toolbar} /> {/* Why is this necessary */}
         <Grid container spacing={3} justify="center">

@@ -10,7 +10,7 @@ import Divider from "@material-ui/core/Divider";
 import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-
+import Button from "@material-ui/core/Button";
 class Navigation extends React.Component {
     constructor(props) {
         super(props);
@@ -108,6 +108,7 @@ class Navigation extends React.Component {
                         <MenuIcon/>
                     </IconButton>
                     <Typography variant="h6" noWrap>{this.props.TopbarMessage}</Typography>
+                    {this.props.children}
                 </Toolbar>
             </AppBar>
         );
