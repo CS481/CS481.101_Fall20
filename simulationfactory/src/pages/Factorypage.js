@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
@@ -29,14 +27,19 @@ import { RegisterRoutes } from "../util/RouteBuilder";
 import Close from "@material-ui/icons/Close";
 
 function Factorypage(props) {
+
   const { window } = props;
   const { useState } = React;
+
+  const [inputList, setInputList] = useState([]);
+    const onAddResponseClick = event => {
+      setInputList(inputList.concat(<TextField id="prompt" label="Prompt" variant="filled" key={inputList.length} />));
+    };
+
   const Styles = CreateStyles();
   const [value, setValue] = React.useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
   const [tabList, setTabList] = useState([
     {
       key: 0,
@@ -44,6 +47,7 @@ function Factorypage(props) {
       type: 0,
     },
   ]);
+
 
   const players = {};
   const resources = {
@@ -54,12 +58,8 @@ function Factorypage(props) {
 
   const [tabValue, setTabValue] = useState(0);
   const [open, setOpen] = React.useState(false);
-  function a11yProps(index) {
-    return {
-      id: `vertical-tab-${index}`,
-      "aria-controls": `vertical-tabpanel-${index}`,
-    };
-  }
+ 
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -120,12 +120,15 @@ function Factorypage(props) {
   };
 
   function renderCard(tab) {
+
     switch (tab.type) {
-      case 0:
+      default:
         return (
           <Card className={Styles.root}>
             <CardContent>
-              <Typography>Enter User Prompt:</Typography>
+              <Typography>
+                Enter User Prompt:
+              </Typography>
             </CardContent>
             <CardActions>
               <form>
@@ -134,20 +137,45 @@ function Factorypage(props) {
             </CardActions>
           </Card>
         );
+
       case 1:
         return (
           <Card className={Styles.root}>
             <CardContent>
-              <Typography>Enter User Response Options:</Typography>
+              <Typography>
+                Enter Response:
+              </Typography>
+
             </CardContent>
+            <CardActions>
+              <Grid>
+                <form>
+                  <TextField id="Response1" label="Response 1" variant="filled"/>
+                </form>
+                <div>
+                  <Button onClick={onAddResponseClick}>Add Response</Button>
+                </div>
+                <div>
+                {inputList}
+                </div>
+              </Grid>
+            </CardActions>
           </Card>
         );
+
       case 2:
         return (
           <Card className={Styles.root}>
             <CardContent>
-              <Typography>Event</Typography>
+              <Typography>
+                Enter Event:
+              </Typography>
             </CardContent>
+            <CardActions>
+              <form>
+                <TextField id="prompt" label="Prompt" variant="filled"/>
+              </form>
+            </CardActions>
           </Card>
         );
     }
