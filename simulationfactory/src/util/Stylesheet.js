@@ -13,7 +13,7 @@ function CreateStyles() {
     title: {
       color: Theme.palette.primary.main,
     },
-    card: {
+    card: {// For future use since we use cards a lot
       //flexGrow: 1,
       //display: "flex",
       //padding: Theme.spacing(2),
