@@ -6,7 +6,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
-import { HotTable } from '@handsontable/react';
+
+import Table from '../components/Table'
+
 
 import {
   Tabs,
@@ -17,6 +19,7 @@ import {
   AppBar,
   Toolbar,
   Dialog,
+  DialogContent,
   DialogTitle,
 } from "@material-ui/core";
 import CreateStyles from "../util/Stylesheet";
@@ -27,6 +30,7 @@ import Close from "@material-ui/icons/Close";
 
 function Factorypage(props) {
   const { window } = props;
+  const { useState } = React;
   const Styles = CreateStyles();
   const [value, setValue] = React.useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -56,6 +60,7 @@ function Factorypage(props) {
       "aria-controls": `vertical-tabpanel-${index}`,
     };
   }
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -67,10 +72,10 @@ function Factorypage(props) {
   };
   const handleSheetOpen = (event) => {
     setOpen(true);
-  }
+  };
   const handleSheetClose = (event) => {
     setOpen(false);
-  }
+  };
   const addPrompt = () => {
     let id = tabList[tabList.length - 1].id + 1;
     setTabList([...tabList, { key: id, id: id, type: 0 }]);
@@ -132,7 +137,9 @@ function Factorypage(props) {
       case 1:
         return (
           <Card className={Styles.root}>
-            <CardContent></CardContent>
+            <CardContent>
+              <Typography>Enter User Response Options:</Typography>
+            </CardContent>
           </Card>
         );
       case 2:
@@ -146,8 +153,29 @@ function Factorypage(props) {
     }
   }
 
+  const [columns, setColumns] = useState([
+    { title: "Name", field: "name" },
+    {
+      title: "Surname",
+      field: "surname",
+      initialEditValue: "initial edit value",
+    },
+    { title: "Birth Year", field: "birthYear", type: "numeric" },
+    {
+      title: "Birth Place",
+      field: "birthCity",
+      lookup: { 34: "İstanbul", 63: "Şanlıurfa" },
+    },
+  ]);
+
+  const [data, setData] = useState([
+    { name: "Mehmet", surname: "Baran", birthYear: 1987, birthCity: 63 },
+    { name: "Zerya Betül", surname: "Baran", birthYear: 2017, birthCity: 34 },
+  ]);
+
   return (
     <div className={Styles.root}>
+      <script src="xlsx.full.min.js"></script>
       <Navigation TopbarMessage="Simulation Builder" Styles={Styles}>
         <Button
           className="SimMenuButton"
@@ -165,12 +193,19 @@ function Factorypage(props) {
           onClose={handleMenuClose}
         >
           <MenuItem onClick={handleSheetOpen}>Import Lookup Table</MenuItem>
-          <Dialog onClose={handleSheetClose} aria-labeledby="lookup-table-dialog" open={open}>
+          <Dialog
+            onClose={handleSheetClose}
+            aria-labeledby="lookup-table-dialog"
+            open={open}
+          >
             <DialogTitle id="lookup-table-title" onClose={handleSheetClose}>
               Lookup Table Entry
             </DialogTitle>
             <DialogContent dividers>
-
+              <div style={{ width: "max-content" }}>
+                <Table x={25} y={25} />
+                
+              </div>
             </DialogContent>
           </Dialog>
           <MenuItem onClick={handleMenuClose}>Add Player</MenuItem>

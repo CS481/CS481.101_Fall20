@@ -10,11 +10,10 @@
     "@testing-library/user-event": "^7.2.1",
     "ajv": "6.12.5",
     "contentful": "^7.14.6",
-    "handsontable": "^8.1.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react-dom": "^16.14.0",
     "react-router-dom": "5.2.0",
-    "react-scripts": "3.4.3"
+    "react-scripts": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

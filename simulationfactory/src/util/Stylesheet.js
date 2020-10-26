@@ -1,6 +1,5 @@
 import { createMuiTheme, makeStyles, responsiveFontSizes } from "@material-ui/core/styles";
 import palette from "./palette.json"
-import 'handsontable/dist/handsontable.full.css';
 
 const drawerWidth = 200;
 
