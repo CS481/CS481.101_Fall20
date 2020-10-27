@@ -21,10 +21,42 @@ class SimulationPlayer extends React.Component {
         this.state = {
             radioValue: -1,
             instance_id: instance_id,
-            simState: GetState(instance_id)
+            simState: GetState(instance_id),
+            logged_in: false
         };
     }
     render() {
+        if (this.state.logged_in) {
+            this.renderPlayer();
+        } else {
+            this.renderLogin();
+        }
+    }
+    // Temporary code for 50% completion
+    renderLogin() {
+        let Styles = this.props.Styles;
+        return (
+            <main className={Styles.content}>
+                <div className={Styles.toolbar} /> {/* Why is this necessary */}
+                <Card className={Styles.root}>
+                    <CardContent>
+                        <TextField id="Response1" label="Response 1" variant="filled"/>
+                        <TextField id="Response1" label="Response 1" variant="filled"/>
+                        <TextField id="Response1" label="Response 1" variant="filled"/>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardContent>
+                        <Button variant="contained" color="primary" size="medium" 
+                        onClick={() => this.submitResponse()}> {/* 'this' is undefined if you try to write the callback the obvious way */}
+                            Submit
+                        </Button>
+                    </CardContent>
+                </Card>
+            </main>
+        )
+    }
+    renderPlayer() {
         let Styles = this.props.Styles;
         return (
             <main className={Styles.content}>
