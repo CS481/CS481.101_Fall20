@@ -7,32 +7,84 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
 
 import Navigation from "../components/Navigation";
 import { RegisterRoutes } from "../util/RouteBuilder";
 import styles from "../util/Stylesheet";
-import { GetState, SubmitResponse } from "../util/Backend";
+import { BeginSim,
+         GetState,
+         SubmitResponse
+       } from "../util/Backend";
 import FormatString from "../util/FormatString";
 
 class SimulationPlayer extends React.Component {
     constructor(props) {
         super(props);
-        let instance_id = {"instance_id": "1", "user_id": "player"}
         this.state = {
-            radioValue: -1,
-            instance_id: instance_id,
-            simState: GetState(instance_id)
+            radioValue: false,
+            logged_in: false,
+            simState: {user_waiting: true}
         };
     }
     render() {
+        if (this.state.logged_in) {
+            return this.renderPlayer();
+        } else {
+            return this.renderLogin();
+        }
+    }
+
+    getUser() {
+        return {username: this.state.username, password: this.state.password};
+    }
+
+    getSimulationInstance() {
+        return {user: this.getUser(), simulation_id: this.state.simulation_id};
+    }
+
+    beginSim() {
+        BeginSim(this.getSimulationInstance(), () => {
+            this.setState({logged_in: true});
+            this.setSimState();
+        });
+    }
+
+    setSimState() {
+        GetState(this.getSimulationInstance(), (newState) => this.setState({simState: newState}));
+    }
+
+    // Temporary code for 50% completion
+    renderLogin() {
         let Styles = this.props.Styles;
         return (
             <main className={Styles.content}>
                 <div className={Styles.toolbar} /> {/* Why is this necessary */}
                 <Card className={Styles.root}>
                     <CardContent>
-                        <Typography variant="h2" component="p">
-                            {FormatString(this.state.simState.active_frame.prompt, this.state.simState)}
+                        <TextField id="username_field" label="Username" variant="filled" onChange={(t) => this.setState({username: t.target.value})}/>
+                        <TextField id="password_field" label="Password" variant="filled" onChange={(t) => this.setState({password: t.target.value})}/>
+                        <TextField id="simulation_id_field" label="Simulation Id" variant="filled" onChange={(t) => this.setState({simulation_id: t.target.value})}/>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardContent>
+                        {this.renderSubmitButton()}
+                    </CardContent>
+                </Card>
+            </main>
+        )
+    }
+
+    renderPlayer() {
+        let Styles = this.props.Styles;
+        return (
+            <main className={Styles.content}>
+                <div className={Styles.toolbar} /> {/* Why is this necessary */}
+                <Card className={Styles.root}>
+                    <CardContent>
+                        <Typography variant="h3" component="p">
+                            {this.renderPrompt()}
                         </Typography>
                     </CardContent>
                 </Card>
@@ -43,15 +95,13 @@ class SimulationPlayer extends React.Component {
                 </Card>
                 <Card>
                     <CardContent>
-                        <Button variant="contained" color="primary" size="medium" 
-                        onClick={() => this.submitResponse()}> {/* 'this' is undefined if you try to write the callback the obvious way */}
-                            Submit
-                        </Button>
+                        {this.renderSubmitButton()}
                     </CardContent>
                 </Card>
             </main>
         )
     }
+
     renderResponses() {
         return (
             <FormControl component="fieldset">
@@ -62,21 +112,58 @@ class SimulationPlayer extends React.Component {
             </FormControl>
         )
     }
+
     renderResponseButtons() {
-        let responses = this.state.simState.active_frame.responses;
-        let i = -1;
-        return responses.map((response) => {
-            i++;
-            return <FormControlLabel value={i} control={<Radio/>} label={response} checked={this.state.radioValue==i} />
-        });
+        if (!this.state.simState.user_waiting) {
+            let responses = this.state.simState.active_frame.responses;
+            return responses.map((response) => {
+                return <FormControlLabel value={response} control={<Radio/>} label={response} checked={this.state.radioValue===response} />
+            });
+        }
     }
+
+    renderSubmitButton() {
+        if (!this.state.logged_in)
+        {
+            return (
+                <Button variant="contained" color="primary" size="medium" 
+                    onClick={() => this.beginSim()}> {/* 'this' is undefined if you try to write the callback the obvious way */}
+                    Begin
+                </Button>
+            )
+        } else if (!this.state.simState.user_waiting) {
+            return (
+                <Button variant="contained" color="primary" size="medium" 
+                    onClick={() => this.submitResponse()}> {/* 'this' is undefined if you try to write the callback the obvious way */}
+                    Submit
+                </Button>
+            )
+        } else {
+            return (
+                <Button variant="contained" color="primary" size="medium" 
+                    onClick={() => this.setSimState()}> {/* 'this' is undefined if you try to write the callback the obvious way */}
+                    Refresh
+                </Button>
+            )
+        }
+    }
+
+    renderPrompt() {
+        if (this.state.simState.user_waiting) {
+            return "Waiting..."
+        } else {
+            return FormatString(this.state.simState.active_frame.prompt, this.state.simState)
+        }
+    }
+
     submitResponse() {
         // Do nothing if the user has not chosen a response
-        if (this.state.radioValue == -1) {
+        if (!this.state.radioValue) {
             return
         }
-        SubmitResponse({instance: this.state.instance_id, response: this.state.radioValue});
-        this.setState({radioValue: -1, simState: GetState({"instance_id": "1", "user_id": "player"})})
+        SubmitResponse({user: this.getUser(), response: this.state.radioValue, simulation_id: this.state.simulation_id},
+                       () => this.setState({radioValue: false, simState: {user_waiting: true}})
+                      );
     }
 }
 
