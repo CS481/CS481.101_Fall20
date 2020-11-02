@@ -3,9 +3,7 @@ import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-
+import { Menu, MenuItem } from '@material-ui/core';
 import Table from '../components/Table'
 
 import {
@@ -19,7 +17,10 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  DialogActions,
+  DialogContentText
 } from "@material-ui/core";
+
 import CreateStyles from "../util/Stylesheet";
 import Navigation from "../components/Navigation";
 import TabPanel from "../components/TabPanel";
@@ -32,9 +33,9 @@ function Factorypage(props) {
   const { useState } = React;
 
   const [inputList, setInputList] = useState([]);
-    const onAddResponseClick = event => {
-      setInputList(inputList.concat(<TextField id="prompt" label="Prompt" variant="filled" key={inputList.length} />));
-    };
+  const onAddResponseClick = event => {
+    setInputList(inputList.concat(<TextField id="prompt" label="Prompt" variant="filled" key={inputList.length} />));
+  };
 
   const Styles = CreateStyles();
   const [value, setValue] = React.useState(0);
@@ -48,7 +49,6 @@ function Factorypage(props) {
     },
   ]);
 
-
   const players = {};
   const resources = {
     player1_money: 0,
@@ -58,8 +58,8 @@ function Factorypage(props) {
 
   const [tabValue, setTabValue] = useState(0);
   const [open, setOpen] = React.useState(false);
- 
-
+  const [openPlayerAdd, setOpenPlayerAdd] = React.useState(false);
+  const [openResourceAdd, setOpenResourceAdd] = React.useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -75,6 +75,20 @@ function Factorypage(props) {
   };
   const handleSheetClose = (event) => {
     setOpen(false);
+  };
+  const handlePlayerAddOpen = (event) => {
+    setOpenPlayerAdd(true);
+    setAnchorEl(null);;
+  };
+  const handlePlayerAddClose = (event) => {
+    setOpenPlayerAdd(false);
+  };
+  const handleResourceAddOpen = (event) => {
+    setOpenResourceAdd(true);
+    setAnchorEl(null);
+  };
+  const handleResourceAddClose = (event) => {
+    setOpenResourceAdd(false);
   };
   const addPrompt = () => {
     let id = tabList[tabList.length - 1].id + 1;
@@ -145,7 +159,6 @@ function Factorypage(props) {
               <Typography>
                 Enter Response:
               </Typography>
-
             </CardContent>
             <CardActions>
               <Grid>
@@ -232,12 +245,57 @@ function Factorypage(props) {
             <DialogContent dividers>
               <div style={{ width: "max-content" }}>
                 <Table x={25} y={25} />
-                
               </div>
             </DialogContent>
           </Dialog>
-          <MenuItem onClick={handleMenuClose}>Add Player</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Add Resource</MenuItem>
+          <MenuItem onClick={handlePlayerAddOpen}>Add Player</MenuItem>
+          <Dialog open={openPlayerAdd} onClose={handlePlayerAddClose} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">Add a Player</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Enter the name of the player.
+                </DialogContentText>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Name of Player to add"
+                  fullWidth
+                />
+              </DialogContent>
+            <DialogActions>
+              <Button onClick={handlePlayerAddClose} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={handlePlayerAddClose} color="primary">
+                Add Player
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <MenuItem onClick={handleResourceAddOpen}>Add Resource</MenuItem>
+          <Dialog open={openResourceAdd} onClose={handleResourceAddClose} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">Add a Resource</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Enter the name of the resource.
+                </DialogContentText>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="Name of resource to add"
+                  fullWidth
+                />
+              </DialogContent>
+            <DialogActions>
+              <Button onClick={handleResourceAddClose} color="primary">
+                Cancel
+              </Button>
+              <Button onClick={handleResourceAddClose} color="primary">
+                Add Resource
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Menu>
       </Navigation>
       <main className={Styles.content}>
@@ -313,5 +371,4 @@ RegisterRoutes(
   "/factoryPage",
   "/FactoryPage"
 );
-
 export default Factorypage;
