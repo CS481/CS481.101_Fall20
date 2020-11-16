@@ -1,6 +1,6 @@
-import SimulationInstance from "../simulation-schema/js/SimulationInstance";
-import State from "../simulation-schema/js/State";
-import UserResponse from "../simulation-schema/js/UserResponse";
+import SimulationInstance from "../simulation-schema/SimulationInstance";
+import State from "../simulation-schema/State";
+import UserResponse from "../simulation-schema/UserResponse";
 
 let server_url = process.env.REACT_APP_SIMULATION_FACTORY_URL;
 

@@ -3,22 +3,22 @@ import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
-import { Menu, MenuItem } from '@material-ui/core';
-import Table from '../components/Table'
 
 import {
-  Tabs,
-  Tab,
-  TextField,
-  CardContent,
-  Typography,
   AppBar,
-  Toolbar,
+  CardContent,
   Dialog,
   DialogContent,
   DialogTitle,
   DialogActions,
-  DialogContentText
+  DialogContentText,
+  Menu,
+  MenuItem,
+  Tabs,
+  Tab,
+  TextField,
+  Toolbar,
+  Typography,
 } from "@material-ui/core";
 
 import CreateStyles from "../util/Stylesheet";
@@ -26,9 +26,10 @@ import Navigation from "../components/Navigation";
 import TabPanel from "../components/TabPanel";
 import { RegisterRoutes } from "../util/RouteBuilder";
 import Close from "@material-ui/icons/Close";
+import MyDropzone from "../util/MyDropzone";
 
 function Factorypage(props) {
-
+  
   const { window } = props;
   const { useState } = React;
 
@@ -194,26 +195,6 @@ function Factorypage(props) {
     }
   }
 
-  const [columns, setColumns] = useState([
-    { title: "Name", field: "name" },
-    {
-      title: "Surname",
-      field: "surname",
-      initialEditValue: "initial edit value",
-    },
-    { title: "Birth Year", field: "birthYear", type: "numeric" },
-    {
-      title: "Birth Place",
-      field: "birthCity",
-      lookup: { 34: "İstanbul", 63: "Şanlıurfa" },
-    },
-  ]);
-
-  const [data, setData] = useState([
-    { name: "Mehmet", surname: "Baran", birthYear: 1987, birthCity: 63 },
-    { name: "Zerya Betül", surname: "Baran", birthYear: 2017, birthCity: 34 },
-  ]);
-
   return (
     <div className={Styles.root}>
       <script src="xlsx.full.min.js"></script>
@@ -244,7 +225,7 @@ function Factorypage(props) {
             </DialogTitle>
             <DialogContent dividers>
               <div style={{ width: "max-content" }}>
-                <Table x={25} y={25} />
+              <MyDropzone dropzone></MyDropzone>
               </div>
             </DialogContent>
           </Dialog>
