@@ -1,15 +1,21 @@
 import React from 'react';
 import CreateStyles from "../util/Stylesheet";
-import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
-import TextField from '@material-ui/core/TextField';
-import Button from "@material-ui/core/Button";
+
+import { 
+    List, 
+    ListItem, 
+    ListItemText, 
+    Typography,
+    TextField,
+    Button,
+    CardContent,
+    Grid,
+    Card,
+} from "@material-ui/core";
 
 import Navigation from "../components/Navigation";
 
-import {RegisterRoutes} from "../util/RouteBuilder";
+import { RegisterRoutes } from "../util/RouteBuilder";
 
 
 function Accountpage() {

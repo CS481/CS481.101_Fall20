@@ -1,21 +1,27 @@
 import React from 'react';
-import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
+
+import {
+    FormControl,
+    FormControlLabel,
+    Radio,
+    RadioGroup,
+    Card,
+    CardContent,
+    Typography,
+    Button,
+    TextField,
+} from "@material-ui/core";
 
 import Navigation from "../components/Navigation";
 import { RegisterRoutes } from "../util/RouteBuilder";
 import styles from "../util/Stylesheet";
-import { BeginSim,
-         GetState,
-         SubmitResponse
-       } from "../util/Backend";
+
+import {
+    BeginSim,
+    GetState,
+    SubmitResponse
+} from "../util/Backend";
+
 import FormatString from "../util/FormatString";
 
 class SimulationPlayer extends React.Component {

@@ -1,14 +1,20 @@
 import React from "react";
-import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
-import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
+
+import {
+  Grid,
+  Card,
+  CardActions,
+  CardContent,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from "@material-ui/core";
+
 import styles from "../util/Stylesheet";
 import Navigation from "../components/Navigation";
-import {Link} from "react-router-dom";
-
+import { Link } from "react-router-dom";
 import { RegisterRoutes } from "../util/RouteBuilder";
 
 function Homepage(props) {

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
 
-import {
+import { 
+  Grid,
+  Card,
+  CardActions,
+  Button,
   AppBar,
   CardContent,
   Dialog,
@@ -42,7 +42,7 @@ function Factorypage(props) {
   const [value, setValue] = React.useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const [tabList, setTabList] = useState([
+  const [frameList, setFrameList] = useState([
     {
       key: 0,
       id: 0,
@@ -50,36 +50,82 @@ function Factorypage(props) {
     },
   ]);
 
+    /**
+   * Array of player names/ids
+   * NOT FUNCTIONAL
+   */
   const players = {};
+  /**
+   * Array of player resources
+   */
   const resources = {
     player1_money: 0,
     player2_money: 0,
     env_money: 0,
   };
 
-  const [tabValue, setTabValue] = useState(0);
-  const [open, setOpen] = React.useState(false);
+  /**
+   * Sets which frame is active
+   */
+  const [tabValue, setFrameValue] = useState(0);
+
+  /**
+   * Handles lookup table dialog box
+   */
+  const [openLookupTable, setOpenLookupTable] = React.useState(false);
+
+  /**
+   * Handles player dialog box
+   */
   const [openPlayerAdd, setOpenPlayerAdd] = React.useState(false);
+  /**
+   * Handles resource dialog box
+   */
   const [openResourceAdd, setOpenResourceAdd] = React.useState(false);
 
-  const handleChange = (event, newValue) => {
+  /**
+   * Handles changing of frame tabs
+   * @param {*} event button click
+   * @param {int} newValue tab number
+   */
+  const handleFrameChange = (event, newValue) => {
     setValue(newValue);
   };
-  const handleMenuClick = (event) => {
+
+  /**
+   * Handles when user selects option in settings menu
+   * @param {*} event button click
+   */
+  const handleSettingsMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleMenuClose = () => {
+
+  /**
+   * Handles when closes setting menu
+   */
+  const handleSettingMenuClose = () => {
     setAnchorEl(null);
   };
+
+  /**
+   * Lookup sheet open
+   * @param {*} event click button
+   */
   const handleSheetOpen = (event) => {
-    setOpen(true);
+    setOpenLookupTable(true);
   };
+
+  /**
+   * Lookup sheet close
+   * @param {*} event 
+   */
   const handleSheetClose = (event) => {
-    setOpen(false);
+    setOpenLookupTable(false);
   };
+
   const handlePlayerAddOpen = (event) => {
     setOpenPlayerAdd(true);
-    setAnchorEl(null);;
+    setAnchorEl(null);
   };
   const handlePlayerAddClose = (event) => {
     setOpenPlayerAdd(false);
@@ -91,31 +137,34 @@ function Factorypage(props) {
   const handleResourceAddClose = (event) => {
     setOpenResourceAdd(false);
   };
+
+  /**
+   * for addPrompt addResponse, addEvent
+   * adding new frame, given frame type
+   */
   const addPrompt = () => {
-    let id = tabList[tabList.length - 1].id + 1;
-    setTabList([...tabList, { key: id, id: id, type: 0 }]);
+    let id = frameList[frameList.length - 1].id + 1;
+    setFrameList([...frameList, { key: id, id: id, type: 0 }]);
   };
-
   const addResponse = () => {
-    let id = tabList[tabList.length - 1].id + 1;
-    setTabList([...tabList, { key: id, id: id, type: 1 }]);
+    let id = frameList[frameList.length - 1].id + 1;
+    setFrameList([...frameList, { key: id, id: id, type: 1 }]);
   };
-
   const addEvent = () => {
-    let id = tabList[tabList.length - 1].id + 1;
-    setTabList([...tabList, { key: id, id: id, type: 2 }]);
+    let id = frameList[frameList.length - 1].id + 1;
+    setFrameList([...frameList, { key: id, id: id, type: 2 }]);
   };
 
-  const deleteTab = (e) => {
+  const deleteFrame = (e) => {
     e.stopPropagation();
 
-    if (tabList.length === 1) {
+    if (frameList.length === 1) {
       return;
     }
     let tabId = parseInt(e.target.id);
     let tabIDIndex = 0;
 
-    let tabs = tabList.filter((value, index) => {
+    let tabs = frameList.filter((value, index) => {
       if (value.id === tabId) {
         tabIDIndex = index;
       }
@@ -125,13 +174,13 @@ function Factorypage(props) {
     let curValue = parseInt(tabValue);
     if (curValue === tabId) {
       if (tabIDIndex === 0) {
-        curValue = tabList[tabIDIndex + 1].id;
+        curValue = frameList[tabIDIndex + 1].id;
       } else {
-        curValue = tabList[tabIDIndex - 1].id;
+        curValue = frameList[tabIDIndex - 1].id;
       }
     }
-    setTabValue(curValue);
-    setTabList(tabs);
+    setFrameValue(curValue);
+    setFrameList(tabs);
   };
 
   function renderCard(tab) {
@@ -203,7 +252,7 @@ function Factorypage(props) {
           className="SimMenuButton"
           aria-controls="sim-menu"
           aria-haspopup="true"
-          onClick={handleMenuClick}
+          onClick={handleSettingsMenuClick}
         >
           Simulation Settings
         </Button>
@@ -212,13 +261,13 @@ function Factorypage(props) {
           anchorEl={anchorEl}
           keepMounted
           open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
+          onClose={handleSettingMenuClose}
         >
           <MenuItem onClick={handleSheetOpen}>Import Lookup Table</MenuItem>
           <Dialog
             onClose={handleSheetClose}
             aria-labeledby="lookup-table-dialog"
-            open={open}
+            open={openLookupTable}
           >
             <DialogTitle id="lookup-table-title" onClose={handleSheetClose}>
               Lookup Table Entry
@@ -320,20 +369,20 @@ function Factorypage(props) {
                 orientation="vertical"
                 variant="scrollable"
                 value={value}
-                onChange={handleChange}
+                onChange={handleFrameChange}
                 className={Styles.tabs}
               >
-                {tabList.map((tab) => (
+                {frameList.map((tab) => (
                   <Tab
                     key={tab.key.toString()}
                     value={tab.id}
                     label={"Node " + tab.id}
-                    icon={<Close id={tab.id} onClick={deleteTab} />}
+                    icon={<Close id={tab.id} onClick={deleteFrame} />}
                     className="mytab"
                   />
                 ))}
               </Tabs>
-              {tabList.map((tab) => (
+              {frameList.map((tab) => (
                 <TabPanel value={value} index={tab.key}>
                   {renderCard(tab)}
                 </TabPanel>
@@ -345,6 +394,7 @@ function Factorypage(props) {
     </div>
   );
 }
+
 RegisterRoutes(
   Factorypage,
   "/factory",
@@ -352,4 +402,5 @@ RegisterRoutes(
   "/factoryPage",
   "/FactoryPage"
 );
+
 export default Factorypage;

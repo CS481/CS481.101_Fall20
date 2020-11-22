@@ -1,4 +1,9 @@
-import { createMuiTheme, makeStyles, responsiveFontSizes } from "@material-ui/core/styles";
+import {
+  createMuiTheme, 
+  makeStyles, 
+  responsiveFontSizes 
+} from "@material-ui/core/styles";
+
 import palette from "./palette.json"
 
 const drawerWidth = 200;

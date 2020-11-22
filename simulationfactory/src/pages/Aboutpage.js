@@ -1,15 +1,21 @@
 import React from "react";
-import Grid from "@material-ui/core/Grid";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
+import {
+    Grid,
+    Card,
+    CardContent,
+    List,
+    ListItem,
+    ListItemText,
+    Typography
+} from "@material-ui/core";
+
 import Navigation from "../components/Navigation";
-import styles from "../util/Stylesheet";
-import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
+import CreateStyles from "../util/Stylesheet";
 import { RegisterRoutes } from "../util/RouteBuilder";
 
 function Aboutpage() {
 
-    const Styles = styles();
+    const Styles = CreateStyles();
     
     return (
         <div className={Styles.root}>
@@ -33,8 +39,8 @@ function Aboutpage() {
                                         <ListItemText primary="Link to gitlab" />
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemText primary="Didn't want credited so delete this entry" />
-                                        <ListItemText primary="Link to github" />
+                                        <ListItemText primary="Ralph Greaves" />
+                                        <ListItemText><a href="https://github.com/regreaves">Github</a></ListItemText>
                                     </ListItem>
                                 </List>
                             </CardContent>
@@ -48,16 +54,18 @@ function Aboutpage() {
                                 </Typography>
                                 <List>
                                     <ListItem>
-                                        <ListItemText primary="Person 1" />
-                                        <ListItemText primary="Link to github" />
+                                        <ListItemText primary="Alex Louderback" />
+                                        <ListItemText><a href="https://github.com/alouderback">Github</a></ListItemText>
+                                        <ListItemText><a href="https://www.linkedin.com/in/alex-louderback-a2a599149/">Linkedin</a></ListItemText>
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemText primary="Person 2" />
-                                        <ListItemText primary="Didn't want to link to github" />
+                                        <ListItemText primary="Cayden Reynolds" />
+                                        <ListItemText><a href="https://github.com/caydenreynolds">Github</a></ListItemText>
                                     </ListItem>
                                     <ListItem>
                                         <ListItemText primary="Brandon Miller" />
-                                        <a href="https://www.ycp.edu">Brandon Millers Github</a>
+                                        <ListItemText><a href="https://github.com/ScratchnSniff0">Github</a></ListItemText>
+                                        <ListItemText><a href="https://www.linkedin.com/in/brandon-m-miller">Linkedin</a></ListItemText>
                                     </ListItem>
                                 </List>
                             </CardContent>

@@ -1,6 +1,6 @@
-import * as XLSX from 'xlsx';
+import React, { useCallback }from 'react'
 import { useDropzone } from 'react-dropzone'
-import React, { useCallback}from 'react'
+import * as XLSX from 'xlsx';
 
 export default function MyDropzone() {
     const onDrop = useCallback((importingFile) => {
