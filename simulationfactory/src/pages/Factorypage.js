@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
-import { Menu, MenuItem } from '@material-ui/core';
 import Table from '../components/Table'
 
 import {
+  Menu, 
+  MenuItem,
   Tabs,
   Tab,
   TextField,
+  Tooltip,
   CardContent,
   Typography,
   Dialog,
@@ -23,6 +25,10 @@ import CreateStyles from "../util/Stylesheet";
 import Navigation from "../components/Navigation";
 import TabPanel from "../components/TabPanel";
 import { RegisterRoutes } from "../util/RouteBuilder";
+import {
+  InitializeSimulation,
+  InitializeFrame
+} from "../util/Backend";
 import Close from "@material-ui/icons/Close";
 
 function Factorypage(props) {
@@ -36,13 +42,7 @@ function Factorypage(props) {
   const [value, setValue] = React.useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const [tabList, setTabList] = React.useState([
-    {
-      key: 0,
-      id: 0,
-      type: 0,
-    },
-  ]);
+  const [tabList, setTabList] = React.useState([]);
 
   const [tabValue, setTabValue] = React.useState(0);
   const [open, setOpen] = React.useState(false);
@@ -52,7 +52,6 @@ function Factorypage(props) {
   // Information for backend
   const [simulationId, setSimulationId] = React.useState('');
   const [user, setUser] = React.useState({username: '', password: ''});
-  const [loggedIn, setLoggedIn] = React.useState(false);
   
   function handleChange(event, newValue) {
     setValue(newValue);
@@ -84,18 +83,21 @@ function Factorypage(props) {
     setOpenResourceAdd(false);
   };
   function addPrompt() {
-    let id = tabList[tabList.length - 1].id + 1;
-    setTabList([...tabList, { key: id, id: id, type: 0 }]);
+    InitializeFrame({user: user, id: simulationId}, (r) => {
+      setTabList([...tabList, { key: r.id, id: r.id, type: 0 }]);
+    })
   };
 
   function addResponse() {
-    let id = tabList[tabList.length - 1].id + 1;
-    setTabList([...tabList, { key: id, id: id, type: 1 }]);
+    InitializeFrame({user: user, id: simulationId}, (r) => {
+      setTabList([...tabList, { key: r.id, id: r.id, type: 1 }]);
+    })
   };
 
   function addEvent() {
-    let id = tabList[tabList.length - 1].id + 1;
-    setTabList([...tabList, { key: id, id: id, type: 2 }]);
+    InitializeFrame({user: user, id: simulationId}, (r) => {
+      setTabList([...tabList, { key: r.id, id: r.id, type: 2 }]);
+    })
   };
 
   function deleteTab(e) {
@@ -212,7 +214,7 @@ function Factorypage(props) {
   function renderSubmitButton() {
     return (
       <Button variant="contained" color="primary" size="medium" 
-        onClick={() => setLoggedIn(true)}>
+        onClick={() => InitializeSimulation(user, (r) => setSimulationId(r.id))}>
         Begin
       </Button>
     )
@@ -337,6 +339,11 @@ function Factorypage(props) {
                   Add response
                 </Button>
               </Grid>
+              <Grid item xs={12} sm={1}>
+                <Tooltip title="Participants need this id to run your simulation. Save it somewhere you won't lose it!">
+                  <div>Your simulation id is {simulationId}</div>
+                </Tooltip>
+              </Grid>
             </Grid>
             <Grid item xs={12} sm={6}>
               <div className={Styles.root}>
@@ -370,10 +377,10 @@ function Factorypage(props) {
     );
   };
 
-  if (loggedIn) {
-    return renderFactoryPage();
-  } else {
+  if (simulationId == '') {
     return renderLogin();
+  } else {
+    return renderFactoryPage();
   }
 }
 RegisterRoutes(
