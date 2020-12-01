@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
-import { Menu, MenuItem } from '@material-ui/core';
 import Table from '../components/Table'
 
 import {
+  Menu, 
+  MenuItem,
   Tabs,
   Tab,
   TextField,
+  Tooltip,
   CardContent,
   Typography,
-  AppBar,
-  Toolbar,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -25,14 +25,15 @@ import CreateStyles from "../util/Stylesheet";
 import Navigation from "../components/Navigation";
 import TabPanel from "../components/TabPanel";
 import { RegisterRoutes } from "../util/RouteBuilder";
+import {
+  InitializeSimulation,
+  InitializeFrame
+} from "../util/Backend";
 import Close from "@material-ui/icons/Close";
 
 function Factorypage(props) {
 
-  const { window } = props;
-  const { useState } = React;
-
-  const [inputList, setInputList] = useState([]);
+  const [inputList, setInputList] = React.useState([]);
   const onAddResponseClick = event => {
     setInputList(inputList.concat(<TextField id="prompt" label="Prompt" variant="filled" key={inputList.length} />));
   };
@@ -41,71 +42,65 @@ function Factorypage(props) {
   const [value, setValue] = React.useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const [tabList, setTabList] = useState([
-    {
-      key: 0,
-      id: 0,
-      type: 0,
-    },
-  ]);
+  const [tabList, setTabList] = React.useState([]);
 
-  const players = {};
-  const resources = {
-    player1_money: 0,
-    player2_money: 0,
-    env_money: 0,
-  };
-
-  const [tabValue, setTabValue] = useState(0);
+  const [tabValue, setTabValue] = React.useState(0);
   const [open, setOpen] = React.useState(false);
   const [openPlayerAdd, setOpenPlayerAdd] = React.useState(false);
   const [openResourceAdd, setOpenResourceAdd] = React.useState(false);
 
-  const handleChange = (event, newValue) => {
+  // Information for backend
+  const [simulationId, setSimulationId] = React.useState('');
+  const [user, setUser] = React.useState({username: '', password: ''});
+  
+  function handleChange(event, newValue) {
     setValue(newValue);
   };
-  const handleMenuClick = (event) => {
+  function handleMenuClick(event) {
     setAnchorEl(event.currentTarget);
   };
-  const handleMenuClose = () => {
+  function handleMenuClose() {
     setAnchorEl(null);
   };
-  const handleSheetOpen = (event) => {
+  function handleSheetOpen(event) {
     setOpen(true);
   };
-  const handleSheetClose = (event) => {
+  function handleSheetClose(event) {
     setOpen(false);
   };
-  const handlePlayerAddOpen = (event) => {
+  function handlePlayerAddOpen(event) {
     setOpenPlayerAdd(true);
     setAnchorEl(null);;
   };
-  const handlePlayerAddClose = (event) => {
+  function handlePlayerAddClose(event) {
     setOpenPlayerAdd(false);
   };
-  const handleResourceAddOpen = (event) => {
+  function handleResourceAddOpen(event) {
     setOpenResourceAdd(true);
     setAnchorEl(null);
   };
-  const handleResourceAddClose = (event) => {
+  function handleResourceAddClose(event) {
     setOpenResourceAdd(false);
   };
-  const addPrompt = () => {
-    let id = tabList[tabList.length - 1].id + 1;
-    setTabList([...tabList, { key: id, id: id, type: 0 }]);
+  function addPrompt() {
+    InitializeFrame({user: user, id: simulationId}, (r) => {
+      setTabList([...tabList, { key: r.id, id: r.id, type: 0 }]);
+    })
   };
 
-  const addResponse = () => {
-    let id = tabList[tabList.length - 1].id + 1;
-    setTabList([...tabList, { key: id, id: id, type: 1 }]);
+  function addResponse() {
+    InitializeFrame({user: user, id: simulationId}, (r) => {
+      setTabList([...tabList, { key: r.id, id: r.id, type: 1 }]);
+    })
   };
 
-  const addEvent = () => {
-    let id = tabList[tabList.length - 1].id + 1;
-    setTabList([...tabList, { key: id, id: id, type: 2 }]);
+  function addEvent() {
+    InitializeFrame({user: user, id: simulationId}, (r) => {
+      setTabList([...tabList, { key: r.id, id: r.id, type: 2 }]);
+    })
   };
 
-  const deleteTab = (e) => {
+  function deleteTab(e) {
     e.stopPropagation();
 
     if (tabList.length === 1) {
@@ -192,177 +187,201 @@ function Factorypage(props) {
           </Card>
         );
     }
-  }
+  };
 
-  const [columns, setColumns] = useState([
-    { title: "Name", field: "name" },
-    {
-      title: "Surname",
-      field: "surname",
-      initialEditValue: "initial edit value",
-    },
-    { title: "Birth Year", field: "birthYear", type: "numeric" },
-    {
-      title: "Birth Place",
-      field: "birthCity",
-      lookup: { 34: "İstanbul", 63: "Şanlıurfa" },
-    },
-  ]);
-
-  const [data, setData] = useState([
-    { name: "Mehmet", surname: "Baran", birthYear: 1987, birthCity: 63 },
-    { name: "Zerya Betül", surname: "Baran", birthYear: 2017, birthCity: 34 },
-  ]);
-
-  return (
-    <div className={Styles.root}>
-      <script src="xlsx.full.min.js"></script>
-      <Navigation TopbarMessage="Simulation Builder" Styles={Styles}>
-        <Button
-          className="SimMenuButton"
-          aria-controls="sim-menu"
-          aria-haspopup="true"
-          onClick={handleMenuClick}
-        >
-          Simulation Settings
-        </Button>
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-        >
-          <MenuItem onClick={handleSheetOpen}>Import Lookup Table</MenuItem>
-          <Dialog
-            onClose={handleSheetClose}
-            aria-labeledby="lookup-table-dialog"
-            open={open}
-          >
-            <DialogTitle id="lookup-table-title" onClose={handleSheetClose}>
-              Lookup Table Entry
-            </DialogTitle>
-            <DialogContent dividers>
-              <div style={{ width: "max-content" }}>
-                <Table x={25} y={25} />
-              </div>
-            </DialogContent>
-          </Dialog>
-          <MenuItem onClick={handlePlayerAddOpen}>Add Player</MenuItem>
-          <Dialog open={openPlayerAdd} onClose={handlePlayerAddClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Add a Player</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Enter the name of the player.
-                </DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="Name of Player to add"
-                  fullWidth
-                />
-              </DialogContent>
-            <DialogActions>
-              <Button onClick={handlePlayerAddClose} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={handlePlayerAddClose} color="primary">
-                Add Player
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <MenuItem onClick={handleResourceAddOpen}>Add Resource</MenuItem>
-          <Dialog open={openResourceAdd} onClose={handleResourceAddClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Add a Resource</DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  Enter the name of the resource.
-                </DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="Name of resource to add"
-                  fullWidth
-                />
-              </DialogContent>
-            <DialogActions>
-              <Button onClick={handleResourceAddClose} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={handleResourceAddClose} color="primary">
-                Add Resource
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </Menu>
-      </Navigation>
+  // Temporary code until login process is completed
+  function renderLogin() {
+    return (
       <main className={Styles.content}>
         <div className={Styles.toolbar} /> {/* Why is this necessary */}
-        <Grid container spacing={3} justify="center">
-          <Grid container spacing={1} justify="center">
-            <Grid item xs={12} sm={1}>
-              <Button
-                variant="contained"
-                color="primary"
-                size="medium"
-                onClick={addEvent}
-              >
-                Add event
-              </Button>
-            </Grid>
-            <Grid item xs={12} sm={1}>
-              <Button
-                variant="contained"
-                color="primary"
-                size="medium"
-                onClick={addPrompt}
-              >
-                Add prompt
-              </Button>
-            </Grid>
-            <Grid item xs={12} sm={1}>
-              <Button
-                variant="contained"
-                color="primary"
-                size="medium"
-                onClick={addResponse}
-              >
-                Add response
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <div className={Styles.root}>
-              <Tabs
-                orientation="vertical"
-                variant="scrollable"
-                value={value}
-                onChange={handleChange}
-                className={Styles.tabs}
-              >
-                {tabList.map((tab) => (
-                  <Tab
-                    key={tab.key.toString()}
-                    value={tab.id}
-                    label={"Node " + tab.id}
-                    icon={<Close id={tab.id} onClick={deleteTab} />}
-                    className="mytab"
-                  />
-                ))}
-              </Tabs>
-              {tabList.map((tab) => (
-                <TabPanel value={value} index={tab.key}>
-                  {renderCard(tab)}
-                </TabPanel>
-              ))}
-            </div>
-          </Grid>
-        </Grid>
+        <Card className={Styles.root}>
+          <CardContent>
+            <TextField id="username_field" label="Username" variant="filled"
+              onChange={(t) => setUser({username: t.target.value, password: user.password})}/>
+            <TextField id="password_field" label="Password" variant="filled"
+              onChange={(t) => setUser({password: t.target.value, username: user.username})}/>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            {renderSubmitButton()}
+          </CardContent>
+        </Card>
       </main>
-    </div>
-  );
+    )
+  };
+
+  function renderSubmitButton() {
+    return (
+      <Button variant="contained" color="primary" size="medium" 
+        onClick={() => InitializeSimulation(user, (r) => setSimulationId(r.id))}>
+        Begin
+      </Button>
+    )
+  };
+
+  function renderFactoryPage() {
+    return (
+      <div className={Styles.root}>
+        <script src="xlsx.full.min.js"></script>
+        <Navigation TopbarMessage="Simulation Builder" Styles={Styles}>
+          <Button
+            className="SimMenuButton"
+            aria-controls="sim-menu"
+            aria-haspopup="true"
+            onClick={handleMenuClick}
+          >
+            Simulation Settings
+          </Button>
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={handleMenuClose}
+          >
+            <MenuItem onClick={handleSheetOpen}>Import Lookup Table</MenuItem>
+            <Dialog
+              onClose={handleSheetClose}
+              aria-labeledby="lookup-table-dialog"
+              open={open}
+            >
+              <DialogTitle id="lookup-table-title" onClose={handleSheetClose}>
+                Lookup Table Entry
+              </DialogTitle>
+              <DialogContent dividers>
+                <div style={{ width: "max-content" }}>
+                  <Table x={25} y={25} />
+                </div>
+              </DialogContent>
+            </Dialog>
+            <MenuItem onClick={handlePlayerAddOpen}>Add Player</MenuItem>
+            <Dialog open={openPlayerAdd} onClose={handlePlayerAddClose} aria-labelledby="form-dialog-title">
+              <DialogTitle id="form-dialog-title">Add a Player</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Enter the name of the player.
+                  </DialogContentText>
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Name of Player to add"
+                    fullWidth
+                  />
+                </DialogContent>
+              <DialogActions>
+                <Button onClick={handlePlayerAddClose} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={handlePlayerAddClose} color="primary">
+                  Add Player
+                </Button>
+              </DialogActions>
+            </Dialog>
+            <MenuItem onClick={handleResourceAddOpen}>Add Resource</MenuItem>
+            <Dialog open={openResourceAdd} onClose={handleResourceAddClose} aria-labelledby="form-dialog-title">
+              <DialogTitle id="form-dialog-title">Add a Resource</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Enter the name of the resource.
+                  </DialogContentText>
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    id="name"
+                    label="Name of resource to add"
+                    fullWidth
+                  />
+                </DialogContent>
+              <DialogActions>
+                <Button onClick={handleResourceAddClose} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={handleResourceAddClose} color="primary">
+                  Add Resource
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </Menu>
+        </Navigation>
+        <main className={Styles.content}>
+          <div className={Styles.toolbar} /> {/* Why is this necessary */}
+          <Grid container spacing={3} justify="center">
+            <Grid container spacing={1} justify="center">
+              <Grid item xs={12} sm={1}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="medium"
+                  onClick={addEvent}
+                >
+                  Add event
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={1}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="medium"
+                  onClick={addPrompt}
+                >
+                  Add prompt
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={1}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="medium"
+                  onClick={addResponse}
+                >
+                  Add response
+                </Button>
+              </Grid>
+              <Grid item xs={12} sm={1}>
+                <Tooltip title="Participants need this id to run your simulation. Save it somewhere you won't lose it!">
+                  <div>Your simulation id is {simulationId}</div>
+                </Tooltip>
+              </Grid>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <div className={Styles.root}>
+                <Tabs
+                  orientation="vertical"
+                  variant="scrollable"
+                  value={value}
+                  onChange={handleChange}
+                  className={Styles.tabs}
+                >
+                  {tabList.map((tab) => (
+                    <Tab
+                      key={tab.key.toString()}
+                      value={tab.id}
+                      label={"Node " + tab.id}
+                      icon={<Close id={tab.id} onClick={deleteTab} />}
+                      className="mytab"
+                    />
+                  ))}
+                </Tabs>
+                {tabList.map((tab) => (
+                  <TabPanel value={value} index={tab.key}>
+                    {renderCard(tab)}
+                  </TabPanel>
+                ))}
+              </div>
+            </Grid>
+          </Grid>
+        </main>
+      </div>
+    );
+  };
+
+  if (simulationId == '') {
+    return renderLogin();
+  } else {
+    return renderFactoryPage();
+  }
 }
 RegisterRoutes(
   Factorypage,
