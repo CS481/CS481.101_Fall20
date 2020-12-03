@@ -31,12 +31,12 @@ function Aboutpage() {
                                 </Typography>
                                 <List>
                                     <ListItem>
-                                        <ListItemText primary="Person 1" />
-                                        <ListItemText primary="Link to github" />
+                                        <ListItemText primary="Brooke Tingley" />
+                                        <ListItemText><a href="https://github.com/btingley">Github</a></ListItemText>
                                     </ListItem>
                                     <ListItem>
-                                        <ListItemText primary="Person 2" />
-                                        <ListItemText primary="Link to gitlab" />
+                                        <ListItemText primary="Rob Doster" />
+                                        <ListItemText><a href="https://github.com/rdoster13">Github</a></ListItemText>
                                     </ListItem>
                                     <ListItem>
                                         <ListItemText primary="Ralph Greaves" />
