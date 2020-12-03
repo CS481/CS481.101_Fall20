@@ -5,7 +5,7 @@ import User from "../simulation-schema/js/User";
 import UserResponse from "../simulation-schema/js/UserResponse";
 import FrameModification from "../simulation-schema/js/FrameModification";
 import Effect from "../simulation-schema/js/Effect";
-
+import SimulationModification from "../simulation-schema/js/SimulationModification";
 
 let server_url = process.env.REACT_APP_SIMULATION_FACTORY_URL;
 
@@ -65,11 +65,20 @@ export async function InitializeFrame(request, callback) {
 
 /**
  *  Modifies a frame
- * @param {*} frameModification 
- * @param {*} callback 
+ * @param {object} frameModification The request to POST to the backend
+ * @param {object} callback The callback to execute once the backend responds.
  */
 export async function ModifyFrame(frameModification, callback) {
     Post(frameModification, callback, 'FrameModification', FrameModification);
+}
+
+/**
+ * Modifies a simulation
+ * @param {object} simulationModifcation The request to POST to the backend
+ * @param {object} callback The callback to execute once the backend responds.
+ */
+export async function ModifySimulation(simulationModification, callback) {
+    Post(simulationModification, callback, 'SimulationModification', SimulationModification);
 }
 
 // Private method to issue a POST request to the backend
