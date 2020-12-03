@@ -1,16 +1,22 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
-import AppBar from "@material-ui/core/AppBar";
-import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
-import Toolbar from "@material-ui/core/Toolbar";
-import {Link} from "react-router-dom";
-import { List, ListItem, ListItemText } from "@material-ui/core";
-import Divider from "@material-ui/core/Divider";
-import Drawer from "@material-ui/core/Drawer";
-import Hidden from "@material-ui/core/Hidden";
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Button from "@material-ui/core/Button";
+import { Link } from "react-router-dom";
+
+import {
+    List,
+    ListItem, 
+    ListItemText,
+    AppBar,
+    IconButton,
+    Toolbar,
+    Typography,
+    Divider,
+    Drawer,
+    Hidden,
+    SwipeableDrawer,
+    Button
+    } from "@material-ui/core";
+
 class Navigation extends React.Component {
     constructor(props) {
         super(props);
