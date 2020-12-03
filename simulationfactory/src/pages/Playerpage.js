@@ -46,7 +46,7 @@ class SimulationPlayer extends React.Component {
     }
 
     getSimulationInstance() {
-        return {user: this.getUser(), simulation_id: this.state.simulation_id};
+        return {user: this.getUser(), id: this.state.simulation_id};
     }
 
     beginSim() {
