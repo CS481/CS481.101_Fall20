@@ -25,7 +25,7 @@ const HomeContent: React.FC = () => {
                                     <IonLabel className="ion-text-center">Get analytics and feedback from participants</IonLabel>
                                 </IonItem>
                             </IonList>                     
-                            <IonButton className='factoryButton'>
+                            <IonButton routerLink="/page/factory" routerDirection="root">
                                 Create Simulation
                                 <IonRippleEffect></IonRippleEffect>
                             </IonButton>
