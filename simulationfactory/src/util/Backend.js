@@ -93,10 +93,10 @@ export async function ModifySimulation(simulationModification, callback) {
 //                                 If null, the callback is called with no argument. Defaults to null.
 async function Post(request, callback, backendProcedure, requestValidator, responseValidator=null) {
     requestValidator.Validate(request);
-    let fetch_url = `${server_url}/${backendProcedure}.php`;
+    let fetch_url = `${server_url}/${backendProcedure}`;
     let fetch_body = {
         method: "POST",
-        headers: new Headers(),
+        headers: new Headers({"Content-Type": "application/json"}),
         body: JSON.stringify(request)
     };
     let response = await fetch(fetch_url, fetch_body);

@@ -10,7 +10,7 @@
     "@testing-library/user-event": "^7.2.1",
     "ajv": "6.12.5",
     "contentful": "^7.14.6",
-    "react": "^16.13.1",
+    "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-dropzone": "^11.2.4",
     "react-router-dom": "5.2.0",

@@ -152,7 +152,7 @@ function Factorypage(props) {
     // Validate by FrameModification, as a poor excuse for proper error checking
     ModifyFrame(FrameModification.Validate({
       user: user,
-      frame_id: frame.id,
+      id: frame.id,
       default_action: frame.default_action,
       responses: frame.responses,
       rounds: frame.rounds,
@@ -163,7 +163,7 @@ function Factorypage(props) {
 
   function commitSimulation() {
     ModifySimulation({user: user,
-                      simulation_id: simulationId,
+                      id: simulationId,
                       resources: simulation.resources,
                       response_timeout: simulation.response_timeout
     }, () => {});
