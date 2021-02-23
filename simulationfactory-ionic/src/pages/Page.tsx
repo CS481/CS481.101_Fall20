@@ -3,6 +3,8 @@ import React from 'react';
 import { useParams } from 'react-router';
 import HomeContent from '../components/HomeContent';
 import FactoryContent from '../components/FactoryContent';
+import AboutContent from '../components/AboutContent';
+import AccountContent from '../components/AccountContent';
 import './Page.css';
 
 const Page: React.FC = () => {
@@ -60,6 +62,12 @@ const Page: React.FC = () => {
       }
       {name === 'factory' &&
         <FactoryContent />
+      }
+      {name === 'about' &&
+        <AboutContent />
+      }
+      {name === 'account' &&
+        <AccountContent />
       }
         
       </IonContent>
