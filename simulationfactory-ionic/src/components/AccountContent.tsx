@@ -1,9 +1,14 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonList, IonRedirect, IonRippleEffect, IonRouterLink, IonRow } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonInput, IonItem, IonLabel, IonList, IonRedirect, IonRippleEffect, IonRouterLink, IonRow } from "@ionic/react";
 import React from "react";
-
+import { useParams } from 'react-router';
 import './AccountContent.css';
 
 const AccountContent: React.FC = () => {
+    //javascript to obtain user's information if they have entered it
+    const email = "generic@email.com";
+    const UserID = "LongNumber123";
+
+
     return (
     <IonContent className="ion-padding">
         <IonGrid>
@@ -15,19 +20,33 @@ const AccountContent: React.FC = () => {
                         </IonCardHeader>
                         <IonCardContent>
                             <IonList lines="none">
+
                                 <IonItem>
-                                    <IonLabel className="ion-text-left">Rob Dobster</IonLabel>
-                                    <IonRouterLink href="https://github.com/rdoster13" class="underline">Github</IonRouterLink>
+                                    <IonLabel className="ion-text-left">User ID:</IonLabel>
+                                    <IonLabel className="ion-text-right">{UserID}</IonLabel>
                                 </IonItem>
+
                                 <IonItem>
-                                    <IonLabel className="ion-text-left">Cayden Reynolds</IonLabel>
-                                    <IonRouterLink href="https://github.com/caydenreynolds" class="underline">Github</IonRouterLink>
+                                    <IonLabel className="ion-text-left">Email:</IonLabel>
+                                    <IonLabel className="ion-text-right">{email}</IonLabel>
                                 </IonItem>
+
+
                                 <IonItem>
-                                    <IonLabel className="ion-text-left">Austin Canzano</IonLabel>
-                                    <IonRouterLink href="https://github.com/Acanzano6613" class="underline">Github</IonRouterLink> 
+                                    <IonLabel className="ion-text-left">Change Email:</IonLabel>
+                                    <IonInput className="ion-text-right" placeholder="New Email"></IonInput>
                                 </IonItem>
-                            </IonList>                     
+
+                                <IonItem>
+                                        <IonLabel className="ion-text-left">Password:</IonLabel>
+                                        <IonInput className="ion-text-right" placeholder="Password"></IonInput>
+                                </IonItem>
+
+                            </IonList>
+
+                            <div className="ion-text-left">
+                                <IonButton type="submit" class="ion-no-margin">Submit</IonButton>
+                            </div>                     
                         </IonCardContent>
                     </IonCard>
                 </IonCol>
@@ -37,35 +56,41 @@ const AccountContent: React.FC = () => {
                             <IonCardTitle>Change Password</IonCardTitle>
                         </IonCardHeader>
                         <IonCardContent>
-                        <IonList lines="none">
+                            <IonList lines="none">
+
+                                <IonItem>
+                                    <IonLabel className="ion-text-center">To change the password you must type in the original password.</IonLabel>
+                                </IonItem>
+
                                 <IonItem>
                                     <IonCol>
-                                        <IonLabel className="ion-text-left">Alex Louderback</IonLabel>
-                                    </IonCol>
-
-                                    <IonCol className="ion-text-center">
-                                        <IonRouterLink className="ion-text-center" href="https://www.linkedin.com/in/alex-louderback-a2a599149/">LinkedIn</IonRouterLink>
+                                        <IonLabel className="ion-text-left">Original:</IonLabel>
                                     </IonCol>
                                     
                                     <IonCol className="ion-text-right">
-                                        <IonRouterLink href="https://github.com/alouderback" className="underline">Github</IonRouterLink>
+                                        <IonInput placeholder="Old Password"></IonInput>
                                     </IonCol>
                                 </IonItem>
+
                                 <IonItem>
                                     <IonCol>
-                                        <IonLabel className="ion-text-left">Adrian Castro</IonLabel>
+                                        <IonLabel className="ion-text-left">New Password:</IonLabel>
                                     </IonCol>
                 
                                     <IonCol className="ion-text-right">
-                                        <IonRouterLink href="https://github.com/acastro7" className="underline">Github</IonRouterLink>
+                                        <IonInput placeholder="New Password"></IonInput>
                                     </IonCol>
                                 </IonItem>
+
                             </IonList>
+                            <div className="ion-text-left">
+                                <IonButton type="submit" class="ion-no-margin">Submit</IonButton>
+                            </div>
+
                         </IonCardContent>
                     </IonCard>
                 </IonCol>
             </IonRow>
-
         </IonGrid>
     </IonContent>
     );
