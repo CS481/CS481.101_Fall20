@@ -16,7 +16,7 @@ const AboutContent: React.FC = () => {
                         <IonCardContent>
                             <IonList lines="none">
                                 <IonItem>
-                                    <IonLabel className="ion-text-left">Rob Dobster</IonLabel>
+                                    <IonLabel className="ion-text-left">Robert Doster</IonLabel>
                                     <IonRouterLink href="https://github.com/rdoster13" class="underline">Github</IonRouterLink>
                                 </IonItem>
                                 <IonItem>
