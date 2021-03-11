@@ -1,10 +1,8 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonInput, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonList, IonRippleEffect, IonRow } from "@ionic/react";
 import React, {useState } from "react";
 import { File } from '@ionic-native/file';
-import * as data from './test.json';
 
 import './PlayerContent.css';
-import { writeFile } from "node:fs";
 
 
 

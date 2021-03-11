@@ -1,13 +1,12 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonCol, IonContent, IonGrid, IonInput, IonItem, IonLabel, IonList, IonRedirect, IonRippleEffect, IonRouterLink, IonRow } from "@ionic/react";
 import React from "react";
 import { useParams } from 'react-router';
-import * as data from './test.json';
 import './AccountContent.css';
 
 const AccountContent: React.FC = () => {
     //javascript to obtain user's information if they have entered it
     const email = "generic@email.com";
-    const UserID = data.username;
+    const UserID = "data.username";
 
 
     return (
