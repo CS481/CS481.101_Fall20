@@ -1,3 +1,6 @@
 [submodule "simulationfactory/src/simulation-schema"]
 	path = simulationfactory/src/simulation-schema
 	url = https://github.com/CS481/simulation-schema.git
+[submodule "simulationfactory-ionic/simulation-schema"]
+	path = simulationfactory-ionic/simulation-schema
+	url = https://github.com/CS481/simulation-schema.git

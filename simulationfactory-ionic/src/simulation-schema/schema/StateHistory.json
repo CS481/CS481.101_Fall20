@@ -1,0 +1,33 @@
+{
+    "$id": "StateHistory",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["resources", "user_resources"],
+    "properties": {
+        "resources": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "value"],
+                "properties": {
+                    "name": {"type:": "string"},
+                    "value": {"type": "number"}
+                }
+            }
+        },
+        "user_resources": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["name", "value", "user"],
+                "properties": {
+                    "name": {"type:": "string"},
+                    "value": {"type": "number"},
+                    "user": {"type": "string"}
+                }
+            }
+        }
+    }
+}

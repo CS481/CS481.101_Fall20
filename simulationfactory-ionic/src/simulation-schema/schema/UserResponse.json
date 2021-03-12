@@ -1,0 +1,11 @@
+{
+    "$id": "UserResponse",
+    "type": "object",
+    "required": ["user", "response", "simulation_id"],
+    "properties": {
+        "user": {"$ref": "User"},
+        "response": {"type": "string"},
+        "simulation_id": {"type": "string"}
+    },
+    "additionalProperties": false
+}

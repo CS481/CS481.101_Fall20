@@ -1,0 +1,17 @@
+{
+    "$id": "Effect",
+    "type": "object",
+    "required": ["resource", "operation", "effects"],
+    "properties": {
+        "resource": { "type": "string" },
+        "operation": { "type": "string" },
+        "effects": {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "items": { "type": "number" }
+            }
+        }
+    },
+    "additionalProperties": false
+}
