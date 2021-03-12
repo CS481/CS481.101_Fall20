@@ -2,7 +2,7 @@ import { IonButton, IonCard, IonCardContent, IonCardHeader, IonInput, IonCardTit
 import React, {useRef, useState } from "react";
 
 import './PlayerContent.css';
-import {prompt, user_count, round_count,resources} from './Info.json';
+import {prompt, user_count, round_count,resources, _id} from './Info.json';
 //import { BeginSim } from "./../util/Backend";
 
 
@@ -11,7 +11,7 @@ const PlayerContent: React.FC = () => {
     //Javascript
     const [username,setUsername] = useState<string>();
     const [password, setPassword] = useState<string>();
-    const [simulation_id, setSimulationID] = useState<number>();
+    const [simulation_id, setSimulationID] = useState<string>();
     const [userResponse, setUserResponse] = useState<string>();
 
 const jsonData = '{"simulation_id":'+username +', "password":'+password+', "username":'+username;
@@ -19,6 +19,14 @@ const playerSlides = useRef(document.createElement('ion-slides'));
 
 const next = () =>{
     playerSlides.current.slideNext();
+}
+const verify = () =>{
+    if ( password === "Ad3$5asdf" && username === "me"  ) {
+        (simulation_id === _id.$oid) ? next() : console.log("Error incorrect simulation Id");
+    }
+    else{
+        console.log("Error incorrect simulation Id");
+    }
     
 }
 
@@ -60,15 +68,11 @@ const submitResponse = () =>{
                                         </IonItem>
 
                                         <IonItem>
-                                            <IonLabel>{username}</IonLabel>                                    
-                                        </IonItem>
-
-                                        <IonItem>
                                             <IonInput value={password} placeholder="Password" onIonChange={e => setPassword(e.detail.value!)}></IonInput>
                                         </IonItem>
 
                                         <IonItem>
-                                            <IonInput value={simulation_id} placeholder="SimulationID" onIonChange={e => setSimulationID(parseInt(e.detail.value!, 10))}></IonInput>
+                                            <IonInput value={simulation_id} placeholder="SimulationID" onIonChange={e => setSimulationID(e.detail.value!)}></IonInput>
                                         </IonItem>
                                         
                                     </IonList> 
@@ -77,7 +81,7 @@ const submitResponse = () =>{
                                         Begin
                                         <IonRippleEffect></IonRippleEffect>
                                     </IonButton>
-                                    <IonButton onClick={() => next()}>Add Resource</IonButton>
+                                    <IonButton onClick={() => verify()}>Add Resource</IonButton>
 
                                 </IonCardContent>
                             </IonCard>
