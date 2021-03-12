@@ -1,8 +1,11 @@
 import { IonButton, IonCard, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonRow, IonSlide, IonSlides, IonTextarea } from "@ionic/react";
 import React, { useRef, useState} from "react";
 
+
 import './FactoryContent.css';
+
 import {  trashOutline } from "ionicons/icons";
+import { InitializeSimulation, ModifySimulation } from "../util/Backend.js";
 
 
 const FactoryContent: React.FC = () => {
@@ -40,7 +43,7 @@ const FactoryContent: React.FC = () => {
         slidesPerView: 1,
         initialSlide: 0
     };
-    const [responseValue, setResponseValue] =useState([0])
+    const [responseValue, setResponseValue] =useState([{'response':`Response 1`, 'responseValue':0}])
 
     const operators = ['+','-','*','/','=',]
 
@@ -89,12 +92,13 @@ const FactoryContent: React.FC = () => {
     }
 
     function appendResponses(){
-        var newResponse = 0
-        setResponseValue(prevState=>prevState.concat(newResponse));
+        var newResponse = `Response ${responseValue.length +1}`;
+        var newResponseValue = 0;
+        setResponseValue(prevState=>prevState.concat({response:newResponse, responseValue:newResponseValue}));
     }
 
     function changeResponseValue(index:number, newValue:number){
-        responseValue[index] = newValue;
+        responseValue[index].responseValue = newValue;
     }
 
     function deleteResponseValue(index:number){
@@ -135,6 +139,27 @@ const FactoryContent: React.FC = () => {
     const handlePrev = () => {
         updateValues();
         factorySlides.current.slidePrev();
+    }
+
+    function handleSubmitClick(){
+        console.log("HANDLE SUBMIT CLICK");
+        InitializeSimulation({"username":"foo", "password":"P00%qwert"},(response)=>afterInit(response));
+
+    }
+    function afterInit(response){
+        console.log("AFTER INIT");
+        var modifySimJson = {
+            "user":{"username":"foo", "password":"P00%qwert"},
+            "id":response.id,
+            "response_timeout":-1,
+            "prompt":question,
+            "responses":responseValue,
+            "round_count":numRounds,
+            "user_count":numPlayers,
+            "resources":resourcesState,
+            "user_resources": userResourcesState
+        };
+        ModifySimulation(modifySimJson, ()=>{console.log("MODIFY SIMULATION RAN")});
     }
     
     return (
@@ -231,7 +256,7 @@ const FactoryContent: React.FC = () => {
                         </IonItem>
                         <IonItem>
                             <IonLabel position="floating">Response Values</IonLabel>
-                            {responseValue.map((response, index)=><IonItem><IonLabel>Response {index+1}</IonLabel><IonInput type="number" value={response} onIonChange={e => changeResponseValue(index,parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResponseValue(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}
+                            {responseValue.map((response, index)=><IonItem><IonLabel>Response {index+1}</IonLabel><IonInput type="number" value={response.responseValue} onIonChange={e => changeResponseValue(index,parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResponseValue(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}
                         </IonItem>
                         <IonButton onClick={() => appendResponses()}>Add Response</IonButton>
                     </IonList>
@@ -256,10 +281,16 @@ const FactoryContent: React.FC = () => {
                         {playerResponseString.map(playerResponse=><IonChip><IonLabel>{playerResponse}</IonLabel></IonChip>)}
                         <IonListHeader>Operations</IonListHeader>
                         {operators.map(operator=><IonChip><IonLabel>{operator}</IonLabel></IonChip>)}
-                        
                     </IonList>
                     <IonButton onClick={() => handlePrev()}>Previous Slide</IonButton>
                     <IonButton onClick={() => handleNext()}>Next Slide</IonButton>
+                </IonCard>
+            </IonSlide>
+            <IonSlide>
+                <IonCard>
+                    <IonList>
+                        <IonButton onClick={handleSubmitClick}>Submit Simulation</IonButton>
+                    </IonList>
                 </IonCard>
             </IonSlide>
         </IonSlides>
