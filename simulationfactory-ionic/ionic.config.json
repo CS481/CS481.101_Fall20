@@ -1,0 +1,7 @@
+{
+  "name": "simulationfactory-ionic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

@@ -1,0 +1,5 @@
+{
+    "$id": "Void",
+    "type": "object",
+    "additionalProperties": false
+}
