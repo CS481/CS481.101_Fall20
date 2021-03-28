@@ -30,6 +30,11 @@ const FactoryContent: React.FC = () => {
             resourceValue: 0
         }
     ]);
+    const [equationState, setEquationState] = useState([
+        {
+            equation:''
+        }
+    ]);
     const [numRounds, setNumRounds] = useState<number>(1);
     const [question, setQuestion] = useState('')
 
@@ -104,6 +109,14 @@ const FactoryContent: React.FC = () => {
     function deleteResponseValue(index:number){
         delete responseValue[index];
         setResponseValue(prevState => prevState.slice(0));
+    }
+
+    function changeEquationState(index:number, newValue:string){
+        equationState[index] = {equation:newValue};
+        setEquationState(prevState => prevState.slice(0));
+    }
+    function appendEquationState(newValue:string){
+        setEquationState(prevState => prevState.concat({equation:newValue}));
     }
 
     function handlePlayerChange(newPlayerCount: number){
@@ -219,7 +232,7 @@ const FactoryContent: React.FC = () => {
                             <IonCol><IonLabel position="floating">Value of Global Resource</IonLabel></IonCol>
                         </IonRow>
                         <IonRow>
-                            <IonCol>{resourcesState.map((resource, index) =><IonItem><IonInput value={resource.resource} onIonChange={e => changeResourceName(index, e.detail.value!)}></IonInput><IonInput type="number" onIonChange={e => changeResourceValue(index, parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResource(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}</IonCol>
+                            <IonCol>{resourcesState.map((resource,index) =><IonItem><IonInput value={resource.resource} onIonChange={e => changeResourceName(index, e.detail.value!)}></IonInput><IonInput type="number" onIonChange={e => changeResourceValue(index, parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResource(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}</IonCol>
                         </IonRow>    
                         <IonRow><IonButton onClick={ () => appendResources()}>Add Global Resource</IonButton></IonRow>
                         <IonRow>
@@ -274,13 +287,14 @@ const FactoryContent: React.FC = () => {
                         <IonInput type="number" value={decisionWeight} onIonChange={e=> setDecisionWeight(parseInt(e.detail.value!, 10))}>Set Decision Weight</IonInput>
                         <IonInput type="number" value={impactMultiplier} onIonChange={e=> setImpactMultiplier(parseInt(e.detail.value!, 10))}>Set Impact of Resource Multiplier</IonInput>
                         <IonListHeader>Global Resources</IonListHeader>
-                        {resourcesState.map(resource =><IonChip><IonLabel>{resource.resource}</IonLabel></IonChip>)}
+                        {resourcesState.map(resource =><IonChip onClick={()=>appendEquationState(resource.resource)}><IonLabel>{resource.resource}</IonLabel></IonChip>)}
                         <IonListHeader>User Resources</IonListHeader>
-                        {userResourcesState.map(resource=><IonChip><IonLabel>{resource.resource}</IonLabel></IonChip>)}
+                        {userResourcesState.map(resource=><IonChip onClick={()=>appendEquationState(resource.resource)}><IonLabel>{resource.resource}</IonLabel></IonChip>)}
                         <IonListHeader>Player Response</IonListHeader>
-                        {playerResponseString.map(playerResponse=><IonChip><IonLabel>{playerResponse}</IonLabel></IonChip>)}
+                        {playerResponseString.map(playerResponse=><IonChip onClick={()=>appendEquationState(playerResponse)}><IonLabel>{playerResponse}</IonLabel></IonChip>)}
                         <IonListHeader>Operations</IonListHeader>
-                        {operators.map(operator=><IonChip><IonLabel>{operator}</IonLabel></IonChip>)}
+                        {operators.map(operator=><IonChip onClick={()=>appendEquationState(operator)}><IonLabel>{operator}</IonLabel></IonChip>)}
+                        {equationState.map((equation, index)=><IonInput value={equation.equation} onIonChange={e=> changeEquationState(index, e.detail.value!)}></IonInput>)} 
                     </IonList>
                     <IonButton onClick={() => handlePrev()}>Previous Slide</IonButton>
                     <IonButton onClick={() => handleNext()}>Next Slide</IonButton>
