@@ -1,8 +1,11 @@
 import { IonButton, IonCard, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonRow, IonSlide, IonSlides, IonTextarea } from "@ionic/react";
 import React, { useRef, useState} from "react";
 
+
 import './FactoryContent.css';
+
 import {  trashOutline } from "ionicons/icons";
+import { InitializeSimulation, ModifySimulation } from "../util/Backend.js";
 
 
 const FactoryContent: React.FC = () => {
@@ -27,6 +30,11 @@ const FactoryContent: React.FC = () => {
             resourceValue: 0
         }
     ]);
+    const [equationState, setEquationState] = useState([
+        {
+            equation:''
+        }
+    ]);
     const [numRounds, setNumRounds] = useState<number>(1);
     const [question, setQuestion] = useState('')
 
@@ -40,7 +48,7 @@ const FactoryContent: React.FC = () => {
         slidesPerView: 1,
         initialSlide: 0
     };
-    const [responseValue, setResponseValue] =useState([0])
+    const [responseValue, setResponseValue] =useState([{'response':`Response 1`, 'responseValue':0}])
 
     const operators = ['+','-','*','/','=',]
 
@@ -89,17 +97,26 @@ const FactoryContent: React.FC = () => {
     }
 
     function appendResponses(){
-        var newResponse = 0
-        setResponseValue(prevState=>prevState.concat(newResponse));
+        var newResponse = `Response ${responseValue.length +1}`;
+        var newResponseValue = 0;
+        setResponseValue(prevState=>prevState.concat({response:newResponse, responseValue:newResponseValue}));
     }
 
     function changeResponseValue(index:number, newValue:number){
-        responseValue[index] = newValue;
+        responseValue[index].responseValue = newValue;
     }
 
     function deleteResponseValue(index:number){
         delete responseValue[index];
         setResponseValue(prevState => prevState.slice(0));
+    }
+
+    function changeEquationState(index:number, newValue:string){
+        equationState[index] = {equation:newValue};
+        setEquationState(prevState => prevState.slice(0));
+    }
+    function appendEquationState(newValue:string){
+        setEquationState(prevState => prevState.concat({equation:newValue}));
     }
 
     function handlePlayerChange(newPlayerCount: number){
@@ -135,6 +152,27 @@ const FactoryContent: React.FC = () => {
     const handlePrev = () => {
         updateValues();
         factorySlides.current.slidePrev();
+    }
+
+    function handleSubmitClick(){
+        console.log("HANDLE SUBMIT CLICK");
+        InitializeSimulation({"username":"foo", "password":"P00%qwert"},(response)=>afterInit(response));
+
+    }
+    function afterInit(response){
+        console.log("AFTER INIT");
+        var modifySimJson = {
+            "user":{"username":"foo", "password":"P00%qwert"},
+            "id":response.id,
+            "response_timeout":-1,
+            "prompt":question,
+            "responses":responseValue,
+            "round_count":numRounds,
+            "user_count":numPlayers,
+            "resources":resourcesState,
+            "user_resources": userResourcesState
+        };
+        ModifySimulation(modifySimJson, ()=>{console.log("MODIFY SIMULATION RAN")});
     }
     
     return (
@@ -194,7 +232,7 @@ const FactoryContent: React.FC = () => {
                             <IonCol><IonLabel position="floating">Value of Global Resource</IonLabel></IonCol>
                         </IonRow>
                         <IonRow>
-                            <IonCol>{resourcesState.map((resource, index) =><IonItem><IonInput value={resource.resource} onIonChange={e => changeResourceName(index, e.detail.value!)}></IonInput><IonInput type="number" onIonChange={e => changeResourceValue(index, parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResource(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}</IonCol>
+                            <IonCol>{resourcesState.map((resource,index) =><IonItem><IonInput value={resource.resource} onIonChange={e => changeResourceName(index, e.detail.value!)}></IonInput><IonInput type="number" onIonChange={e => changeResourceValue(index, parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResource(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}</IonCol>
                         </IonRow>    
                         <IonRow><IonButton onClick={ () => appendResources()}>Add Global Resource</IonButton></IonRow>
                         <IonRow>
@@ -231,7 +269,7 @@ const FactoryContent: React.FC = () => {
                         </IonItem>
                         <IonItem>
                             <IonLabel position="floating">Response Values</IonLabel>
-                            {responseValue.map((response, index)=><IonItem><IonLabel>Response {index+1}</IonLabel><IonInput type="number" value={response} onIonChange={e => changeResponseValue(index,parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResponseValue(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}
+                            {responseValue.map((response, index)=><IonItem><IonLabel>Response {index+1}</IonLabel><IonInput type="number" value={response.responseValue} onIonChange={e => changeResponseValue(index,parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResponseValue(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}
                         </IonItem>
                         <IonButton onClick={() => appendResponses()}>Add Response</IonButton>
                     </IonList>
@@ -249,17 +287,24 @@ const FactoryContent: React.FC = () => {
                         <IonInput type="number" value={decisionWeight} onIonChange={e=> setDecisionWeight(parseInt(e.detail.value!, 10))}>Set Decision Weight</IonInput>
                         <IonInput type="number" value={impactMultiplier} onIonChange={e=> setImpactMultiplier(parseInt(e.detail.value!, 10))}>Set Impact of Resource Multiplier</IonInput>
                         <IonListHeader>Global Resources</IonListHeader>
-                        {resourcesState.map(resource =><IonChip><IonLabel>{resource.resource}</IonLabel></IonChip>)}
+                        {resourcesState.map(resource =><IonChip onClick={()=>appendEquationState(resource.resource)}><IonLabel>{resource.resource}</IonLabel></IonChip>)}
                         <IonListHeader>User Resources</IonListHeader>
-                        {userResourcesState.map(resource=><IonChip><IonLabel>{resource.resource}</IonLabel></IonChip>)}
+                        {userResourcesState.map(resource=><IonChip onClick={()=>appendEquationState(resource.resource)}><IonLabel>{resource.resource}</IonLabel></IonChip>)}
                         <IonListHeader>Player Response</IonListHeader>
-                        {playerResponseString.map(playerResponse=><IonChip><IonLabel>{playerResponse}</IonLabel></IonChip>)}
+                        {playerResponseString.map(playerResponse=><IonChip onClick={()=>appendEquationState(playerResponse)}><IonLabel>{playerResponse}</IonLabel></IonChip>)}
                         <IonListHeader>Operations</IonListHeader>
-                        {operators.map(operator=><IonChip><IonLabel>{operator}</IonLabel></IonChip>)}
-                        
+                        {operators.map(operator=><IonChip onClick={()=>appendEquationState(operator)}><IonLabel>{operator}</IonLabel></IonChip>)}
+                        {equationState.map((equation, index)=><IonInput value={equation.equation} onIonChange={e=> changeEquationState(index, e.detail.value!)}></IonInput>)} 
                     </IonList>
                     <IonButton onClick={() => handlePrev()}>Previous Slide</IonButton>
                     <IonButton onClick={() => handleNext()}>Next Slide</IonButton>
+                </IonCard>
+            </IonSlide>
+            <IonSlide>
+                <IonCard>
+                    <IonList>
+                        <IonButton onClick={handleSubmitClick}>Submit Simulation</IonButton>
+                    </IonList>
                 </IonCard>
             </IonSlide>
         </IonSlides>
