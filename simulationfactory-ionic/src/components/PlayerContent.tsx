@@ -2,7 +2,7 @@ import { IonButton, IonCard, IonCardContent, IonCardHeader, IonInput, IonCardTit
 import React, {useRef, useState } from "react";
 
 import './PlayerContent.css';
-import {prompt, user_count, round_count,resources, _id} from './Info.json';
+//import {prompt, user_count, round_count,resources, _id} from './Info.json';
 //import { BeginSim } from "./../util/Backend";
 
 
@@ -22,7 +22,7 @@ const next = () =>{
 }
 const verify = () =>{
     if ( password === "Ad3$5asdf" && username === "me"  ) {
-        (simulation_id === _id.$oid) ? next() : console.log("Error incorrect simulation Id");
+        (simulation_id ==="2") ? next() : console.log("Error incorrect simulation Id");
     }
     else{
         console.log("Error incorrect simulation Id");
@@ -98,8 +98,8 @@ const submitResponse = () =>{
                                             <IonLabel>Simulation Question: {prompt}</IonLabel>
                                         </IonItem>
                                         <IonItem>
-                                            <IonLabel>Number of rounds: {round_count}</IonLabel>
-                                            <IonLabel>Number of past users: {user_count}</IonLabel>
+                                            <IonLabel>Number of rounds: {2}</IonLabel>
+                                            <IonLabel>Number of past users: {2}</IonLabel>
                                         </IonItem>
                                         <IonItem>
                                             <IonLabel>Please enter response:</IonLabel>
