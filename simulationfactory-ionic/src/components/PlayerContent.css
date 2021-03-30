@@ -25,3 +25,7 @@
 .container a {
   text-decoration: none;
 }
+.ion-header{
+  text-align: left;
+  width: 100%;
+}

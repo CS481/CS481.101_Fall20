@@ -1,9 +1,9 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonInput, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonList, IonRippleEffect, IonRow, IonSlide, IonSlides, IonTextarea } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonInput, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonRadioGroup, IonRadio, IonList, IonRippleEffect, IonRow, IonSlide, IonSlides, IonTextarea, IonHeader, IonListHeader } from "@ionic/react";
 import React, {useRef, useState } from "react";
 
 import './PlayerContent.css';
 //import {prompt, user_count, round_count,resources, _id} from './Info.json';
-//import { BeginSim } from "./../util/Backend";
+import { BeginSim, SubmitResponse } from "./../util/Backend";
 
 
 
@@ -12,9 +12,18 @@ const PlayerContent: React.FC = () => {
     const [username,setUsername] = useState<string>();
     const [password, setPassword] = useState<string>();
     const [simulation_id, setSimulationID] = useState<string>();
-    const [userResponse, setUserResponse] = useState<string>();
+    const [responses, setResponses] = useState<string>();
+    var SimJson = {
+        "turn_number": 0,
+        "prompt": "prompty mcpromptface",
+        "user_id": "602d7d0fac624e1924781010",
+        "history": "",
+        "user_history": "",
+        "user_waiting": false
+    };
+    
 
-const jsonData = '{"simulation_id":'+username +', "password":'+password+', "username":'+username;
+const userData = {'user':{'username':username, 'password':password}, 'id':simulation_id};
 const playerSlides = useRef(document.createElement('ion-slides'));
 
 const next = () =>{
@@ -22,25 +31,58 @@ const next = () =>{
 }
 const verify = () =>{
     if ( password === "Ad3$5asdf" && username === "me"  ) {
-        (simulation_id ==="2") ? next() : console.log("Error incorrect simulation Id");
+        (simulation_id ==="a") ? next() : console.log("Error incorrect simulation Id");
     }
+    
     else{
         console.log("Error incorrect simulation Id");
     }
+    // StartSim();
+    // next();
     
 }
 
 //'this' doesn't work in ionic .tsx need to find a replacement
-// const beginSim= () =>{
-//     BeginSim(this.getSimulationInstance(), () => {
-//         this.setState({logged_in: true});
-//         this.setSimState();
-//     });
-// }
+//pass in the in memory version of a json for this, should just be one object
+function StartSim(){
+    /*input state variable with response */
+    try{
+        console.log("Username is "+userData.user.username+ "\nPassword is " +userData.user.password+ "\nThis is the sim id " + userData.id);
+        console.log("Environment variable "+ process.env.REACT_APP_SIMULATION_FACTORY_URL);
+        BeginSim( userData, (response) => InitSim(response));
+        //this sends the user data to the database and returns with response
+        //response is an any type variable
+    }
+    catch(error){
+        console.log("Invalid User credentials");
+    }
+}
+function InitSim (response){
+    console.log("Initilizing Simulation Variables");
+    SimJson = {
+        "turn_number": response.turn_number,
+        "prompt": response.prompt,
+        "user_id": response.user_id,
+        "history": response.history,
+        "user_history": response.user_history,
+        "user_waiting": response.user_waiting
+    };
+}
 
 //will be used once I get beginSim to work
-const submitResponse = () =>{
+function SubmitRes (){
     //empty method
+    var UserResponse = {
+        'user':{'username':username, 'password':password},
+        'simulation_id': SimJson.user_id,
+        'response': responses
+    };
+    try{
+        SubmitResponse(UserResponse, ()=>{});
+    }
+    catch(error){
+        console.log("Error: Could not submit Response")
+    }
 
     //end the method by sending the user to next slide
     next();
@@ -95,21 +137,53 @@ const submitResponse = () =>{
                                 <IonCardContent>
                                     <IonList lines="none">
                                         <IonItem>
-                                            <IonLabel>Simulation Question: {prompt}</IonLabel>
+                                            <IonLabel>Simulation Prompt: {SimJson.prompt}</IonLabel>
                                         </IonItem>
                                         <IonItem>
-                                            <IonLabel>Number of rounds: {2}</IonLabel>
+                                            <IonLabel>Current rounds: {2}</IonLabel>
                                             <IonLabel>Number of past users: {2}</IonLabel>
                                         </IonItem>
-                                        <IonItem>
-                                            <IonLabel>Please enter response:</IonLabel>
-                                        </IonItem>
+                                        
 
-                                        <IonItem>
-                                        <IonTextarea value={userResponse} placeholder="Response" onIonChange={e => setUserResponse(e.detail.value!)}></IonTextarea>
-                                        </IonItem>
+                                        
+                                            <IonRadioGroup value={responses} onIonChange={e => setResponses(e.detail.value)}>
+                                            <IonListHeader>
+                                                <IonHeader>Please enter response</IonHeader>
+                                            </IonListHeader>
+
+                                            <IonItem>
+                                                <IonLabel>15</IonLabel>
+                                                <IonRadio slot="start" color="tertiary" value="15"></IonRadio>
+                                            </IonItem>
+                                            <IonItem>
+                                                <IonLabel>10</IonLabel>
+                                                <IonRadio slot="start" color="tertiary" value="10"></IonRadio>
+                                            </IonItem>
+                                            <IonItem>
+                                                <IonLabel>5</IonLabel>
+                                                <IonRadio slot="start" color="tertiary" value="5"></IonRadio>
+                                            </IonItem>
+                                            <IonItem>
+                                                <IonLabel>0</IonLabel>
+                                                <IonRadio slot="start" color="tertiary" value="0"></IonRadio>
+                                            </IonItem>
+                                            <IonItem>
+                                                <IonLabel>-5</IonLabel>
+                                                <IonRadio slot="start" color="tertiary" value="-5"></IonRadio>
+                                            </IonItem>
+                                            <IonItem>
+                                                <IonLabel>-10</IonLabel>
+                                                <IonRadio slot="start" color="tertiary" value="-10"></IonRadio>
+                                            </IonItem>
+                                            <IonItem>
+                                                <IonLabel>-15</IonLabel>
+                                                <IonRadio slot="start" color="tertiary" value="-15"></IonRadio>
+                                            </IonItem>
+                                                
+                                            </IonRadioGroup>        
+                                        
                                     </IonList>
-                                    <IonButton onClick={() => submitResponse()}>Submit</IonButton>
+                                    <IonButton onClick={() => SubmitRes()}>Submit</IonButton>
                                 </IonCardContent>
                             </IonCard>
                         </IonSlide>
