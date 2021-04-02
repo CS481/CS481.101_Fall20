@@ -3,7 +3,11 @@ import React from 'react';
 import { useParams } from 'react-router';
 import HomeContent from '../components/HomeContent';
 import FactoryContent from '../components/FactoryContent';
+import AboutContent from '../components/AboutContent';
+import AccountContent from '../components/AccountContent';
 import './Page.css';
+import PlayerContent from '../components/PlayerContent';
+import SignInContent from '../components/SignInContent';
 
 const Page: React.FC = () => {
 
@@ -60,6 +64,18 @@ const Page: React.FC = () => {
       }
       {name === 'factory' &&
         <FactoryContent />
+      }
+      {name === 'about' &&
+        <AboutContent />
+      }
+      {name === 'account' &&
+        <AccountContent />
+      }
+      {name === 'player' &&
+        <PlayerContent />
+      }
+      {name === 'loginsignup' &&
+        <SignInContent />
       }
         
       </IonContent>
