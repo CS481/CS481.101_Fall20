@@ -48,7 +48,10 @@ const FactoryContent: React.FC = () => {
         slidesPerView: 1,
         initialSlide: 0
     };
-    const [responseValue, setResponseValue] =useState([{'response':`Response 1`, 'responseValue':0}])
+    const [responseValue, setResponseValue] =useState([{
+        response: 'Repsonse 1',
+        responseValue: '0'
+    }])
 
     const operators = ['+','-','*','/','=',]
 
@@ -98,11 +101,11 @@ const FactoryContent: React.FC = () => {
 
     function appendResponses(){
         var newResponse = `Response ${responseValue.length +1}`;
-        var newResponseValue = 0;
+        var newResponseValue = '0';
         setResponseValue(prevState=>prevState.concat({response:newResponse, responseValue:newResponseValue}));
     }
 
-    function changeResponseValue(index:number, newValue:number){
+    function changeResponseValue(index:number, newValue:string){
         responseValue[index].responseValue = newValue;
     }
 
@@ -161,16 +164,44 @@ const FactoryContent: React.FC = () => {
     }
     function afterInit(response){
         console.log("AFTER INIT");
+        // var responseValueString = JSON.stringify(Object.assign({}, responseValue));
+        // var responseValueJSON = JSON.parse(responseValueString);
+        // var resourceStateString = JSON.stringify(Object.assign({}, resourcesState));
+        // var resourceStateJSON = JSON.parse(resourceStateString);
+        // var userResourceStateString = JSON.stringify(Object.assign({}, userResourcesState));
+        // var userResourceStateJSON = JSON.parse(userResourceStateString);
+        // console.log("RESPONSEVALUE: " + responseValueString + ", \n RESOURCESTATE: " + resourceStateString + ",\n USERRESOURCESTATE: " + userResourceStateString);
+
+        var responseValueJSON = {
+            "response1":"-10",
+            "response2":"-5",
+            "response3":"0",
+            "response4":"5",
+            "response5":"10",
+        }
+
+        var resourceStateJSON = {
+            "Resource 1":{"name":"Trees", "equation":"null","starting_value":0},
+            "Resource 2":{"name":"Money", "equation":"null","starting_value":10},
+            "Resource 3":{"name":"People", "equation":"null","starting_value":100}
+        }
+
+        var userResourceStateJSON = {
+            "Resource 1":{"name":"Trees", "equation":"null","starting_value":0},
+            "Resource 2":{"name":"Money", "equation":"null","starting_value":10},
+            "Resource 3":{"name":"People", "equation":"null","starting_value":100},
+        }
+
         var modifySimJson = {
             "user":{"username":"foo", "password":"P00%qwert"},
             "id":response.id,
-            "response_timeout":-1,
+            "response_timeout":1,
             "prompt":question,
-            "responses":responseValue,
+            "responses":responseValueJSON,
             "round_count":numRounds,
             "user_count":numPlayers,
-            "resources":resourcesState,
-            "user_resources": userResourcesState
+            "resources":resourceStateJSON,
+            "user_resources": userResourceStateJSON
         };
         ModifySimulation(modifySimJson, ()=>{console.log("MODIFY SIMULATION RAN")});
     }
@@ -269,7 +300,7 @@ const FactoryContent: React.FC = () => {
                         </IonItem>
                         <IonItem>
                             <IonLabel position="floating">Response Values</IonLabel>
-                            {responseValue.map((response, index)=><IonItem><IonLabel>Response {index+1}</IonLabel><IonInput type="number" value={response.responseValue} onIonChange={e => changeResponseValue(index,parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResponseValue(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}
+                            {responseValue.map((response, index)=><IonItem><IonLabel>Response {index+1}</IonLabel><IonInput type="number" value={response.responseValue} onIonChange={e => changeResponseValue(index, e.detail.value!)}></IonInput><IonButton onClick={() => deleteResponseValue(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}
                         </IonItem>
                         <IonButton onClick={() => appendResponses()}>Add Response</IonButton>
                     </IonList>
