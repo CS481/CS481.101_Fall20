@@ -1,9 +1,11 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonInput, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonRadioGroup, IonRadio, IonList, IonRippleEffect, IonRow, IonSlide, IonSlides, IonTextarea, IonHeader, IonListHeader } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonRefresher, IonRefresherContent, IonCardHeader, IonInput, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonRadioGroup, IonRadio, IonList, IonRippleEffect, IonRow, IonSlide, IonSlides, IonTextarea, IonHeader, IonListHeader } from "@ionic/react";
 import React, {useRef, useState } from "react";
 
 import './PlayerContent.css';
 //import {prompt, user_count, round_count,resources, _id} from './Info.json';
 import { BeginSim, SubmitResponse } from "./../util/Backend";
+import { RefresherEventDetail } from '@ionic/core';
+import { chevronDownCircleOutline } from 'ionicons/icons';
 
 
 
@@ -13,6 +15,8 @@ const PlayerContent: React.FC = () => {
     const [password, setPassword] = useState<string>();
     const [simulation_id, setSimulationID] = useState<string>();
     const [responses, setResponses] = useState<string>();
+    var currentRounds = 2;
+    var pastUsers = 2;
     var SimJson = {
         "turn_number": 0,
         "prompt": "prompty mcpromptface",
@@ -29,6 +33,9 @@ const playerSlides = useRef(document.createElement('ion-slides'));
 const next = () =>{
     playerSlides.current.slideNext();
 }
+function previous(){
+    playerSlides.current.slidePrev();
+}
 const verify = () =>{
     if ( password === "Ad3$5asdf" && username === "me"  ) {
         (simulation_id ==="a") ? next() : console.log("Error incorrect simulation Id");
@@ -41,6 +48,25 @@ const verify = () =>{
     // next();
     
 }
+
+//method that dynamically writes all the radio buttons
+function createOptions() {
+    var maxRadioButtons = 7;
+    for(var i = 0; i < maxRadioButtons; i++){
+        //loop that writes ion http
+        //close but this completely overwrites the page
+        // document.write("Hello world");
+        // document.write("<IonLabel className='ion-text-center'>Enter Your Player credentials</IonLabel>") 
+    }
+}
+
+function doRefresh() {
+    console.log('Begin async operation');
+  
+    setTimeout(function(){ alert("Hello"); previous(); }, 3000);
+    //previous();
+  }
+
 
 //'this' doesn't work in ionic .tsx need to find a replacement
 //pass in the in memory version of a json for this, should just be one object
@@ -78,7 +104,9 @@ function SubmitRes (){
         'response': responses
     };
     try{
-        SubmitResponse(UserResponse, ()=>{});
+        //SubmitResponse(UserResponse, ()=>{});
+        currentRounds++;
+        pastUsers = 3;
     }
     catch(error){
         console.log("Error: Could not submit Response")
@@ -93,7 +121,7 @@ function SubmitRes (){
         <IonGrid>   
             <IonRow className="ion-justify-content-center">
                 <IonCol className="ion-text-center">
-                    <IonSlides ref={playerSlides}>
+                    <IonSlides ref={playerSlides} onEnded={() => doRefresh()}>
                         <IonSlide class="swiper-no-swiping">
 
                             <IonCard className="container">
@@ -140,16 +168,15 @@ function SubmitRes (){
                                             <IonLabel>Simulation Prompt: {SimJson.prompt}</IonLabel>
                                         </IonItem>
                                         <IonItem>
-                                            <IonLabel>Current rounds: {2}</IonLabel>
-                                            <IonLabel>Number of past users: {2}</IonLabel>
+                                            <IonLabel>Current rounds: {currentRounds}</IonLabel>
+                                            <IonLabel>Number of past users: {pastUsers}</IonLabel>
                                         </IonItem>
-                                        
-
-                                        
+                                                                               
                                             <IonRadioGroup value={responses} onIonChange={e => setResponses(e.detail.value)}>
                                             <IonListHeader>
                                                 <IonHeader>Please enter response</IonHeader>
                                             </IonListHeader>
+                                            {createOptions()}
 
                                             <IonItem>
                                                 <IonLabel>15</IonLabel>
@@ -188,11 +215,16 @@ function SubmitRes (){
                             </IonCard>
                         </IonSlide>
 
-                        <IonSlide class="swiper-no-swiping"> 
+                        <IonSlide class="swiper-no-swiping" > 
                             <IonCard className="container">
                                 <IonCardHeader color="primary">
-                                    <IonCardTitle>Thank you for participating</IonCardTitle>
+                                    <IonCardTitle>Please wait on other participating users</IonCardTitle>
+                                     {/*-- Custom Refresher Content --*/}
+                                    <IonContent>
+                                        <IonLabel>{() =>doRefresh()}</IonLabel>
+                                    </IonContent>
                                 </IonCardHeader>
+
                                 
                             </IonCard>
                         </IonSlide>
