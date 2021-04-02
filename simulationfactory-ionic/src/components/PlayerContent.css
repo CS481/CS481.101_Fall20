@@ -1,0 +1,31 @@
+.ion-card {
+    text-align: center;
+}
+.ion-card-header{
+    width: 100%;
+}
+.container {
+  text-align: center;
+  height: 100%;
+  width: 100%;
+}
+
+.container strong {
+  font-size: 20px;
+  line-height: 26px;
+}
+
+.container p {
+  font-size: 16px;
+  line-height: 22px;
+  color: #8c8c8c;
+  margin: 0;
+}
+
+.container a {
+  text-decoration: none;
+}
+.ion-header{
+  text-align: left;
+  width: 100%;
+}
