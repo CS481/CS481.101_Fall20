@@ -15,7 +15,7 @@ let server_url = process.env.REACT_APP_SIMULATION_FACTORY_URL;
 //      callback (object): The callback to execute once the backend responds.
 //                         This callback accepts no arguments.
 export async function BeginSim(request, callback) {
-    Post(request, callback, 'BeginSim', IdRequest);
+    Post(request, callback, 'BeginSim', IdRequest, State);
 }
 
 // Executes the GetSimState procedure on the backend
@@ -96,7 +96,7 @@ async function Post(request, callback, backendProcedure, requestValidator, respo
     let fetch_url = `${server_url}/${backendProcedure}`;
     let fetch_body = {
         method: "POST",
-        headers: new Headers(),
+        headers: new Headers({'content-type': 'application/json'}),
         body: JSON.stringify(request)
     };
     let response = await fetch(fetch_url, fetch_body);
@@ -104,7 +104,7 @@ async function Post(request, callback, backendProcedure, requestValidator, respo
         if (responseValidator == null) {
             callback();
         } else {
-            callback(responseValidator.FromJSON(await response.text()));
+            callback(responseValidator.Validate(await response.json()));
         }
     } else {
         throw new Error(`Error ${response.status}: ${response.statusText}`)

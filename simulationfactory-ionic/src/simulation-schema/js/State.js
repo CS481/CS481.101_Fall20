@@ -1,5 +1,6 @@
 import Schema from "../js/Schema.js";
 import StateSchema from "../schema/State.json";
+import StateHistory from "../js/StateHistory.js";
 
 // Schema that represents the simulation's state
 export default class State extends Schema {

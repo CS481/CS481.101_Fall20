@@ -2,30 +2,31 @@
     "$id": "StateHistory",
     "type": "object",
     "additionalProperties": false,
-    "required": ["resources", "user_resources"],
+    "required": ["resources", "user_history"],
     "properties": {
         "resources": {
-            "type": "array",
-            "items": {
+            
                 "type": "object",
-                "additionalProperties": false,
-                "required": ["name", "value"],
-                "properties": {
-                    "name": {"type:": "string"},
-                    "value": {"type": "number"}
+                "patternProperties": {
+                    "^.*$": { "type": "number" }
                 }
-            }
+            
         },
-        "user_resources": {
+        "user_history": {
             "type": "array",
             "items": {
                 "type": "object",
                 "additionalProperties": false,
-                "required": ["name", "value", "user"],
+                "required": ["user", "resources", "response"],
                 "properties": {
-                    "name": {"type:": "string"},
-                    "value": {"type": "number"},
-                    "user": {"type": "string"}
+                    "user": {"type": "string"},
+                    "response": {"type:": "string"},
+                    "resources": {
+                        "type": "object",
+                        "patternProperties": {
+                            "^.*$": { "type": "number" }
+                        }
+                    }
                 }
             }
         }

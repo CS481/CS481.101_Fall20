@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonRefresher, IonRefresherContent, IonCardHeader, IonInput, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonRadioGroup, IonRadio, IonList, IonRippleEffect, IonRow, IonSlide, IonSlides, IonTextarea, IonHeader, IonListHeader } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonRefresher, IonRefresherContent, IonItemDivider, IonRange, IonCardHeader, IonInput, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonRadioGroup, IonRadio, IonList, IonRippleEffect, IonRow, IonSlide, IonSlides, IonTextarea, IonHeader, IonListHeader } from "@ionic/react";
 import React, {useRef, useState } from "react";
 
 import './PlayerContent.css';
@@ -7,25 +7,26 @@ import { BeginSim, SubmitResponse } from "./../util/Backend";
 import { RefresherEventDetail } from '@ionic/core';
 import { chevronDownCircleOutline } from 'ionicons/icons';
 
-
-
 const PlayerContent: React.FC = () => {
     //Javascript
     const [username,setUsername] = useState<string>();
     const [password, setPassword] = useState<string>();
     const [simulation_id, setSimulationID] = useState<string>();
-    const [responses, setResponses] = useState<string>();
-    var currentRounds = 2;
-    var pastUsers = 2;
-    var SimJson = {
-        "turn_number": 0,
-        "prompt": "prompty mcpromptface",
-        "user_id": "602d7d0fac624e1924781010",
-        "history": "",
-        "user_history": "",
-        "user_waiting": false
-    };
-    
+    const [response, setResponse] = useState<string>();
+
+    //Sim variables
+    const [turnNumber, setTurnNumber] = useState<number>();
+    const [prompt, setPrompt] = useState<string>();
+    const [responses, setResponses] = useState([
+        "200"
+    ]);
+
+
+    const [userID, setUserID] = useState<string>();
+    const [history, setHistory] = useState<string[]>();
+    const [userHistory, setUserHistory] = useState<string[]>();
+    const [userWaiting, setUserWaiting] = useState<boolean>();    
+    var SimResponses = [""];
 
 const userData = {'user':{'username':username, 'password':password}, 'id':simulation_id};
 const playerSlides = useRef(document.createElement('ion-slides'));
@@ -38,14 +39,14 @@ function previous(){
 }
 const verify = () =>{
     if ( password === "Ad3$5asdf" && username === "me"  ) {
-        (simulation_id ==="a") ? next() : console.log("Error incorrect simulation Id");
+        //(simulation_id ==="a") ? next() : console.log("Error incorrect simulation Id");
     }
     
     else{
         console.log("Error incorrect simulation Id");
     }
-    // StartSim();
-    // next();
+    StartSim();
+    
     
 }
 
@@ -73,9 +74,10 @@ function doRefresh() {
 function StartSim(){
     /*input state variable with response */
     try{
-        console.log("Username is "+userData.user.username+ "\nPassword is " +userData.user.password+ "\nThis is the sim id " + userData.id);
+        // console.log("Username is "+userData.user.username+ "\nPassword is " +userData.user.password+ "\nThis is the sim id " + userData.id);
         console.log("Environment variable "+ process.env.REACT_APP_SIMULATION_FACTORY_URL);
-        BeginSim( userData, (response) => InitSim(response));
+        BeginSim( userData, InitSim);
+        console.log("Begin sim has finished running ");
         //this sends the user data to the database and returns with response
         //response is an any type variable
     }
@@ -85,28 +87,39 @@ function StartSim(){
 }
 function InitSim (response){
     console.log("Initilizing Simulation Variables");
-    SimJson = {
-        "turn_number": response.turn_number,
-        "prompt": response.prompt,
-        "user_id": response.user_id,
-        "history": response.history,
-        "user_history": response.user_history,
-        "user_waiting": response.user_waiting
-    };
+    console.log("This is the response ---- "+response.responses);
+    
+    setTurnNumber(response.turn_number);
+    setPrompt(response.prompt);
+
+    for(let i = 0; i < response.responses.length; i++){
+        //setResponses(responses => [...responses, response.responses[i]]);
+    }
+    SimResponses = response.responses.sort();
+    setResponses(response.responses);
+    
+    setUserID(response.user_id);
+    setHistory(response.history);
+    setUserWaiting(response.user_waiting);
+
+    console.log("Testerrrr----------- +"+ userWaiting);
+    console.log("tesssssss "+ SimResponses);
+    console.log("Mooooooo ----- " + responses)
+    
+    
+    next();
 }
 
 //will be used once I get beginSim to work
 function SubmitRes (){
-    //empty method
+    //id is simulation id
     var UserResponse = {
         'user':{'username':username, 'password':password},
-        'simulation_id': SimJson.user_id,
-        'response': responses
+        'id': simulation_id,
+        'response': response   
     };
     try{
-        //SubmitResponse(UserResponse, ()=>{});
-        currentRounds++;
-        pastUsers = 3;
+        SubmitResponse(UserResponse, SubmitCallBack);
     }
     catch(error){
         console.log("Error: Could not submit Response")
@@ -115,7 +128,13 @@ function SubmitRes (){
     //end the method by sending the user to next slide
     next();
 }
-
+function SubmitCallBack(){
+    /*
+    Empty method
+        In case there is a need for a callback of SubmitResponse
+        An example is: if you wanted to do something but only if the backend succeeded such as backend credentials
+    */
+}
     return (
     <IonContent className="ion-padding">
         <IonGrid>   
@@ -165,19 +184,18 @@ function SubmitRes (){
                                 <IonCardContent>
                                     <IonList lines="none">
                                         <IonItem>
-                                            <IonLabel>Simulation Prompt: {SimJson.prompt}</IonLabel>
+                                            <IonLabel>Simulation Prompt: {prompt}</IonLabel>
                                         </IonItem>
                                         <IonItem>
-                                            <IonLabel>Current rounds: {currentRounds}</IonLabel>
-                                            <IonLabel>Number of past users: {pastUsers}</IonLabel>
+                                            <IonLabel>Current round: {turnNumber}</IonLabel>
                                         </IonItem>
+                                        {
                                                                                
-                                            <IonRadioGroup value={responses} onIonChange={e => setResponses(e.detail.value)}>
+                                            <IonRadioGroup value={response} onIonChange={e => setResponse(e.detail.value)}>
                                             <IonListHeader>
                                                 <IonHeader>Please enter response</IonHeader>
                                             </IonListHeader>
-                                            {createOptions()}
-
+                                            
                                             <IonItem>
                                                 <IonLabel>15</IonLabel>
                                                 <IonRadio slot="start" color="tertiary" value="15"></IonRadio>
@@ -208,7 +226,18 @@ function SubmitRes (){
                                             </IonItem>
                                                 
                                             </IonRadioGroup>        
-                                        
+                                        }
+
+<IonItemDivider>Default</IonItemDivider>
+          <IonItem>
+            <IonRange pin={true} min={-5} max={5} snaps onIonChange={e => setResponse(e.detail.value.toString())}/>
+            <IonLabel slot="start" color="tertiary">{SimResponses[0]}</IonLabel>
+            <IonLabel slot="end" color="tertiary">{/*responses[responses.length-1]*/}</IonLabel>
+          </IonItem>
+          <IonItem>
+            <IonLabel>Value: {response}</IonLabel>
+          </IonItem>
+
                                     </IonList>
                                     <IonButton onClick={() => SubmitRes()}>Submit</IonButton>
                                 </IonCardContent>
