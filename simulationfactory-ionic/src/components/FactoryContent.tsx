@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonRow, IonSlide, IonSlides, IonTextarea } from "@ionic/react";
+import { IonButton, IonCard, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonRadio, IonRow, IonSlide, IonSlides, IonTextarea } from "@ionic/react";
 import React, { useRef, useState} from "react";
 
 
@@ -48,12 +48,9 @@ const FactoryContent: React.FC = () => {
         slidesPerView: 1,
         initialSlide: 0
     };
-    const [responseValue, setResponseValue] =useState([{
-        response: 'Repsonse 1',
-        responseValue: '0'
-    }])
+    const [responseValue, setResponseValue] =useState(['0']);
 
-    const operators = ['+','-','*','/','=',]
+    const operators = ['+','-','*','/','=',];
 
     function appendResources(){
         var newResource = `Resource ${resourcesState.length + 1}`;
@@ -100,13 +97,11 @@ const FactoryContent: React.FC = () => {
     }
 
     function appendResponses(){
-        var newResponse = `Response ${responseValue.length +1}`;
-        var newResponseValue = '0';
-        setResponseValue(prevState=>prevState.concat({response:newResponse, responseValue:newResponseValue}));
+        setResponseValue(prevState=>prevState.concat('0'));
     }
 
     function changeResponseValue(index:number, newValue:string){
-        responseValue[index].responseValue = newValue;
+        responseValue[index] = newValue;
     }
 
     function deleteResponseValue(index:number){
@@ -135,6 +130,7 @@ const FactoryContent: React.FC = () => {
     }
 
     function updateValues(){
+        console.log("METHOD RAN");
         setTitle(title);
         setDesc(desc);
         setNumPlayers(numPlayers);
@@ -172,14 +168,9 @@ const FactoryContent: React.FC = () => {
         // var userResourceStateJSON = JSON.parse(userResourceStateString);
         // console.log("RESPONSEVALUE: " + responseValueString + ", \n RESOURCESTATE: " + resourceStateString + ",\n USERRESOURCESTATE: " + userResourceStateString);
 
-        var responseValueJSON = {
-            "response1":"-10",
-            "response2":"-5",
-            "response3":"0",
-            "response4":"5",
-            "response5":"10",
-        }
-
+        var responseValueJSON = {};
+        responseValue.forEach((response,index) => responseValueJSON["response"+index] = response);
+        console.log(responseValueJSON);
         var resourceStateJSON = {
             "Resource 1":{"name":"Trees", "equation":"null","starting_value":0},
             "Resource 2":{"name":"Money", "equation":"null","starting_value":10},
@@ -300,7 +291,7 @@ const FactoryContent: React.FC = () => {
                         </IonItem>
                         <IonItem>
                             <IonLabel position="floating">Response Values</IonLabel>
-                            {responseValue.map((response, index)=><IonItem><IonLabel>Response {index+1}</IonLabel><IonInput type="number" value={response.responseValue} onIonChange={e => changeResponseValue(index, e.detail.value!)}></IonInput><IonButton onClick={() => deleteResponseValue(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}
+                            {responseValue.map((response, index)=><IonItem><IonLabel>Response {index+1}</IonLabel><IonInput type="number" value={response} onIonChange={e => changeResponseValue(index, e.detail.value!)}></IonInput><IonButton onClick={() => deleteResponseValue(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}
                         </IonItem>
                         <IonButton onClick={() => appendResponses()}>Add Response</IonButton>
                     </IonList>
@@ -340,6 +331,8 @@ const FactoryContent: React.FC = () => {
             </IonSlide>
         </IonSlides>
     </IonContent>
+
+
     );
 };
 

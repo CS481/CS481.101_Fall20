@@ -51,6 +51,7 @@ export async function CheckCredentials(request, callback) {
 //      callback (object): The callback to execute once the backend responds.
 //                         This callback accepts one IdResponse argument.
 export async function InitializeSimulation(request, callback) {
+    console.log(server_url);
     Post(request, callback, 'SimulationInitialization', User, IdResponse);
 }
 
