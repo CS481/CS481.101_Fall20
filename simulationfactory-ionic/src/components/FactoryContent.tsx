@@ -18,16 +18,16 @@ const FactoryContent: React.FC = () => {
     const [playerTitle, setPlayerTitle] = useState<string>();
     const [resourcesState, setResourcesState] = useState([
         {
-            resource: 'Resource 1',
+            name: 'Resource 1',
             equation: 'NULL',
-            resourceValue: 0
+            starting_value: 0
         }
     ]);
     const [userResourcesState, setUserResourcesState] = useState([
         {
-            resource: 'User Resource 1',
+            name: 'User Resource 1',
             equation: 'NULL',
-            resourceValue: 0
+            starting_value: 0
         }
     ]);
     const [equationState, setEquationState] = useState([
@@ -55,21 +55,21 @@ const FactoryContent: React.FC = () => {
     function appendResources(){
         var newResource = `Resource ${resourcesState.length + 1}`;
         var newResourceValue = 0;
-        setResourcesState(prevState => (prevState.concat({resource:newResource, equation:'NULL', resourceValue:newResourceValue})));
+        setResourcesState(prevState => (prevState.concat({name:newResource, equation:'NULL', starting_value:newResourceValue})));
     }
     function deleteResource(index: number){
-        delete resourcesState[index];
+        resourcesState.splice(index,1);
         setResourcesState(prevState => prevState.slice(0));
     }
 
     function changeResourceName(index: number, newResource: string){
-        resourcesState[index] = {resource:newResource, equation:'NULL',resourceValue:resourcesState[index].resourceValue}
+        resourcesState[index] = {name:newResource, equation:'NULL',starting_value:resourcesState[index].starting_value}
         //Needed to refresh Chips
         setResourcesState(prevState => prevState.slice(0));
     }
 
     function changeResourceValue(index: number, newValue: number){
-        resourcesState[index] = {resource:resourcesState[index].resource, equation:'NULL', resourceValue:newValue}
+        resourcesState[index] = {name:resourcesState[index].name, equation:'NULL', starting_value:newValue}
         //Needed to refresh Chips
         setResourcesState(prevState => prevState.slice(0));
     }
@@ -77,21 +77,21 @@ const FactoryContent: React.FC = () => {
     function appendUserResources(){
         var newResource = `User Resource ${userResourcesState.length + 1}`;
         var newResourceValue = 0;
-        setUserResourcesState(prevState => (prevState.concat({resource:newResource, equation:'NULL', resourceValue:newResourceValue})));
+        setUserResourcesState(prevState => (prevState.concat({name:newResource, equation:'NULL', starting_value:newResourceValue})));
     }
     function deleteUserResource(index: number){
-        delete userResourcesState[index];
+        userResourcesState.splice(index,1);
         setUserResourcesState(prevState => prevState.slice(0));
     }
 
     function changeUserResourceName(index: number, newResource: string){
-        userResourcesState[index] = {resource:newResource, equation:'NULL',resourceValue:userResourcesState[index].resourceValue}
+        userResourcesState[index] = {name:newResource, equation:'NULL',starting_value:userResourcesState[index].starting_value}
         //Needed to refresh Chips
         setUserResourcesState(prevState => prevState.slice(0));
     }
 
     function changeUserResourceValue(index: number, newValue: number){
-        userResourcesState[index] = {resource:userResourcesState[index].resource, equation:'NULL', resourceValue:newValue}
+        userResourcesState[index] = {name:userResourcesState[index].name, equation:'NULL', starting_value:newValue}
         //Needed to refresh Chips
         setUserResourcesState(prevState => prevState.slice(0));
     }
@@ -105,7 +105,7 @@ const FactoryContent: React.FC = () => {
     }
 
     function deleteResponseValue(index:number){
-        delete responseValue[index];
+        responseValue.splice(index,1);
         setResponseValue(prevState => prevState.slice(0));
     }
 
@@ -171,21 +171,27 @@ const FactoryContent: React.FC = () => {
         var responseValueJSON = {};
         responseValue.forEach((response,index) => responseValueJSON["response"+index] = response);
         console.log(responseValueJSON);
-        var resourceStateJSON = {
-            "Resource 1":{"name":"Trees", "equation":"null","starting_value":0},
-            "Resource 2":{"name":"Money", "equation":"null","starting_value":10},
-            "Resource 3":{"name":"People", "equation":"null","starting_value":100}
+        
+        var resourceStateJSON = {};
+        for(var i=0; i < resourcesState.length; i++){
+            var resourceIndex = "Resource " + i;
+            var resourceJSON = {"name":resourcesState[i].name,"equation":resourcesState[i].equation,"starting_value":resourcesState[i].starting_value};
+            resourceStateJSON[resourceIndex] = resourceJSON;
         }
+        console.log(resourceStateJSON);
 
-        var userResourceStateJSON = {
-            "Resource 1":{"name":"Trees", "equation":"null","starting_value":0},
-            "Resource 2":{"name":"Money", "equation":"null","starting_value":10},
-            "Resource 3":{"name":"People", "equation":"null","starting_value":100},
+        var userResourceStateJSON = {};
+        for(var i=0; i < userResourcesState.length; i++){
+            var userResourceIndex = "Resource " + i;
+            var userResourceJSON = {"name":userResourcesState[i].name,"equation":userResourcesState[i].equation,"starting_value":userResourcesState[i].starting_value};
+            userResourceStateJSON[userResourceIndex] = userResourceJSON;
         }
+        console.log(userResourceStateJSON);
 
         var modifySimJson = {
             "user":{"username":"foo", "password":"P00%qwert"},
             "id":response.id,
+            "name":title,
             "response_timeout":1,
             "prompt":question,
             "responses":responseValueJSON,
@@ -254,7 +260,7 @@ const FactoryContent: React.FC = () => {
                             <IonCol><IonLabel position="floating">Value of Global Resource</IonLabel></IonCol>
                         </IonRow>
                         <IonRow>
-                            <IonCol>{resourcesState.map((resource,index) =><IonItem><IonInput value={resource.resource} onIonChange={e => changeResourceName(index, e.detail.value!)}></IonInput><IonInput type="number" onIonChange={e => changeResourceValue(index, parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResource(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}</IonCol>
+                            <IonCol>{resourcesState.map((resource,index) =><IonItem><IonInput value={resource.name} onIonChange={e => changeResourceName(index, e.detail.value!)}></IonInput><IonInput type="number" onIonChange={e => changeResourceValue(index, parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResource(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}</IonCol>
                         </IonRow>    
                         <IonRow><IonButton onClick={ () => appendResources()}>Add Global Resource</IonButton></IonRow>
                         <IonRow>
@@ -265,7 +271,7 @@ const FactoryContent: React.FC = () => {
                             <IonCol><IonLabel position="floating">Value of User Resource</IonLabel></IonCol>
                         </IonRow>
                         <IonRow>
-                            <IonCol>{userResourcesState.map((resource, index) =><IonItem><IonInput value={resource.resource} onIonChange={e => changeUserResourceName(index, e.detail.value!)}></IonInput><IonInput type="number" onIonChange={e => changeUserResourceValue(index, parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteUserResource(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}</IonCol>
+                            <IonCol>{userResourcesState.map((resource, index) =><IonItem><IonInput value={resource.name} onIonChange={e => changeUserResourceName(index, e.detail.value!)}></IonInput><IonInput type="number" onIonChange={e => changeUserResourceValue(index, parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteUserResource(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}</IonCol>
                         </IonRow>    
                         <IonRow><IonButton onClick={ () => appendUserResources()}>Add User Resource</IonButton></IonRow>
 
@@ -309,9 +315,9 @@ const FactoryContent: React.FC = () => {
                         <IonInput type="number" value={decisionWeight} onIonChange={e=> setDecisionWeight(parseInt(e.detail.value!, 10))}>Set Decision Weight</IonInput>
                         <IonInput type="number" value={impactMultiplier} onIonChange={e=> setImpactMultiplier(parseInt(e.detail.value!, 10))}>Set Impact of Resource Multiplier</IonInput>
                         <IonListHeader>Global Resources</IonListHeader>
-                        {resourcesState.map(resource =><IonChip onClick={()=>appendEquationState(resource.resource)}><IonLabel>{resource.resource}</IonLabel></IonChip>)}
+                        {resourcesState.map(resource =><IonChip onClick={()=>appendEquationState(resource.name)}><IonLabel>{resource.name}</IonLabel></IonChip>)}
                         <IonListHeader>User Resources</IonListHeader>
-                        {userResourcesState.map(resource=><IonChip onClick={()=>appendEquationState(resource.resource)}><IonLabel>{resource.resource}</IonLabel></IonChip>)}
+                        {userResourcesState.map(resource=><IonChip onClick={()=>appendEquationState(resource.name)}><IonLabel>{resource.name}</IonLabel></IonChip>)}
                         <IonListHeader>Player Response</IonListHeader>
                         {playerResponseString.map(playerResponse=><IonChip onClick={()=>appendEquationState(playerResponse)}><IonLabel>{playerResponse}</IonLabel></IonChip>)}
                         <IonListHeader>Operations</IonListHeader>
