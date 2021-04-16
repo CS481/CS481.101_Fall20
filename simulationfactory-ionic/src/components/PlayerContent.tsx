@@ -13,15 +13,25 @@ const PlayerContent: React.FC = () => {
     const [response, setResponse] = useState<string>();
 
     //Sim variables
+    //Use State Single variables
     const [turnNumber, setTurnNumber] = useState<number>();
     const [prompt, setPrompt] = useState<string>();
-    const [responses, setResponses] = useState<number[]>();
-
-
     const [userID, setUserID] = useState<string>();
-    const [history, setHistory] = useState<string[]>();
-    const [userHistory, setUserHistory] = useState<string[]>();
-    const [userWaiting, setUserWaiting] = useState<boolean>();    
+    const [userWaiting, setUserWaiting] = useState<boolean>();
+     
+    //Use State variables for slider elements
+    //The minimum and maximum values for the slider
+    //The Step value or the offset between slider ticks
+    const [minResponse, setMinResponse] = useState<number>(0);
+    const [maxResponse, setMaxResponse] = useState<number>(10);
+    const [stepResponse, setStepResponse] = useState<number>(1);
+
+    //Use State arrays
+    const [responses, setResponses] = useState([]);
+    const [history, setHistory] = useState([]);
+    const [userHistory, setUserHistory] = useState([]);
+    const [currentResponse, setCurrentResponse] = useState({});
+       
     var SimResponses = [1];
 
 const userData = {'user':{'username':username, 'password':password}, 'id':simulation_id};
@@ -66,24 +76,34 @@ function StartSim(){
 }
 function InitSim (response){
     console.log("Initilizing Simulation Variables");
-    console.log("This is the response ---- "+response.responses);
-    
+
+    //Single Json objects
     setTurnNumber(response.turn_number);
     setPrompt(response.prompt);
-    SimResponses = response.responses.sort();
-
-    // for(let i = 0; i < response.responses.length; i++){
-    //     setResponses(responses => responses.concat(SimResponses) )
-    // }
-    setResponses(responses => [...responses, response.responses.sort()]);
-    
     setUserID(response.user_id);
-    setHistory(response.history);
     setUserWaiting(response.user_waiting);
 
-    console.log("Testerrrr-----999s------ +"+ history);
-    console.log("tesssssss "+ SimResponses);
-    console.log("Mooooooo ----- " + responses)
+    //Setting Arrays    
+    setCurrentResponse(response.history[response.history.length-1]);
+    console.log("Current Response entry----" + JSON.stringify(currentResponse))
+    console.log("Response History is ---" + JSON.stringify(response.history))
+
+    //if statement to determine if the response type is a slider or radio button        
+    // if(response.type === 'slider'){
+    //     setMinResponse(response.min_response);
+    //     setMaxResponse(response.max_response);
+        
+    //     //since it is one by default we don't need to set 
+    //     //the Use State variables if it is one
+    //     if(response.step_response !== 1){
+    //         //if the step response is not one we set it
+    //         setStepResponse(response.step_response);
+    //     }
+    // } 
+    // //else if it's a radio button, currently we only have sliders or radios
+    // else{
+    //     setResponses(response.responses);
+    // }
     
     
     next();

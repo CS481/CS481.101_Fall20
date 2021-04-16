@@ -2,7 +2,7 @@
     "$id": "State",
     "type": "object",
     "additionalProperties": false,
-    "required": ["user_waiting", "turn_number", "response_deadline", "history", "prompt", "responses"],
+    "required": ["user_waiting", "turn_number", "response_deadline", "history", "prompt", "responses", "user_id"],
     "properties": {
         "turn_number": {
             "type": "number",
@@ -25,6 +25,9 @@
         "history": {
             "type": "array",
             "items": {"$ref": "StateHistory"}
+        },
+        "user_id": {
+            "type": "string"
         }
     }
 }
