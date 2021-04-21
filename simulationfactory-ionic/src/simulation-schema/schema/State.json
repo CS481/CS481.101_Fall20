@@ -2,7 +2,7 @@
     "$id": "State",
     "type": "object",
     "additionalProperties": false,
-    "required": ["user_waiting", "turn_number", "response_deadline", "history", "prompt", "responses", "user_id"],
+    "required": ["user_waiting", "turn_number", "response_deadline", "history", "prompt", "responses", "user_id", "start_text", "end_text"],
     "properties": {
         "turn_number": {
             "type": "number",
@@ -15,10 +15,9 @@
         "prompt": {
             "type": "string"
         },
-        "responses": {
-            "type": "array",
-            "items": {"type" : "string"}
-        },
+        "start_text": { "type": "string"},
+        "end_text": { "type": "string"},
+        "responses": { "$ref": "Responses" },
         "user_waiting": {
             "type": "boolean"
         },

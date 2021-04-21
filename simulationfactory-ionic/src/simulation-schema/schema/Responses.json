@@ -1,0 +1,28 @@
+{
+    "$id": "Responses",
+    "type": "object",
+    "required": ["response_type", "values"],
+    "properties": {
+        "response_type": {
+            "enum": ["radio", "slider"]
+        },
+        "values": {
+            "oneOf": [
+                {
+                    "type": "array",
+                    "items": { "type": "number" }
+                },
+                {
+                    "type": "object",
+                    "required": ["min_response", "max_response", "step_response"],
+                    "properties": {
+                        "min_response": { "type": "number" },
+                        "max_response": { "type": "number" },
+                        "step_response": { "type": "number" }
+                    }
+                }
+            ]
+        }
+    },
+    "additionalProperties": false
+}

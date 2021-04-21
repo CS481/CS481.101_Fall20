@@ -10,32 +10,43 @@ const PlayerContent: React.FC = () => {
     const [username,setUsername] = useState<string>();
     const [password, setPassword] = useState<string>();
     const [simulation_id, setSimulationID] = useState<string>();
-    const [response, setResponse] = useState<string>();
+    const [response, setResponse] = useState<string>("");
 
     //Sim variables
     //Use State Single variables
     const [turnNumber, setTurnNumber] = useState<number>();
     const [prompt, setPrompt] = useState<string>();
     const [userID, setUserID] = useState<string>();
-    const [userWaiting, setUserWaiting] = useState<boolean>();
+    const [userWaiting, setUserWaiting] = useState(false);
      
     //Use State variables for slider elements
     //The minimum and maximum values for the slider
     //The Step value or the offset between slider ticks
-    const [minResponse, setMinResponse] = useState<number>(0);
-    const [maxResponse, setMaxResponse] = useState<number>(10);
+    const [minResponse, setMinResponse] = useState<number>(1);
+    const [maxResponse, setMaxResponse] = useState<number>(5);
     const [stepResponse, setStepResponse] = useState<number>(1);
 
     //Use State arrays
-    const [responses, setResponses] = useState([]);
-    const [history, setHistory] = useState([]);
-    const [userHistory, setUserHistory] = useState([]);
-    const [currentResponse, setCurrentResponse] = useState({});
-       
-    var SimResponses = [1];
+    //const [responses, setResponses] = useState([]);
+    //const [history, setHistory] = useState([]);
+    //const [userHistory, setUserHistory] = useState([]);
+    const [currentResponse, setCurrentResponse] = useState([]);
+
+    //Test use state variables setters
+    //The global resource name and value
+    const [globalResource, setGlobalResource] = useState<string>();
+    const [globalValue, setGlobalValue] = useState<number>(0);
+    //The user resource name and value
+    const [userResource, setUserResource] = useState<string>();
+    const [user1Value, setUser1Value] = useState<number>(0);
+    const [user2Value, setUser2Value] = useState<number>();
+
+    //const [myData, setData] = useState<any[]>([]);
+
 
 const userData = {'user':{'username':username, 'password':password}, 'id':simulation_id};
 const playerSlides = useRef(document.createElement('ion-slides'));
+let userValues = [0]
 
 const next = () =>{
     playerSlides.current.slideNext();
@@ -66,7 +77,6 @@ function StartSim(){
         // console.log("Username is "+userData.user.username+ "\nPassword is " +userData.user.password+ "\nThis is the sim id " + userData.id);
         console.log("Environment variable "+ process.env.REACT_APP_SIMULATION_FACTORY_URL);
         BeginSim( userData, InitSim);
-        console.log("Begin sim has finished running ");
         //this sends the user data to the database and returns with response
         //response is an any type variable
     }
@@ -82,11 +92,22 @@ function InitSim (response){
     setPrompt(response.prompt);
     setUserID(response.user_id);
     setUserWaiting(response.user_waiting);
+    let current = response.history[response.history.length-1]
+    //let current = response.history[0]
 
     //Setting Arrays    
     setCurrentResponse(response.history[response.history.length-1]);
-    console.log("Current Response entry----" + JSON.stringify(currentResponse))
-    console.log("Response History is ---" + JSON.stringify(response.history))
+    //console.log("Real current response entry ---- " + JSON.stringify(current))
+    //console.log("Current Response entry----" + JSON.stringify(currentResponse ))
+    //console.log("Response History is ---" + JSON.stringify(response.history))
+
+    //Test setting individual values for resource
+    setGlobalValue( current.resources["resourcy mcresourceface"] );
+    
+    setUser1Value(current.user_history[0].resources["user resourcy mcresourceface"])
+    setUser2Value(current.user_history[current.user_history.length-1].resources["user resourcy mcresourceface"])
+    
+    
 
     //if statement to determine if the response type is a slider or radio button        
     // if(response.type === 'slider'){
@@ -105,8 +126,18 @@ function InitSim (response){
     //     setResponses(response.responses);
     // }
     
-    
+    console.log("Begin sim has finished running ");
     next();
+}
+
+//function that will print out all of the user resources in the current simulation
+function PrintUserResource(){
+    userValues.forEach(value =>         
+            <IonItem>
+                <IonLabel>{/*players resource name*/"user resourcy mcresourceface"} is at {user1Value}</IonLabel>
+            </IonItem>
+        
+    )
 }
 
 //will be used once I get beginSim to work
@@ -118,6 +149,8 @@ function SubmitRes (){
         'response': response   
     };
     try{
+        setGlobalValue(globalValue + parseInt(response, 10))
+        setUser1Value(user1Value- parseInt(response, 10))
         SubmitResponse(UserResponse, SubmitCallBack);
     }
     catch(error){
@@ -183,9 +216,17 @@ function SubmitCallBack(){
                                 <IonCardContent>
                                     <IonList lines="none">
                                         <IonItem>
-                                            <IonLabel>The environment resource is: {/*History resources */}</IonLabel>
-                                            <IonLabel>{/*first players resource name or function call */} is at---</IonLabel><IonLabel>{/*first players resource name or function call */} is at---</IonLabel>
+                                            <IonLabel>Environment Resource: {globalValue}</IonLabel>
                                         </IonItem>
+                                        {/*method that will post all of the users resource values */}
+                                        {PrintUserResource()}
+                                        <IonItem>
+                                            <IonLabel>{/*players resource name*/"Player 1's user resourcy mcresourceface"} is at {user1Value}</IonLabel>
+                                        </IonItem>
+                                        <IonItem>
+                                            <IonLabel>{/*players resource name*/"Player 2's user resourcy mcresourceface"} is at {user2Value}</IonLabel>
+                                        </IonItem>
+
                                         <IonItem>
                                             <IonLabel>Simulation Prompt: {prompt}</IonLabel>
                                         </IonItem>
@@ -198,7 +239,7 @@ function SubmitCallBack(){
                                     <IonItemDivider>Default</IonItemDivider> 
                                     */}
                                     <IonItem>
-                                        <IonRange pin={true} min={-5} max={5} snaps onIonChange={e => setResponse(e.detail.value.toString())}/>
+                                        <IonRange pin={true} min={minResponse} max={maxResponse} step={stepResponse} snaps onIonChange={e => setResponse(e.detail.value.toString())}/>
                                         <IonLabel slot="start" color="tertiary">min</IonLabel>
                                         <IonLabel slot="end" color="tertiary">Max</IonLabel>
                                     </IonItem>
@@ -220,6 +261,7 @@ function SubmitCallBack(){
                                     <IonContent>
                                         <IonLabel>{() =>doRefresh()}</IonLabel>
                                     </IonContent>
+                                    <IonButton onClick={() => previous()}>Go Back</IonButton>
                                 </IonCardHeader>
 
                                 
