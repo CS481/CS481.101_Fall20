@@ -34,10 +34,10 @@ const PlayerContent: React.FC = () => {
 
     //Test use state variables setters
     //The global resource name and value
-    const [globalResource, setGlobalResource] = useState<string>();
+    const [globalResource, setGlobalResource] = useState([" "]);
     const [globalValue, setGlobalValue] = useState<number>(0);
     //The user resource name and value
-    const [userResource, setUserResource] = useState<string>();
+    const [userResource, setUserResource] = useState([" "]);
     const [user1Value, setUser1Value] = useState<number>(0);
     const [user2Value, setUser2Value] = useState<number>();
 
@@ -52,13 +52,6 @@ const next = () =>{
 }
 function previous(){
     playerSlides.current.slidePrev();
-}
-const verify = () =>{
-    //next();
-   
-    StartSim();
-    
-    
 }
 
 function doRefresh() {
@@ -101,8 +94,11 @@ function InitSim (response){
     //console.log("Response History is ---" + JSON.stringify(response.history))
 
     //Test setting individual values for resource
+    
+    setGlobalResource(Object.keys(current.resources))
     setGlobalValue( current.resources["resourcy mcresourceface"] );
     
+    setUserResource(Object.keys(current.user_history[0].resources))
     setUser1Value(current.user_history[0].resources["user resourcy mcresourceface"])
     setUser2Value(current.user_history[current.user_history.length-1].resources["user resourcy mcresourceface"])
     
@@ -128,16 +124,6 @@ function InitSim (response){
     
     console.log("Begin sim has finished running ");
     next();
-}
-
-//function that will print out all of the user resources in the current simulation
-function PrintUserResource(){
-    userValues.forEach(value =>         
-            <IonItem>
-                <IonLabel>{/*players resource name*/"user resourcy mcresourceface"} is at {user1Value}</IonLabel>
-            </IonItem>
-        
-    )
 }
 
 //will be used once I get beginSim to work
@@ -166,6 +152,9 @@ function SubmitCallBack(){
         In case there is a need for a callback of SubmitResponse
         An example is: if you wanted to do something but only if the backend succeeded such as backend credentials
     */
+}
+function CheckState(){
+    //function to get the new States of the Simulation
 }
     return (
     <IonContent className="ion-padding">
@@ -202,13 +191,13 @@ function SubmitCallBack(){
                                         Begin
                                         <IonRippleEffect></IonRippleEffect>
                                     </IonButton>
-                                    <IonButton onClick={() => verify()}>Add Resource</IonButton>
+                                    <IonButton onClick={() => StartSim()}>Add Resource</IonButton>
 
                                 </IonCardContent>
                             </IonCard>
                         </IonSlide>
 
-                        <IonSlide class="swiper-no-swiping">
+                        <IonSlide class="swiper-no-swiping" >
                             <IonCard className="container">
                                 <IonCardHeader color="primary">
                                     <IonCardTitle>Simulation {username} Player</IonCardTitle>
@@ -216,15 +205,16 @@ function SubmitCallBack(){
                                 <IonCardContent>
                                     <IonList lines="none">
                                         <IonItem>
-                                            <IonLabel>Environment Resource: {globalValue}</IonLabel>
+                                            {/*globalResource is accessed at 0 statically on purpose
+                                            currently there is only one value accessed at that point, the method just returns an array of strings*/}
+                                            <IonLabel>{globalResource[0]}: {globalValue}</IonLabel>
                                         </IonItem>
-                                        {/*method that will post all of the users resource values */}
-                                        {PrintUserResource()}
+
                                         <IonItem>
-                                            <IonLabel>{/*players resource name*/"Player 1's user resourcy mcresourceface"} is at {user1Value}</IonLabel>
+                                            <IonLabel>{/*players resource name*/"Player 1's "+userResource} is at {user1Value}</IonLabel>
                                         </IonItem>
                                         <IonItem>
-                                            <IonLabel>{/*players resource name*/"Player 2's user resourcy mcresourceface"} is at {user2Value}</IonLabel>
+                                            <IonLabel>{/*players resource name*/"Player 2's " + userResource} is at {user2Value}</IonLabel>
                                         </IonItem>
 
                                         <IonItem>
