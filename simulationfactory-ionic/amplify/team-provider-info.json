@@ -1,0 +1,23 @@
+{
+    "simulation": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-simulationfactory-simulation-103036-authRole",
+            "UnauthRoleArn": "arn:aws:iam::999612365038:role/amplify-simulationfactory-simulation-103036-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::999612365038:role/amplify-simulationfactory-simulation-103036-authRole",
+            "Region": "us-east-2",
+            "DeploymentBucketName": "amplify-simulationfactory-simulation-103036-deployment",
+            "UnauthRoleName": "amplify-simulationfactory-simulation-103036-unauthRole",
+            "StackName": "amplify-simulationfactory-simulation-103036",
+            "StackId": "arn:aws:cloudformation:us-east-2:999612365038:stack/amplify-simulationfactory-simulation-103036/d2880cc0-97ad-11eb-b755-02041604b166",
+            "AmplifyAppId": "dy2ewfz2jp1x8"
+        },
+        "categories": {
+            "hosting": {
+                "amplifyhosting": {
+                    "appId": "dy2ewfz2jp1x8",
+                    "type": "manual"
+                }
+            }
+        }
+    }
+}

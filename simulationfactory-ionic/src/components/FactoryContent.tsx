@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonRadio, IonRow, IonSlide, IonSlides, IonTextarea } from "@ionic/react";
+import { IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonRadio, IonRow, IonSlide, IonSlides, IonTextarea, IonToggle } from "@ionic/react";
 import React, { useRef, useState} from "react";
 
 
@@ -200,6 +200,7 @@ const FactoryContent: React.FC = () => {
             "resources":resourceStateJSON,
             "user_resources": userResourceStateJSON
         };
+        console.log("SIMULATION ID:" + response.id);
         ModifySimulation(modifySimJson, ()=>{console.log("MODIFY SIMULATION RAN")});
     }
     
@@ -249,6 +250,23 @@ const FactoryContent: React.FC = () => {
                     <IonButton onClick={() => handleNext()}>Next Slide</IonButton>
                 </IonCard>
             </IonSlide>
+
+            <IonSlide>
+                <IonCard>
+                    <IonGrid>
+                        <IonRow>
+                            <IonCardHeader><IonCardTitle>Starting and Ending Text and Links</IonCardTitle></IonCardHeader>
+                        </IonRow>
+                        <IonRow>
+                            <IonCol><IonCardSubtitle>Starting Text or Link</IonCardSubtitle></IonCol>
+                            <IonCol><IonToggle/></IonCol>
+                            <IonCol><IonCardSubtitle>Ending Text or Link</IonCardSubtitle></IonCol>
+                            <IonCol><IonToggle/></IonCol>
+                        </IonRow>
+                    </IonGrid>
+                </IonCard>
+            </IonSlide>
+
             <IonSlide>
                 <IonCard className="container">
                     <IonGrid>

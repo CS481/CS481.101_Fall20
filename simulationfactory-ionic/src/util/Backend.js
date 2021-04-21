@@ -15,7 +15,7 @@ let server_url = process.env.REACT_APP_SIMULATION_FACTORY_URL;
 //      callback (object): The callback to execute once the backend responds.
 //                         This callback accepts no arguments.
 export async function BeginSim(request, callback) {
-    Post(request, callback, 'BeginSim', IdRequest);
+    Post(request, callback, 'BeginSim', IdRequest, State);
 }
 
 // Executes the GetSimState procedure on the backend
@@ -33,7 +33,7 @@ export async function GetState(request, callback) {
 //      callback (object): The callback to execute once the backend responds.
 //                         This callback accepts no arguments.
 export async function SubmitResponse(request, callback) {
-    Post(request, callback, 'SubmitResponse', UserResponse);
+    Post(request, callback, 'SubmitResponse', UserResponse, State);
 }
 
 // Executes the CheckCredentials procedure on the backend
