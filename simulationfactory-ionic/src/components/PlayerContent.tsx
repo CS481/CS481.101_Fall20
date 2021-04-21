@@ -43,7 +43,6 @@ const PlayerContent: React.FC = () => {
 
     //const [myData, setData] = useState<any[]>([]);
 
-
 const userData = {'user':{'username':username, 'password':password}, 'id':simulation_id};
 const playerSlides = useRef(document.createElement('ion-slides'));
 let userValues = [0]
@@ -109,22 +108,23 @@ function InitSim (response){
     
     
 
-    //if statement to determine if the response type is a slider or radio button        
-    // if(response.type === 'slider'){
-    //     setMinResponse(response.min_response);
-    //     setMaxResponse(response.max_response);
+    // if statement to determine if the response type is a slider or radio button        
+    if(response.responses.response_type === 'slider'){
+        setMinResponse(response.responses.values.min_response);
+        setMaxResponse(response.responses.values.max_response);
         
-    //     //since it is one by default we don't need to set 
-    //     //the Use State variables if it is one
-    //     if(response.step_response !== 1){
-    //         //if the step response is not one we set it
-    //         setStepResponse(response.step_response);
-    //     }
-    // } 
-    // //else if it's a radio button, currently we only have sliders or radios
-    // else{
-    //     setResponses(response.responses);
-    // }
+        
+        //since it is one by default we don't need to set 
+        //the Use State variables if it is one
+        if(response.responses.values.step_response !== 1){
+            //if the step response is not one we set it
+            setStepResponse(response.responses.values.step_response);
+        }
+    } 
+    //else if it's a radio button, currently we only have sliders or radios
+    else{
+        //setResponses(response.responses);
+    }
     
     console.log("Begin sim has finished running ");
     next();
