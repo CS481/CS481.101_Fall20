@@ -1,5 +1,6 @@
 import { IonButton, IonCard, IonCardContent, IonRefresher, IonRefresherContent, IonCardHeader, IonInput, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonRadioGroup, IonRadio, IonList, IonRippleEffect, IonRow, IonSlide, IonSlides, IonTextarea, IonHeader, IonListHeader } from "@ionic/react";
 import React, {useRef, useState } from "react";
+import { useParams } from 'react-router';
 
 import './PlayerContent.css';
 //import {prompt, user_count, round_count,resources, _id} from './Info.json';
@@ -7,13 +8,10 @@ import { BeginSim, SubmitResponse } from "./../util/Backend";
 import { RefresherEventDetail } from '@ionic/core';
 import { chevronDownCircleOutline } from 'ionicons/icons';
 
-
-
 const PlayerContent: React.FC = () => {
     //Javascript
     const [username,setUsername] = useState<string>();
     const [password, setPassword] = useState<string>();
-    const [simulation_id, setSimulationID] = useState<string>();
     const [responses, setResponses] = useState<string>();
     var currentRounds = 2;
     var pastUsers = 2;
@@ -25,6 +23,8 @@ const PlayerContent: React.FC = () => {
         "user_history": "",
         "user_waiting": false
     };
+
+    const simulation_id = useParams<{ id: string; }>().id;
     
 
 const userData = {'user':{'username':username, 'password':password}, 'id':simulation_id};
@@ -45,7 +45,7 @@ const verify = () =>{
         console.log("Error incorrect simulation Id");
     }
     // StartSim();
-    // next();
+    next();
     
 }
 
@@ -140,18 +140,9 @@ function SubmitRes (){
                                         <IonItem>
                                             <IonInput value={password} placeholder="Password" onIonChange={e => setPassword(e.detail.value!)}></IonInput>
                                         </IonItem>
-
-                                        <IonItem>
-                                            <IonInput value={simulation_id} placeholder="SimulationID" onIonChange={e => setSimulationID(e.detail.value!)}></IonInput>
-                                        </IonItem>
-                                        
                                     </IonList> 
 
-                                    <IonButton routerLink="/page/player" routerDirection="root">
-                                        Begin
-                                        <IonRippleEffect></IonRippleEffect>
-                                    </IonButton>
-                                    <IonButton onClick={() => verify()}>Add Resource</IonButton>
+                                    <IonButton onClick={() => verify()}>Begin</IonButton>
 
                                 </IonCardContent>
                             </IonCard>
@@ -160,7 +151,7 @@ function SubmitRes (){
                         <IonSlide class="swiper-no-swiping">
                             <IonCard className="container">
                                 <IonCardHeader color="primary">
-                                    <IonCardTitle>Simulation {username} Player</IonCardTitle>
+                                    <IonCardTitle>Simulation {simulation_id} Player</IonCardTitle>
                                 </IonCardHeader>
                                 <IonCardContent>
                                     <IonList lines="none">
@@ -171,7 +162,6 @@ function SubmitRes (){
                                             <IonLabel>Current rounds: {currentRounds}</IonLabel>
                                             <IonLabel>Number of past users: {pastUsers}</IonLabel>
                                         </IonItem>
-                                                                               
                                             <IonRadioGroup value={responses} onIonChange={e => setResponses(e.detail.value)}>
                                             <IonListHeader>
                                                 <IonHeader>Please enter response</IonHeader>

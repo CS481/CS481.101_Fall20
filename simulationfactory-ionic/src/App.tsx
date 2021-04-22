@@ -22,6 +22,7 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import PlayerContent from './components/PlayerContent';
 
 const App: React.FC = () => {
   return (
@@ -33,7 +34,7 @@ const App: React.FC = () => {
             <Route path="/" exact={true}>
               <Redirect to="/page/home" />
             </Route>
-            <Route path="/page/:name" exact={true}>
+            <Route path="/page/:name/:id?" exact={true}>
               <Page />
             </Route>
           </IonRouterOutlet>
