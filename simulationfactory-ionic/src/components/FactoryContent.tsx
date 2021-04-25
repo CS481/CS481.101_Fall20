@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonRadio, IonRow, IonSlide, IonSlides, IonTextarea, IonToggle } from "@ionic/react";
+import { IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonRadio, IonRow, IonSelect, IonSelectOption, IonSlide, IonSlides, IonTextarea, IonToggle } from "@ionic/react";
 import React, { useRef, useState} from "react";
 
 
@@ -51,6 +51,8 @@ const FactoryContent: React.FC = () => {
     const [responseValue, setResponseValue] =useState(['0']);
 
     const operators = ['+','-','*','/','=',];
+
+    const [responseType, setResponseType] = useState('radio');
 
     function appendResources(){
         var newResource = `Resource ${resourcesState.length + 1}`;
@@ -158,6 +160,27 @@ const FactoryContent: React.FC = () => {
         InitializeSimulation({"username":"foo", "password":"P00%qwert"},(response)=>afterInit(response));
 
     }
+
+    function radioSliderBuild(){
+        if(responseType ==='radio'){
+            return(
+                <IonItem>
+                    <IonLabel position="floating">Response Values</IonLabel>
+                    {responseValue.map((response, index)=><IonItem><IonLabel>Response {index+1}</IonLabel><IonInput type="number" value={response} onIonChange={e => changeResponseValue(index, e.detail.value!)}></IonInput><IonButton onClick={() => deleteResponseValue(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}
+                    <IonButton onClick={() => appendResponses()}>Add Response</IonButton>
+                </IonItem>
+            )
+        } else {
+            return (
+                <IonItem>
+                    <IonLabel>Minimum Response: </IonLabel><IonInput></IonInput>
+                    <IonLabel>Maximum Response: </IonLabel><IonInput></IonInput>
+                </IonItem>
+
+            )
+        }
+    }
+
     function afterInit(response){
         console.log("AFTER INIT");
         // var responseValueString = JSON.stringify(Object.assign({}, responseValue));
@@ -203,7 +226,7 @@ const FactoryContent: React.FC = () => {
         console.log("SIMULATION ID:" + response.id);
         ModifySimulation(modifySimJson, ()=>{console.log("MODIFY SIMULATION RAN")});
     }
-    
+
     return (
     <IonContent className="ion-padding">
         <IonSlides ref={factorySlides} pager={true} options={slideOpts} onIonSlideDidChange={()=>updateValues}>
@@ -263,6 +286,14 @@ const FactoryContent: React.FC = () => {
                             <IonCol><IonCardSubtitle>Ending Text or Link</IonCardSubtitle></IonCol>
                             <IonCol><IonToggle/></IonCol>
                         </IonRow>
+                        <IonRow>
+                            <IonCol>
+                                <IonInput></IonInput>
+                            </IonCol>
+                            <IonCol>
+                                <IonInput></IonInput>
+                            </IonCol>
+                        </IonRow>
                     </IonGrid>
                 </IonCard>
             </IonSlide>
@@ -314,10 +345,13 @@ const FactoryContent: React.FC = () => {
                             <IonInput value={question} onIonChange={e => setQuestion(e.detail.value!)}></IonInput>
                         </IonItem>
                         <IonItem>
-                            <IonLabel position="floating">Response Values</IonLabel>
-                            {responseValue.map((response, index)=><IonItem><IonLabel>Response {index+1}</IonLabel><IonInput type="number" value={response} onIonChange={e => changeResponseValue(index, e.detail.value!)}></IonInput><IonButton onClick={() => deleteResponseValue(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}
+                            <IonLabel>Multiple Choice or Slider</IonLabel>
+                            <IonSelect value={responseType} okText="Ok" cancelText="Dismiss" onIonChange={e => setResponseType(e.detail.value!)}>
+                                <IonSelectOption value="radio">Radio</IonSelectOption>
+                                <IonSelectOption value="slider">Slider</IonSelectOption>
+                            </IonSelect>
                         </IonItem>
-                        <IonButton onClick={() => appendResponses()}>Add Response</IonButton>
+                        {radioSliderBuild()}
                     </IonList>
                     <IonButton onClick={() => handlePrev()}>Previous Slide</IonButton>
                     <IonButton onClick={() => handleNext()}>Next Slide</IonButton>
