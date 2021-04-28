@@ -320,7 +320,7 @@ const FactoryContent: React.FC = () => {
                         </IonItem>
                         <IonItem>
                             <IonLabel className="ion-text-center">
-                                Invite participants to your simulation using this link: <a href={`${server_url}/${simulation_id}`}>{`${server_url}/${simulation_id}`}</a>
+                                Invite participants to your simulation using this link: <a href={`${simulation_id}`}>{`${server_url}/${simulation_id}`}</a>
                             </IonLabel>
                         </IonItem>
                     </IonList>

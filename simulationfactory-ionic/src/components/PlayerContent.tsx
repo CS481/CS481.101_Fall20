@@ -151,7 +151,7 @@ function SubmitRes (){
                         <IonSlide class="swiper-no-swiping">
                             <IonCard className="container">
                                 <IonCardHeader color="primary">
-                                    <IonCardTitle>Simulation {simulation_id} Player</IonCardTitle>
+                                    <IonCardTitle>Simulation Player</IonCardTitle>
                                 </IonCardHeader>
                                 <IonCardContent>
                                     <IonList lines="none">
