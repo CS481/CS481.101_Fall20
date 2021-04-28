@@ -35,6 +35,7 @@ type MyState = {
         }]
     }
 }
+var responseValue = '0';
 class SimulationPlayer extends React.Component<MyProps,MyState> {
     constructor(props){
         super(props);
@@ -93,6 +94,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
 
     setSimState() {
         GetState(this.getSimulationInstance(), (newState) => this.setState({simState: newState}));
+        console.log("Updating state info ")
         console.log(this.state);
     }
 
@@ -126,7 +128,10 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             )
         } else if(this.state.simState.responses.response_type === 'slider'){
             return (
-                <IonItem><IonRange min={this.state.simState.responses.min_response} max={this.state.simState.responses.max_response} step={this.state.simState.responses.step_response}></IonRange></IonItem>
+                <IonItem><IonRange pin={true} min={this.state.simState.responses.values.min_response} max={this.state.simState.responses.values.max_response} step={this.state.simState.responses.values.step_response} onIonChange={e =>{responseValue = e.detail.value.toString()}}></IonRange>
+                <IonLabel slot="start" color="tertiary">min: {this.state.simState.responses.values.min_response }</IonLabel>
+                <IonLabel slot="end" color="tertiary">Max: {this.state.simState.responses.values.max_response}</IonLabel>
+                </IonItem>
             )
         }
     }
@@ -148,7 +153,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             )
         } else if (!this.state.simState.user_waiting) {
             return (
-                //NOT WORKING, this.submitResponse is not functioning.
+                //NOT WORKING, this.submitResponse is functioning, the booleon radioValue is just not formatted.
                 <IonButton onClick={() => this.submitResponse()}>Submit</IonButton>
             )
         } else {
@@ -162,16 +167,40 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         if (this.state.simState.user_waiting) {
             return "Waiting..."
         } else {
-            return FormatString(this.state.simState.prompt, this.state.simState)
+            return (
+                <IonList lines="none">
+                    <IonItem>
+                        {/*globalResource is accessed at 0 statically on purpose
+                        currently there is only one value accessed at that point, the method just returns an array of strings*/}
+                        <IonLabel>{Object.keys(this.state.simState.history[this.state.simState.history.length-1].resources)}: { Object.values(this.state.simState.history[this.state.simState.history.length-1].resources) }</IonLabel>
+                    </IonItem>
+
+                    <IonItem>
+                        <IonLabel>{/*players resource name*/"Player 1's "}</IonLabel>
+                    </IonItem>
+                    <IonItem>
+                        <IonLabel>{/*players resource name*/"Player 2's "}</IonLabel>
+                    </IonItem>
+
+                    <IonItem>
+                        <IonLabel>Simulation Prompt: {this.state.simState.prompt}</IonLabel>
+                    </IonItem>
+                    <IonItem>
+                        <IonLabel slot="start">How would you like to affect your production</IonLabel>
+                        <IonLabel slot="end">Current round: {this.state.simState.turn_number}</IonLabel>
+                    </IonItem>
+                </IonList>
+            )
+            //FormatString(this.state.simState.prompt, this.state.simState)
         }
     }
 
     submitResponse() {
         // Do nothing if the user has not chosen a response
-        if (!this.state.radioValue) {
+        if (this.state.radioValue) {
             return
         }
-        SubmitResponse({user: this.getUser(), response: this.state.radioValue, simulation_id: this.state.simulation_id}, () => this.setState({radioValue: false, simState: {
+        SubmitResponse({user: this.getUser(), response: responseValue, id: this.state.simulation_id}, () => this.setState({radioValue: false, simState: {
             turn_number:this.state.simState.turn_number,
             response_deadline:this.state.simState.response_deadline,
             prompt:this.state.simState.prompt,
