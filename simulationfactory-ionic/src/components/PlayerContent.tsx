@@ -175,12 +175,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
                         <IonLabel>{Object.keys(this.state.simState.history[this.state.simState.history.length-1].resources)}: { Object.values(this.state.simState.history[this.state.simState.history.length-1].resources) }</IonLabel>
                     </IonItem>
 
-                    <IonItem>
-                        <IonLabel>{/*players resource name*/"Player 1's "}</IonLabel>
-                    </IonItem>
-                    <IonItem>
-                        <IonLabel>{/*players resource name*/"Player 2's "}</IonLabel>
-                    </IonItem>
+                    {this.renderCurrentUser()}
 
                     <IonItem>
                         <IonLabel>Simulation Prompt: {this.state.simState.prompt}</IonLabel>
@@ -192,6 +187,17 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
                 </IonList>
             )
             //FormatString(this.state.simState.prompt, this.state.simState)
+        }
+    }
+    renderCurrentUser(){
+        var currentSim = this.state.simState.history[this.state.simState.history.length-1];
+        for(var i = 0; i < currentSim.user_history.length; i++){
+            return(
+                <IonItem>
+                    <IonLabel>{"Player "+ (i+1)+"'s " + Object.keys(currentSim.user_history[i].resources) + ": "+ Object.values(currentSim.user_history[i].resources)}</IonLabel>
+                </IonItem>
+
+            )
         }
     }
 
