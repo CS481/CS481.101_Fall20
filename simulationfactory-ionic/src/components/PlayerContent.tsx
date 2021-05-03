@@ -2,7 +2,6 @@ import { IonButton, IonCard, IonCardContent, IonRefresher, IonRefresherContent, 
 import React, {useRef, useState } from "react";
 
 import './PlayerContent.css';
-//import {prompt, user_count, round_count,resources, _id} from './Info.json';
 import { BeginSim, SubmitResponse, GetState } from "./../util/Backend";
 import { RefresherEventDetail } from '@ionic/core';
 import { chevronDownCircleOutline } from 'ionicons/icons';
@@ -23,7 +22,6 @@ type MyState = {
         start_text:string,
         end_text:string,
         user_id:string,
-        user_waiting:boolean
         responses: any,
         history: [{
             resources:object,
@@ -36,6 +34,11 @@ type MyState = {
     }
 }
 var responseValue = '0';
+//variable to determine if the current user needs to wait
+//true means the user needs to wait
+//false means the user does not need to wait
+var user_waiting = false;
+
 class SimulationPlayer extends React.Component<MyProps,MyState> {
     constructor(props){
         super(props);
@@ -49,10 +52,13 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
                 start_text:'',
                 end_text:'',
                 user_id:'',
-                user_waiting:false,
                 responses:{
-                    response_type:'radio',
-                    items:[]
+                    response_type:'slider',
+                    values:{
+                        min_response: 0,
+                        max_response: 0,
+                        step_response: 1
+                    }
                 },
                 history:[{
                     resources:{},
@@ -77,6 +83,28 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         }
     }
 
+    isUserWaiting(){
+        var currentRound = this.state.simState.history[this.state.simState.history.length-1].user_history;
+        console.log(JSON.stringify(this.state.simState.history[this.state.simState.history.length-1].user_history));
+        var countEmptyResponse = 0;
+        var userCount = currentRound.length;
+
+        for(let i = 0; i < userCount; i++){
+            //console.log("Here is the stuff " + i + "here is empty " + countEmptyResponse)
+            if(currentRound[i].response === ""){
+                countEmptyResponse++;
+            }
+        }
+        if (countEmptyResponse == 2){
+            user_waiting = false;
+            countEmptyResponse = 0;
+        }
+        else{
+            user_waiting = true;
+            countEmptyResponse = 0;
+        }
+    }
+
     getUser() {
         return {username: this.state.username, password: this.state.password};
     }
@@ -90,12 +118,14 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             this.setState({logged_in: true});
             this.setSimState();
         });
+        this.isUserWaiting();
     }
 
     setSimState() {
-        GetState(this.getSimulationInstance(), (newState) => this.setState({simState: newState}));
+        GetState(this.getSimulationInstance(), (newState) => this.setState({simState : newState}));
         console.log("Updating state info ")
         console.log(this.state);
+        this.isUserWaiting();
     }
 
     renderLogin(){
@@ -137,7 +167,8 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
     }
 
     renderResponseButtons() {
-        if(!this.state.simState.user_waiting) {
+        //TODO: USER WAITING    
+        if(!user_waiting) {
             let responses = this.state.simState.responses.items;
             return responses.map((response) => {
                 <IonItem><IonLabel>{response}</IonLabel><IonRadio slot="start" value={response}/></IonItem>
@@ -151,7 +182,8 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             return (
                 <IonButton onClick={() => this.beginSim()}>Begin</IonButton>
             )
-        } else if (!this.state.simState.user_waiting) {
+            //TODO: USER WAITING
+        } else if (!user_waiting) {
             return (
                 //NOT WORKING, this.submitResponse is functioning, the booleon radioValue is just not formatted.
                 <IonButton onClick={() => this.submitResponse()}>Submit</IonButton>
@@ -164,7 +196,8 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
     }
 
     renderPrompt() {
-        if (this.state.simState.user_waiting) {
+        //TODO: USER WAITING
+        if (user_waiting) {
             return "Waiting..."
         } else {
             return (
@@ -203,9 +236,10 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
 
     submitResponse() {
         // Do nothing if the user has not chosen a response
-        if (this.state.radioValue) {
-            return
-        }
+        //TODO: RADIO VALUE?
+        // if (!this.state.radioValue) {
+        //     return
+        // }
         SubmitResponse({user: this.getUser(), response: responseValue, id: this.state.simulation_id}, () => this.setState({radioValue: false, simState: {
             turn_number:this.state.simState.turn_number,
             response_deadline:this.state.simState.response_deadline,
@@ -213,10 +247,10 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             start_text:this.state.simState.start_text,
             end_text:this.state.simState.end_text,
             user_id:this.state.simState.user_id,
-            user_waiting:true,
             responses:this.state.simState.responses,
             history:this.state.simState.history
         }}));
+        user_waiting = true;
     }
 }
 
