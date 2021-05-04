@@ -14,8 +14,10 @@ type MyState = {
     logged_in:boolean,
     username: string,
     password:string,
-    simulation_id:string
+    simulation_id:string,
+    response:number,
     simState: {
+        user_waiting:boolean,
         turn_number:number,
         response_deadline:string,
         prompt:string,
@@ -33,11 +35,6 @@ type MyState = {
         }]
     }
 }
-var responseValue = '0';
-//variable to determine if the current user needs to wait
-//true means the user needs to wait
-//false means the user does not need to wait
-var user_waiting = false;
 
 class SimulationPlayer extends React.Component<MyProps,MyState> {
     constructor(props){
@@ -45,7 +42,9 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         this.state = {
             radioValue: false,
             logged_in: false,
+            response: 0,
             simState: {
+                user_waiting:false,
                 turn_number: 1,
                 response_deadline:'',
                 prompt:'',
@@ -83,28 +82,6 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         }
     }
 
-    isUserWaiting(){
-        var currentRound = this.state.simState.history[this.state.simState.history.length-1].user_history;
-        console.log(JSON.stringify(this.state.simState.history[this.state.simState.history.length-1].user_history));
-        var countEmptyResponse = 0;
-        var userCount = currentRound.length;
-
-        for(let i = 0; i < userCount; i++){
-            //console.log("Here is the stuff " + i + "here is empty " + countEmptyResponse)
-            if(currentRound[i].response === ""){
-                countEmptyResponse++;
-            }
-        }
-        if (countEmptyResponse == 2){
-            user_waiting = false;
-            countEmptyResponse = 0;
-        }
-        else{
-            user_waiting = true;
-            countEmptyResponse = 0;
-        }
-    }
-
     getUser() {
         return {username: this.state.username, password: this.state.password};
     }
@@ -114,18 +91,15 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
     }
 
     beginSim() {
-        BeginSim(this.getSimulationInstance(), () => {
-            this.setState({logged_in: true});
-            this.setSimState();
+        BeginSim(this.getSimulationInstance(), (newState) => {
+            this.setState({logged_in: true, simState: newState});
         });
-        this.isUserWaiting();
     }
 
     setSimState() {
         GetState(this.getSimulationInstance(), (newState) => this.setState({simState : newState}));
         console.log("Updating state info ")
         console.log(this.state);
-        this.isUserWaiting();
     }
 
     renderLogin(){
@@ -158,7 +132,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             )
         } else if(this.state.simState.responses.response_type === 'slider'){
             return (
-                <IonItem><IonRange pin={true} min={this.state.simState.responses.values.min_response} max={this.state.simState.responses.values.max_response} step={this.state.simState.responses.values.step_response} onIonChange={e =>{responseValue = e.detail.value.toString()}}></IonRange>
+                <IonItem><IonRange pin={true} min={this.state.simState.responses.values.min_response} max={this.state.simState.responses.values.max_response} step={this.state.simState.responses.values.step_response} onIonChange={e =>this.setState({response:e.detail.value as number})}></IonRange>
                 <IonLabel slot="start" color="tertiary">min: {this.state.simState.responses.values.min_response }</IonLabel>
                 <IonLabel slot="end" color="tertiary">Max: {this.state.simState.responses.values.max_response}</IonLabel>
                 </IonItem>
@@ -168,7 +142,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
 
     renderResponseButtons() {
         //TODO: USER WAITING    
-        if(!user_waiting) {
+        if(!this.state.simState.user_waiting) {
             let responses = this.state.simState.responses.items;
             return responses.map((response) => {
                 <IonItem><IonLabel>{response}</IonLabel><IonRadio slot="start" value={response}/></IonItem>
@@ -183,7 +157,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
                 <IonButton onClick={() => this.beginSim()}>Begin</IonButton>
             )
             //TODO: USER WAITING
-        } else if (!user_waiting) {
+        } else if (!this.state.simState.user_waiting) {
             return (
                 //NOT WORKING, this.submitResponse is functioning, the booleon radioValue is just not formatted.
                 <IonButton onClick={() => this.submitResponse()}>Submit</IonButton>
@@ -197,7 +171,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
 
     renderPrompt() {
         //TODO: USER WAITING
-        if (user_waiting) {
+        if (this.state.simState.user_waiting) {
             return "Waiting..."
         } else {
             return (
@@ -240,17 +214,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         // if (!this.state.radioValue) {
         //     return
         // }
-        SubmitResponse({user: this.getUser(), response: responseValue, id: this.state.simulation_id}, () => this.setState({radioValue: false, simState: {
-            turn_number:this.state.simState.turn_number,
-            response_deadline:this.state.simState.response_deadline,
-            prompt:this.state.simState.prompt,
-            start_text:this.state.simState.start_text,
-            end_text:this.state.simState.end_text,
-            user_id:this.state.simState.user_id,
-            responses:this.state.simState.responses,
-            history:this.state.simState.history
-        }}));
-        user_waiting = true;
+        SubmitResponse({user: this.getUser(), response: this.state.response, id: this.state.simulation_id}, (newState) => this.setState({simState:newState}));
     }
 }
 
