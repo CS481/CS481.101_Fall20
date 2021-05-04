@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonRow, IonSlide, IonSlides, IonTextarea } from "@ionic/react";
+import { IonButton, IonCard, IonCardHeader, IonCardSubtitle, IonCardTitle, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonRadio, IonRow, IonSelect, IonSelectOption, IonSlide, IonSlides, IonTextarea, IonToggle } from "@ionic/react";
 import React, { useRef, useState} from "react";
 
 
@@ -18,16 +18,16 @@ const FactoryContent: React.FC = () => {
     const [playerTitle, setPlayerTitle] = useState<string>();
     const [resourcesState, setResourcesState] = useState([
         {
-            resource: 'Resource 1',
+            name: 'Resource 1',
             equation: 'NULL',
-            resourceValue: 0
+            starting_value: 0
         }
     ]);
     const [userResourcesState, setUserResourcesState] = useState([
         {
-            resource: 'User Resource 1',
+            name: 'User Resource 1',
             equation: 'NULL',
-            resourceValue: 0
+            starting_value: 0
         }
     ]);
     const [equationState, setEquationState] = useState([
@@ -48,28 +48,30 @@ const FactoryContent: React.FC = () => {
         slidesPerView: 1,
         initialSlide: 0
     };
-    const [responseValue, setResponseValue] =useState([{'response':`Response 1`, 'responseValue':0}])
+    const [responseValue, setResponseValue] =useState(['0']);
 
-    const operators = ['+','-','*','/','=',]
+    const operators = ['+','-','*','/','=',];
+
+    const [responseType, setResponseType] = useState('radio');
 
     function appendResources(){
         var newResource = `Resource ${resourcesState.length + 1}`;
         var newResourceValue = 0;
-        setResourcesState(prevState => (prevState.concat({resource:newResource, equation:'NULL', resourceValue:newResourceValue})));
+        setResourcesState(prevState => (prevState.concat({name:newResource, equation:'NULL', starting_value:newResourceValue})));
     }
     function deleteResource(index: number){
-        delete resourcesState[index];
+        resourcesState.splice(index,1);
         setResourcesState(prevState => prevState.slice(0));
     }
 
     function changeResourceName(index: number, newResource: string){
-        resourcesState[index] = {resource:newResource, equation:'NULL',resourceValue:resourcesState[index].resourceValue}
+        resourcesState[index] = {name:newResource, equation:'NULL',starting_value:resourcesState[index].starting_value}
         //Needed to refresh Chips
         setResourcesState(prevState => prevState.slice(0));
     }
 
     function changeResourceValue(index: number, newValue: number){
-        resourcesState[index] = {resource:resourcesState[index].resource, equation:'NULL', resourceValue:newValue}
+        resourcesState[index] = {name:resourcesState[index].name, equation:'NULL', starting_value:newValue}
         //Needed to refresh Chips
         setResourcesState(prevState => prevState.slice(0));
     }
@@ -77,37 +79,35 @@ const FactoryContent: React.FC = () => {
     function appendUserResources(){
         var newResource = `User Resource ${userResourcesState.length + 1}`;
         var newResourceValue = 0;
-        setUserResourcesState(prevState => (prevState.concat({resource:newResource, equation:'NULL', resourceValue:newResourceValue})));
+        setUserResourcesState(prevState => (prevState.concat({name:newResource, equation:'NULL', starting_value:newResourceValue})));
     }
     function deleteUserResource(index: number){
-        delete userResourcesState[index];
+        userResourcesState.splice(index,1);
         setUserResourcesState(prevState => prevState.slice(0));
     }
 
     function changeUserResourceName(index: number, newResource: string){
-        userResourcesState[index] = {resource:newResource, equation:'NULL',resourceValue:userResourcesState[index].resourceValue}
+        userResourcesState[index] = {name:newResource, equation:'NULL',starting_value:userResourcesState[index].starting_value}
         //Needed to refresh Chips
         setUserResourcesState(prevState => prevState.slice(0));
     }
 
     function changeUserResourceValue(index: number, newValue: number){
-        userResourcesState[index] = {resource:userResourcesState[index].resource, equation:'NULL', resourceValue:newValue}
+        userResourcesState[index] = {name:userResourcesState[index].name, equation:'NULL', starting_value:newValue}
         //Needed to refresh Chips
         setUserResourcesState(prevState => prevState.slice(0));
     }
 
     function appendResponses(){
-        var newResponse = `Response ${responseValue.length +1}`;
-        var newResponseValue = 0;
-        setResponseValue(prevState=>prevState.concat({response:newResponse, responseValue:newResponseValue}));
+        setResponseValue(prevState=>prevState.concat('0'));
     }
 
-    function changeResponseValue(index:number, newValue:number){
-        responseValue[index].responseValue = newValue;
+    function changeResponseValue(index:number, newValue:string){
+        responseValue[index] = newValue;
     }
 
     function deleteResponseValue(index:number){
-        delete responseValue[index];
+        responseValue.splice(index,1);
         setResponseValue(prevState => prevState.slice(0));
     }
 
@@ -132,6 +132,7 @@ const FactoryContent: React.FC = () => {
     }
 
     function updateValues(){
+        console.log("METHOD RAN");
         setTitle(title);
         setDesc(desc);
         setNumPlayers(numPlayers);
@@ -159,22 +160,73 @@ const FactoryContent: React.FC = () => {
         InitializeSimulation({"username":"foo", "password":"P00%qwert"},(response)=>afterInit(response));
 
     }
+
+    function radioSliderBuild(){
+        if(responseType ==='radio'){
+            return(
+                <IonItem>
+                    <IonLabel position="floating">Response Values</IonLabel>
+                    {responseValue.map((response, index)=><IonItem><IonLabel>Response {index+1}</IonLabel><IonInput type="number" value={response} onIonChange={e => changeResponseValue(index, e.detail.value!)}></IonInput><IonButton onClick={() => deleteResponseValue(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}
+                    <IonButton onClick={() => appendResponses()}>Add Response</IonButton>
+                </IonItem>
+            )
+        } else {
+            return (
+                <IonItem>
+                    <IonLabel>Minimum Response: </IonLabel><IonInput></IonInput>
+                    <IonLabel>Maximum Response: </IonLabel><IonInput></IonInput>
+                </IonItem>
+
+            )
+        }
+    }
+
     function afterInit(response){
         console.log("AFTER INIT");
+        // var responseValueString = JSON.stringify(Object.assign({}, responseValue));
+        // var responseValueJSON = JSON.parse(responseValueString);
+        // var resourceStateString = JSON.stringify(Object.assign({}, resourcesState));
+        // var resourceStateJSON = JSON.parse(resourceStateString);
+        // var userResourceStateString = JSON.stringify(Object.assign({}, userResourcesState));
+        // var userResourceStateJSON = JSON.parse(userResourceStateString);
+        // console.log("RESPONSEVALUE: " + responseValueString + ", \n RESOURCESTATE: " + resourceStateString + ",\n USERRESOURCESTATE: " + userResourceStateString);
+
+        var responseValueJSON = {};
+        responseValue.forEach((response,index) => responseValueJSON["response"+index] = response);
+        console.log(responseValueJSON);
+        
+        var resourceStateJSON = {};
+        for(var i=0; i < resourcesState.length; i++){
+            var resourceIndex = "Resource " + i;
+            var resourceJSON = {"name":resourcesState[i].name,"equation":resourcesState[i].equation,"starting_value":resourcesState[i].starting_value};
+            resourceStateJSON[resourceIndex] = resourceJSON;
+        }
+        console.log(resourceStateJSON);
+
+        var userResourceStateJSON = {};
+        for(var i=0; i < userResourcesState.length; i++){
+            var userResourceIndex = "Resource " + i;
+            var userResourceJSON = {"name":userResourcesState[i].name,"equation":userResourcesState[i].equation,"starting_value":userResourcesState[i].starting_value};
+            userResourceStateJSON[userResourceIndex] = userResourceJSON;
+        }
+        console.log(userResourceStateJSON);
+
         var modifySimJson = {
             "user":{"username":"foo", "password":"P00%qwert"},
             "id":response.id,
-            "response_timeout":-1,
+            "name":title,
+            "response_timeout":1,
             "prompt":question,
-            "responses":responseValue,
+            "responses":responseValueJSON,
             "round_count":numRounds,
             "user_count":numPlayers,
-            "resources":resourcesState,
-            "user_resources": userResourcesState
+            "resources":resourceStateJSON,
+            "user_resources": userResourceStateJSON
         };
+        console.log("SIMULATION ID:" + response.id);
         ModifySimulation(modifySimJson, ()=>{console.log("MODIFY SIMULATION RAN")});
     }
-    
+
     return (
     <IonContent className="ion-padding">
         <IonSlides ref={factorySlides} pager={true} options={slideOpts} onIonSlideDidChange={()=>updateValues}>
@@ -221,6 +273,31 @@ const FactoryContent: React.FC = () => {
                     <IonButton onClick={() => handleNext()}>Next Slide</IonButton>
                 </IonCard>
             </IonSlide>
+
+            <IonSlide>
+                <IonCard>
+                    <IonGrid>
+                        <IonRow>
+                            <IonCardHeader><IonCardTitle>Starting and Ending Text and Links</IonCardTitle></IonCardHeader>
+                        </IonRow>
+                        <IonRow>
+                            <IonCol><IonCardSubtitle>Starting Text or Link</IonCardSubtitle></IonCol>
+                            <IonCol><IonToggle/></IonCol>
+                            <IonCol><IonCardSubtitle>Ending Text or Link</IonCardSubtitle></IonCol>
+                            <IonCol><IonToggle/></IonCol>
+                        </IonRow>
+                        <IonRow>
+                            <IonCol>
+                                <IonInput></IonInput>
+                            </IonCol>
+                            <IonCol>
+                                <IonInput></IonInput>
+                            </IonCol>
+                        </IonRow>
+                    </IonGrid>
+                </IonCard>
+            </IonSlide>
+
             <IonSlide>
                 <IonCard className="container">
                     <IonGrid>
@@ -232,7 +309,7 @@ const FactoryContent: React.FC = () => {
                             <IonCol><IonLabel position="floating">Value of Global Resource</IonLabel></IonCol>
                         </IonRow>
                         <IonRow>
-                            <IonCol>{resourcesState.map((resource,index) =><IonItem><IonInput value={resource.resource} onIonChange={e => changeResourceName(index, e.detail.value!)}></IonInput><IonInput type="number" onIonChange={e => changeResourceValue(index, parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResource(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}</IonCol>
+                            <IonCol>{resourcesState.map((resource,index) =><IonItem><IonInput value={resource.name} onIonChange={e => changeResourceName(index, e.detail.value!)}></IonInput><IonInput type="number" onIonChange={e => changeResourceValue(index, parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResource(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}</IonCol>
                         </IonRow>    
                         <IonRow><IonButton onClick={ () => appendResources()}>Add Global Resource</IonButton></IonRow>
                         <IonRow>
@@ -243,7 +320,7 @@ const FactoryContent: React.FC = () => {
                             <IonCol><IonLabel position="floating">Value of User Resource</IonLabel></IonCol>
                         </IonRow>
                         <IonRow>
-                            <IonCol>{userResourcesState.map((resource, index) =><IonItem><IonInput value={resource.resource} onIonChange={e => changeUserResourceName(index, e.detail.value!)}></IonInput><IonInput type="number" onIonChange={e => changeUserResourceValue(index, parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteUserResource(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}</IonCol>
+                            <IonCol>{userResourcesState.map((resource, index) =><IonItem><IonInput value={resource.name} onIonChange={e => changeUserResourceName(index, e.detail.value!)}></IonInput><IonInput type="number" onIonChange={e => changeUserResourceValue(index, parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteUserResource(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}</IonCol>
                         </IonRow>    
                         <IonRow><IonButton onClick={ () => appendUserResources()}>Add User Resource</IonButton></IonRow>
 
@@ -268,10 +345,13 @@ const FactoryContent: React.FC = () => {
                             <IonInput value={question} onIonChange={e => setQuestion(e.detail.value!)}></IonInput>
                         </IonItem>
                         <IonItem>
-                            <IonLabel position="floating">Response Values</IonLabel>
-                            {responseValue.map((response, index)=><IonItem><IonLabel>Response {index+1}</IonLabel><IonInput type="number" value={response.responseValue} onIonChange={e => changeResponseValue(index,parseInt(e.detail.value!, 10))}></IonInput><IonButton onClick={() => deleteResponseValue(index)}><IonIcon slot="icon-only" icon={trashOutline} /></IonButton></IonItem>)}
+                            <IonLabel>Multiple Choice or Slider</IonLabel>
+                            <IonSelect value={responseType} okText="Ok" cancelText="Dismiss" onIonChange={e => setResponseType(e.detail.value!)}>
+                                <IonSelectOption value="radio">Radio</IonSelectOption>
+                                <IonSelectOption value="slider">Slider</IonSelectOption>
+                            </IonSelect>
                         </IonItem>
-                        <IonButton onClick={() => appendResponses()}>Add Response</IonButton>
+                        {radioSliderBuild()}
                     </IonList>
                     <IonButton onClick={() => handlePrev()}>Previous Slide</IonButton>
                     <IonButton onClick={() => handleNext()}>Next Slide</IonButton>
@@ -287,9 +367,9 @@ const FactoryContent: React.FC = () => {
                         <IonInput type="number" value={decisionWeight} onIonChange={e=> setDecisionWeight(parseInt(e.detail.value!, 10))}>Set Decision Weight</IonInput>
                         <IonInput type="number" value={impactMultiplier} onIonChange={e=> setImpactMultiplier(parseInt(e.detail.value!, 10))}>Set Impact of Resource Multiplier</IonInput>
                         <IonListHeader>Global Resources</IonListHeader>
-                        {resourcesState.map(resource =><IonChip onClick={()=>appendEquationState(resource.resource)}><IonLabel>{resource.resource}</IonLabel></IonChip>)}
+                        {resourcesState.map(resource =><IonChip onClick={()=>appendEquationState(resource.name)}><IonLabel>{resource.name}</IonLabel></IonChip>)}
                         <IonListHeader>User Resources</IonListHeader>
-                        {userResourcesState.map(resource=><IonChip onClick={()=>appendEquationState(resource.resource)}><IonLabel>{resource.resource}</IonLabel></IonChip>)}
+                        {userResourcesState.map(resource=><IonChip onClick={()=>appendEquationState(resource.name)}><IonLabel>{resource.name}</IonLabel></IonChip>)}
                         <IonListHeader>Player Response</IonListHeader>
                         {playerResponseString.map(playerResponse=><IonChip onClick={()=>appendEquationState(playerResponse)}><IonLabel>{playerResponse}</IonLabel></IonChip>)}
                         <IonListHeader>Operations</IonListHeader>
@@ -309,6 +389,8 @@ const FactoryContent: React.FC = () => {
             </IonSlide>
         </IonSlides>
     </IonContent>
+
+
     );
 };
 
