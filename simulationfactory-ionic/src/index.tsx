@@ -5,9 +5,9 @@ import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 
 import { defineCustomElements } from '@ionic/pwa-elements/loader';
-// import Amplify from "aws-amplify";
-// import awsExports from "./aws-exports";
-// Amplify.configure(awsExports);
+import Amplify from "aws-amplify";
+import awsExports from "./aws-exports";
+Amplify.configure(awsExports);
 
 // Call the element loader after the platform has been bootstrapped
 defineCustomElements(window);
