@@ -249,8 +249,8 @@ const FactoryContent: React.FC = () => {
             "responses":responseValueJSON,
             "round_count":numRounds,
             "user_count":numPlayers,
-            "resources":resourceStateJSON,
-            "user_resources": userResourceStateJSON
+            "resources":resourcesState,
+            "user_resources": userResourcesState
         };
         console.log("SIMULATION ID:" + response.id);
         ModifySimulation(modifySimJson, ()=>{console.log("MODIFY SIMULATION RAN")});
