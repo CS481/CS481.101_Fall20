@@ -1,231 +1,225 @@
-import { IonButton, IonCard, IonCardContent, IonRefresher, IonRefresherContent, IonCardHeader, IonInput, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonRadioGroup, IonRadio, IonList, IonRippleEffect, IonRow, IonSlide, IonSlides, IonTextarea, IonHeader, IonListHeader } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonRefresher, IonRefresherContent, IonItemDivider, IonRange, IonCardHeader, IonInput, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonRadioGroup, IonRadio, IonList, IonRippleEffect, IonRow, IonSlide, IonSlides, IonTextarea, IonHeader, IonListHeader, IonText } from "@ionic/react";
 import React, {useRef, useState } from "react";
 import { useParams } from 'react-router';
 
 import './PlayerContent.css';
-//import {prompt, user_count, round_count,resources, _id} from './Info.json';
-import { BeginSim, SubmitResponse } from "./../util/Backend";
+import { BeginSim, SubmitResponse, GetState } from "./../util/Backend";
 import { RefresherEventDetail } from '@ionic/core';
 import { chevronDownCircleOutline } from 'ionicons/icons';
 
-const PlayerContent: React.FC = () => {
-    //Javascript
-    const [username,setUsername] = useState<string>();
-    const [password, setPassword] = useState<string>();
-    const [responses, setResponses] = useState<string>();
-    var currentRounds = 2;
-    var pastUsers = 2;
-    var SimJson = {
-        "turn_number": 0,
-        "prompt": "prompty mcpromptface",
-        "user_id": "602d7d0fac624e1924781010",
-        "history": "",
-        "user_history": "",
-        "user_waiting": false
-    };
+import FormatString from "../util/FormatString.js";
 
-    const simulation_id = useParams<{ id: string; }>().id;
-    
-
-const userData = {'user':{'username':username, 'password':password}, 'id':simulation_id};
-const playerSlides = useRef(document.createElement('ion-slides'));
-
-const next = () =>{
-    playerSlides.current.slideNext();
-}
-function previous(){
-    playerSlides.current.slidePrev();
-}
-const verify = () =>{
-    if ( password === "Ad3$5asdf" && username === "me"  ) {
-        (simulation_id ==="a") ? next() : console.log("Error incorrect simulation Id");
-    }
-    
-    else{
-        console.log("Error incorrect simulation Id");
-    }
-    // StartSim();
-    next();
-    
-}
-
-//method that dynamically writes all the radio buttons
-function createOptions() {
-    var maxRadioButtons = 7;
-    for(var i = 0; i < maxRadioButtons; i++){
-        //loop that writes ion http
-        //close but this completely overwrites the page
-        // document.write("Hello world");
-        // document.write("<IonLabel className='ion-text-center'>Enter Your Player credentials</IonLabel>") 
-    }
-}
-
-function doRefresh() {
-    console.log('Begin async operation');
-  
-    setTimeout(function(){ alert("Hello"); previous(); }, 3000);
-    //previous();
-  }
-
-
-//'this' doesn't work in ionic .tsx need to find a replacement
-//pass in the in memory version of a json for this, should just be one object
-function StartSim(){
-    /*input state variable with response */
-    try{
-        console.log("Username is "+userData.user.username+ "\nPassword is " +userData.user.password+ "\nThis is the sim id " + userData.id);
-        console.log("Environment variable "+ process.env.REACT_APP_SIMULATION_FACTORY_URL);
-        BeginSim( userData, (response) => InitSim(response));
-        //this sends the user data to the database and returns with response
-        //response is an any type variable
-    }
-    catch(error){
-        console.log("Invalid User credentials");
-    }
-}
-function InitSim (response){
-    console.log("Initilizing Simulation Variables");
-    SimJson = {
-        "turn_number": response.turn_number,
-        "prompt": response.prompt,
-        "user_id": response.user_id,
-        "history": response.history,
-        "user_history": response.user_history,
-        "user_waiting": response.user_waiting
-    };
-}
-
-//will be used once I get beginSim to work
-function SubmitRes (){
-    //empty method
-    var UserResponse = {
-        'user':{'username':username, 'password':password},
-        'simulation_id': SimJson.user_id,
-        'response': responses
-    };
-    try{
-        //SubmitResponse(UserResponse, ()=>{});
-        currentRounds++;
-        pastUsers = 3;
-    }
-    catch(error){
-        console.log("Error: Could not submit Response")
-    }
-
-    //end the method by sending the user to next slide
-    next();
-}
-
-    return (
-    <IonContent className="ion-padding">
-        <IonGrid>   
-            <IonRow className="ion-justify-content-center">
-                <IonCol className="ion-text-center">
-                    <IonSlides ref={playerSlides} onEnded={() => doRefresh()}>
-                        <IonSlide class="swiper-no-swiping">
-
-                            <IonCard className="container">
-                                <IonCardHeader color="primary">
-                                    <IonCardTitle>Simulation Player</IonCardTitle>
-                                </IonCardHeader>
-                                <IonCardContent>
-                                    <IonList lines="none">
-                                        <IonItem>
-                                            <IonLabel className="ion-text-center">Enter Your Player credentials</IonLabel>
-                                        </IonItem>
-                                        <IonItem>
-                                            <IonInput value={username} placeholder="Username"onIonChange={e => setUsername(e.detail.value!)}></IonInput>                                    
-                                        </IonItem>
-
-                                        <IonItem>
-                                            <IonInput value={password} placeholder="Password" onIonChange={e => setPassword(e.detail.value!)}></IonInput>
-                                        </IonItem>
-                                    </IonList> 
-
-                                    <IonButton onClick={() => verify()}>Begin</IonButton>
-
-                                </IonCardContent>
-                            </IonCard>
-                        </IonSlide>
-
-                        <IonSlide class="swiper-no-swiping">
-                            <IonCard className="container">
-                                <IonCardHeader color="primary">
-                                    <IonCardTitle>Simulation Player</IonCardTitle>
-                                </IonCardHeader>
-                                <IonCardContent>
-                                    <IonList lines="none">
-                                        <IonItem>
-                                            <IonLabel>Simulation Prompt: {SimJson.prompt}</IonLabel>
-                                        </IonItem>
-                                        <IonItem>
-                                            <IonLabel>Current rounds: {currentRounds}</IonLabel>
-                                            <IonLabel>Number of past users: {pastUsers}</IonLabel>
-                                        </IonItem>
-                                            <IonRadioGroup value={responses} onIonChange={e => setResponses(e.detail.value)}>
-                                            <IonListHeader>
-                                                <IonHeader>Please enter response</IonHeader>
-                                            </IonListHeader>
-                                            {createOptions()}
-
-                                            <IonItem>
-                                                <IonLabel>15</IonLabel>
-                                                <IonRadio slot="start" color="tertiary" value="15"></IonRadio>
-                                            </IonItem>
-                                            <IonItem>
-                                                <IonLabel>10</IonLabel>
-                                                <IonRadio slot="start" color="tertiary" value="10"></IonRadio>
-                                            </IonItem>
-                                            <IonItem>
-                                                <IonLabel>5</IonLabel>
-                                                <IonRadio slot="start" color="tertiary" value="5"></IonRadio>
-                                            </IonItem>
-                                            <IonItem>
-                                                <IonLabel>0</IonLabel>
-                                                <IonRadio slot="start" color="tertiary" value="0"></IonRadio>
-                                            </IonItem>
-                                            <IonItem>
-                                                <IonLabel>-5</IonLabel>
-                                                <IonRadio slot="start" color="tertiary" value="-5"></IonRadio>
-                                            </IonItem>
-                                            <IonItem>
-                                                <IonLabel>-10</IonLabel>
-                                                <IonRadio slot="start" color="tertiary" value="-10"></IonRadio>
-                                            </IonItem>
-                                            <IonItem>
-                                                <IonLabel>-15</IonLabel>
-                                                <IonRadio slot="start" color="tertiary" value="-15"></IonRadio>
-                                            </IonItem>
-                                                
-                                            </IonRadioGroup>        
-                                        
-                                    </IonList>
-                                    <IonButton onClick={() => SubmitRes()}>Submit</IonButton>
-                                </IonCardContent>
-                            </IonCard>
-                        </IonSlide>
-
-                        <IonSlide class="swiper-no-swiping" > 
-                            <IonCard className="container">
-                                <IonCardHeader color="primary">
-                                    <IonCardTitle>Please wait on other participating users</IonCardTitle>
-                                     {/*-- Custom Refresher Content --*/}
-                                    <IonContent>
-                                        <IonLabel>{() =>doRefresh()}</IonLabel>
-                                    </IonContent>
-                                </IonCardHeader>
-
-                                
-                            </IonCard>
-                        </IonSlide>
-
-                    </IonSlides>
-
-                </IonCol>
-            </IonRow>
-        </IonGrid>
-    </IonContent>
-    );
+type MyProps = {
+    id: string
 };
+type MyState = {
+    radioValue: boolean,
+    logged_in:boolean,
+    username: string,
+    password:string,
+    simulation_id:string,
+    response:number,
+    simState: {
+        user_waiting:boolean,
+        turn_number:number,
+        response_deadline:string,
+        prompt:string,
+        start_text:string,
+        end_text:string,
+        user_id:string,
+        responses: any,
+        history: [{
+            resources:object,
+            user_history:[{
+                user:string,
+                response:string,
+                resources:object
+            }]
+        }]
+    }
+}
 
-export default PlayerContent;
+class SimulationPlayer extends React.Component<MyProps,MyState> {
+    constructor(props){
+        // this.props.match.params.id
+        super(props);
+        this.state = {
+            radioValue: false,
+            logged_in: false,
+            response: 0,
+            simState: {
+                user_waiting:false,
+                turn_number: 1,
+                response_deadline:'',
+                prompt:'',
+                start_text:'',
+                end_text:'',
+                user_id:'',
+                responses:{
+                    response_type:'slider',
+                    values:{
+                        min_response: 0,
+                        max_response: 0,
+                        step_response: 1
+                    }
+                },
+                history:[{
+                    resources:{},
+                    user_history:[{
+                        user:'',
+                        response:'',
+                        resources:{}
+                    }]
+                }]
+            },
+            username:'',
+            password:'',
+            simulation_id: props.id
+        };
+    }
+
+    render() {
+        if (this.state.logged_in) {
+            return this.renderPlayer();
+        } else {
+            return this.renderLogin();
+        }
+    }
+
+    getUser() {
+        return {username: this.state.username, password: this.state.password};
+    }
+
+    getSimulationInstance() {
+        return {user: this.getUser(), id: this.state.simulation_id};
+    }
+
+    beginSim() {
+        BeginSim(this.getSimulationInstance(), (newState) => {
+            this.setState({logged_in: true, simState: newState});
+        });
+    }
+
+    setSimState() {
+        GetState(this.getSimulationInstance(), (newState) => this.setState({simState : newState}));
+        console.log("Updating state info ")
+        console.log(this.state);
+    }
+
+    renderLogin(){
+        return(
+            <IonCard>
+                <IonInput id="username_field" placeholder="Username" onIonChange={(t) => this.setState({username:t.detail.value!})}></IonInput>
+                <IonInput id="password_field" type="password" placeholder="Password" onIonChange={(t) => this.setState({password:t.detail.value!})}></IonInput>
+                {this.renderSubmitButton()}
+            </IonCard>
+        )
+    }
+
+    renderPlayer() {
+        return (
+            <IonCard>
+                {this.renderPrompt()}
+                {this.renderResponses()}
+                {this.renderSubmitButton()}
+            </IonCard>
+        )
+    }
+
+    renderResponses() {
+        if(this.state.simState.responses.response_type ==='radio'){
+            return (
+                <IonRadioGroup value={this.state.radioValue} onIonChange={(e) =>{this.setState({radioValue: e.detail.value!})}}>
+                    {this.renderResponseButtons()}
+                </IonRadioGroup>
+            )
+        } else if(this.state.simState.responses.response_type === 'slider'){
+            return (
+                <IonItem><IonRange pin={true} min={this.state.simState.responses.values.min_response} max={this.state.simState.responses.values.max_response} step={this.state.simState.responses.values.step_response} onIonChange={e =>this.setState({response:e.detail.value as number})}></IonRange>
+                <IonLabel slot="start" color="tertiary">min: {this.state.simState.responses.values.min_response }</IonLabel>
+                <IonLabel slot="end" color="tertiary">Max: {this.state.simState.responses.values.max_response}</IonLabel>
+                </IonItem>
+            )
+        }
+    }
+
+    renderResponseButtons() {
+        //TODO: USER WAITING    
+        if(!this.state.simState.user_waiting) {
+            let responses = this.state.simState.responses.items;
+            return responses.map((response) => {
+                <IonItem><IonLabel>{response}</IonLabel><IonRadio slot="start" value={response}/></IonItem>
+            })
+        }
+    }
+
+    renderSubmitButton() {
+        if (!this.state.logged_in)
+        {
+            return (
+                <IonButton onClick={() => this.beginSim()}>Begin</IonButton>
+            )
+            //TODO: USER WAITING
+        } else if (!this.state.simState.user_waiting) {
+            return (
+                //NOT WORKING, this.submitResponse is functioning, the booleon radioValue is just not formatted.
+                <IonButton onClick={() => this.submitResponse()}>Submit</IonButton>
+            )
+        } else {
+            return (
+                <IonButton onClick={() => this.setSimState()}>Refresh</IonButton>
+            )
+        }
+    }
+
+    renderPrompt() {
+        //TODO: USER WAITING
+        if (this.state.simState.user_waiting) {
+            return "Waiting..."
+        } else {
+            return (
+                <IonList lines="none">
+                    <IonItem>
+                        {/*globalResource is accessed at 0 statically on purpose
+                        currently there is only one value accessed at that point, the method just returns an array of strings*/}
+                        <IonLabel>{Object.keys(this.state.simState.history[this.state.simState.history.length-1].resources)}: { Object.values(this.state.simState.history[this.state.simState.history.length-1].resources) }</IonLabel>
+                    </IonItem>
+
+                    {this.renderCurrentUser()}
+
+                    <IonItem>
+                        <IonLabel>Simulation Prompt: {this.state.simState.prompt}</IonLabel>
+                    </IonItem>
+                    <IonItem>
+                        <IonLabel slot="start">How would you like to affect your production</IonLabel>
+                        <IonLabel slot="end">Current round: {this.state.simState.turn_number}</IonLabel>
+                    </IonItem>
+                </IonList>
+            )
+            //FormatString(this.state.simState.prompt, this.state.simState)
+        }
+    }
+    renderCurrentUser(){
+        var currentSim = this.state.simState.history[this.state.simState.history.length-1];
+        for(var i = 0; i < currentSim.user_history.length; i++){
+            return(
+                <IonItem>
+                    <IonLabel>{"Player "+ (i+1)+"'s " + Object.keys(currentSim.user_history[i].resources) + ": "+ Object.values(currentSim.user_history[i].resources)}</IonLabel>
+                </IonItem>
+
+            )
+        }
+    }
+
+    submitResponse() {
+        SubmitResponse({user: this.getUser(), response: this.state.response, id: this.state.simulation_id}, (newState) => this.setState({simState:newState}));
+    }
+}
+
+function Playerpage(props) {
+    return (
+        <SimulationPlayer {...props}/>
+    );
+}
+
+export default Playerpage;

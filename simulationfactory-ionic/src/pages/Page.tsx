@@ -10,7 +10,7 @@ import PlayerId from '../components/PlayerId';
 import PlayerContent from '../components/PlayerContent';
 import SignInContent from '../components/SignInContent';
 
-const Page: React.FC = () => {
+const Page: React.FC<any> = (props) => {
 
   const { name } = useParams<{ name: string; }>();
 
@@ -83,7 +83,7 @@ const Page: React.FC = () => {
         <SignInContent />
       }
       {name == 'player' &&
-        <PlayerContent/>
+        <PlayerContent id={props.match.params.id}/>
       }
 
       </IonContent>
