@@ -36,7 +36,13 @@ const FactoryContent: React.FC = () => {
         }
     ]);
     const [numRounds, setNumRounds] = useState<number>(1);
-    const [question, setQuestion] = useState('')
+    const [question, setQuestion] = useState('');
+
+    const [startTextCheck, setStartTextCheck] = useState<boolean>(false);
+    const [endTextCheck, setEndTextCheck] = useState<boolean>(false);
+
+    const [startText, setStartText] = useState<string>('');
+    const [endText, setEndText] = useState<string>('');
 
     const [profitMultiplier, setProfitMultiplier] = useState<number>(1);
     const [decisionWeight, setDecisionWeight] = useState<number>(1);
@@ -50,9 +56,15 @@ const FactoryContent: React.FC = () => {
     };
     const [responseValue, setResponseValue] =useState(['0']);
 
+    const [sliderMinResponse, setSliderMinResponse] = useState<number>(0);
+    const [sliderMaxResponse, setSliderMaxResponse] = useState<number>(10);
+    const [sliderStepResponse, setSliderStepResponse] = useState<number>(0);
+    
+    const [responseType, setResponseType] = useState('radio');
+    
     const operators = ['+','-','*','/','=',];
 
-    const [responseType, setResponseType] = useState('radio');
+    
 
     function appendResources(){
         var newResource = `Resource ${resourcesState.length + 1}`;
@@ -173,8 +185,9 @@ const FactoryContent: React.FC = () => {
         } else {
             return (
                 <IonItem>
-                    <IonLabel>Minimum Response: </IonLabel><IonInput></IonInput>
-                    <IonLabel>Maximum Response: </IonLabel><IonInput></IonInput>
+                    <IonLabel>Minimum Response: </IonLabel><IonInput value={sliderMinResponse} type="number" onIonChange={e=>setSliderMinResponse(parseInt(e.detail.value!,10))}></IonInput>
+                    <IonLabel>Maximum Response: </IonLabel><IonInput value={sliderMaxResponse} type="number" onIonChange={e=>setSliderMaxResponse(parseInt(e.detail.value!,10))}></IonInput>
+                    <IonLabel>Step Response: </IonLabel><IonInput value={sliderStepResponse} type="number" onIonChange={e=>setSliderStepResponse(parseInt(e.detail.value!,10))}></IonInput>
                 </IonItem>
 
             )
@@ -192,7 +205,21 @@ const FactoryContent: React.FC = () => {
         // console.log("RESPONSEVALUE: " + responseValueString + ", \n RESOURCESTATE: " + resourceStateString + ",\n USERRESOURCESTATE: " + userResourceStateString);
 
         var responseValueJSON = {};
-        responseValue.forEach((response,index) => responseValueJSON["response"+index] = response);
+        if(responseType === 'radio'){
+            responseValueJSON = {
+                "response_type":"radio",
+                "values":responseValue
+            };
+        } else {
+            responseValueJSON = {
+                "response_type":"slider",
+                "values":{
+                    "min_response":sliderMinResponse,
+                    "max_response":sliderMaxResponse,
+                    "step_response":sliderStepResponse
+                }
+            }
+        }
         console.log(responseValueJSON);
         
         var resourceStateJSON = {};
@@ -216,6 +243,8 @@ const FactoryContent: React.FC = () => {
             "id":response.id,
             "name":title,
             "response_timeout":1,
+            "start_text":startText,
+            "end_text":endText,
             "prompt":question,
             "responses":responseValueJSON,
             "round_count":numRounds,
@@ -282,19 +311,21 @@ const FactoryContent: React.FC = () => {
                         </IonRow>
                         <IonRow>
                             <IonCol><IonCardSubtitle>Starting Text or Link</IonCardSubtitle></IonCol>
-                            <IonCol><IonToggle/></IonCol>
+                            <IonCol><IonToggle checked={startTextCheck} onIonChange={e => setStartTextCheck(e.detail.checked)}/></IonCol>
                             <IonCol><IonCardSubtitle>Ending Text or Link</IonCardSubtitle></IonCol>
-                            <IonCol><IonToggle/></IonCol>
+                            <IonCol><IonToggle checked={endTextCheck} onIonChange={e => setEndTextCheck(e.detail.checked)}/></IonCol>
                         </IonRow>
                         <IonRow>
                             <IonCol>
-                                <IonInput></IonInput>
+                                <IonInput value={startText} disabled={!startTextCheck} placeholder="Enter Starting Text or Link" onIonChange={e => setStartText(e.detail.value!)}></IonInput>
                             </IonCol>
                             <IonCol>
-                                <IonInput></IonInput>
+                                <IonInput value={endText} disabled={!endTextCheck} placeholder="Enter Ending Text or Link" onIonChange={e => setEndText(e.detail.value!)}></IonInput>
                             </IonCol>
                         </IonRow>
                     </IonGrid>
+                    <IonButton onClick={() => handlePrev()}>Previous Slide</IonButton>
+                    <IonButton onClick={() => handleNext()}>Next Slide</IonButton>
                 </IonCard>
             </IonSlide>
 
