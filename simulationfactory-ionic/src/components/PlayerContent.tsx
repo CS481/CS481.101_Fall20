@@ -1,5 +1,6 @@
 import { IonButton, IonCard, IonCardContent, IonRefresher, IonRefresherContent, IonItemDivider, IonRange, IonCardHeader, IonInput, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonRadioGroup, IonRadio, IonList, IonRippleEffect, IonRow, IonSlide, IonSlides, IonTextarea, IonHeader, IonListHeader, IonText } from "@ionic/react";
 import React, {useRef, useState } from "react";
+import { useParams } from 'react-router';
 
 import './PlayerContent.css';
 import { BeginSim, SubmitResponse, GetState } from "./../util/Backend";
@@ -8,7 +9,9 @@ import { chevronDownCircleOutline } from 'ionicons/icons';
 
 import FormatString from "../util/FormatString.js";
 
-type MyProps = {};
+type MyProps = {
+    id: string
+};
 type MyState = {
     radioValue: boolean,
     logged_in:boolean,
@@ -38,6 +41,7 @@ type MyState = {
 
 class SimulationPlayer extends React.Component<MyProps,MyState> {
     constructor(props){
+        // this.props.match.params.id
         super(props);
         this.state = {
             radioValue: false,
@@ -70,7 +74,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             },
             username:'',
             password:'',
-            simulation_id:''
+            simulation_id: props.id
         };
     }
 
@@ -107,7 +111,6 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             <IonCard>
                 <IonInput id="username_field" placeholder="Username" onIonChange={(t) => this.setState({username:t.detail.value!})}></IonInput>
                 <IonInput id="password_field" type="password" placeholder="Password" onIonChange={(t) => this.setState({password:t.detail.value!})}></IonInput>
-                <IonInput id="simulation_id_field" placeholder="Simulation ID" onIonChange={(t) => this.setState({simulation_id: t.detail.value!})}/>
                 {this.renderSubmitButton()}
             </IonCard>
         )
@@ -209,18 +212,13 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
     }
 
     submitResponse() {
-        // Do nothing if the user has not chosen a response
-        //TODO: RADIO VALUE?
-        // if (!this.state.radioValue) {
-        //     return
-        // }
         SubmitResponse({user: this.getUser(), response: this.state.response, id: this.state.simulation_id}, (newState) => this.setState({simState:newState}));
     }
 }
 
-function Playerpage() {
+function Playerpage(props) {
     return (
-        <SimulationPlayer/>
+        <SimulationPlayer {...props}/>
     );
 }
 

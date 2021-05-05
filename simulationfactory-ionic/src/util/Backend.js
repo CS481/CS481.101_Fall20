@@ -4,7 +4,6 @@ import State from "../simulation-schema/js/State";
 import User from "../simulation-schema/js/User";
 import UserResponse from "../simulation-schema/js/UserResponse";
 import FrameModification from "../simulation-schema/js/FrameModification";
-import Effect from "../simulation-schema/js/Effect";
 import SimulationModification from "../simulation-schema/js/SimulationModification";
 
 let server_url = process.env.REACT_APP_SIMULATION_FACTORY_URL;

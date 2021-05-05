@@ -36,7 +36,7 @@ const appPages: AppPage[] = [
   },
   {
     title: 'Join Simulation',
-    url: '/page/player',
+    url: '/page/playerid',
     iosIcon: caretForwardCircleOutline,
     mdIcon: caretForwardCircleSharp
   },

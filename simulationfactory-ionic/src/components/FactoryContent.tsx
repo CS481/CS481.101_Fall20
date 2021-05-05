@@ -5,13 +5,15 @@ import React, { useRef, useState} from "react";
 import './FactoryContent.css';
 
 import {  trashOutline } from "ionicons/icons";
-import { InitializeSimulation, ModifySimulation, CheckCredentials } from "../util/Backend.js";
+import { InitializeSimulation, ModifySimulation } from "../util/Backend.js";
 
 
 const FactoryContent: React.FC = () => {
+    const server_url = "simulation.dy2ewfz2jp1x8.amplifyapp.com/page/player";
     const [title,setTitle] = useState<string>();
     const [desc,setDesc] = useState<string>();
     const [numPlayers, setNumPlayers] = useState<number>(0);
+    const [simulation_id, setSimulationId] = useState<string>("");
     const [playerResponseString, setPlayerResponseString] = useState([
         'Player 1 Response'
     ])
@@ -174,7 +176,7 @@ const FactoryContent: React.FC = () => {
     function handleSubmitClick(){
         console.log("HANDLE SUBMIT CLICK");
         InitializeSimulation({"username":username, "password":password},(response)=>afterInit(response));
-
+        handleNext();
     }
 
     function radioSliderBuild(){
@@ -200,6 +202,7 @@ const FactoryContent: React.FC = () => {
 
     function afterInit(response){
         console.log("AFTER INIT");
+        setSimulationId(response.id);
         // var responseValueString = JSON.stringify(Object.assign({}, responseValue));
         // var responseValueJSON = JSON.parse(responseValueString);
         // var resourceStateString = JSON.stringify(Object.assign({}, resourcesState));
@@ -447,7 +450,22 @@ const FactoryContent: React.FC = () => {
                     </IonList>
                 </IonCard>
             </IonSlide>
-        </IonSlides>
+
+            <IonSlide>
+                <IonCard>
+                    <IonList lines="none">
+                        <IonItem>
+                            <IonLabel className="ion-text-center">Your simulation's id is {simulation_id}</IonLabel>
+                        </IonItem>
+                        <IonItem>
+                            <IonLabel className="ion-text-center">
+                                Invite participants to your simulation using this link: <a href={`page/player/${simulation_id}`}>{`${server_url}/${simulation_id}`}</a>
+                            </IonLabel>
+                        </IonItem>
+                    </IonList>
+                </IonCard>
+            </IonSlide>
+        </IonSlides>  
     </IonContent>
 
 
