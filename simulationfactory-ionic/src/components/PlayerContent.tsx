@@ -38,6 +38,7 @@ var responseValue = '0';
 //true means the user needs to wait
 //false means the user does not need to wait
 var user_waiting = false;
+var bistory;
 
 class SimulationPlayer extends React.Component<MyProps,MyState> {
     constructor(props){
@@ -84,8 +85,10 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
     }
 
     isUserWaiting(){
-        var currentRound = this.state.simState.history[this.state.simState.history.length-1].user_history;
-        console.log(JSON.stringify(this.state.simState.history[this.state.simState.history.length-1].user_history));
+        var currentRound = this.state.simState.history[0].user_history;
+        //console.log(JSON.stringify(this.state.simState.history[0].user_history));
+        //old test variable
+        //console.log("REad me meooooo "+JSON.stringify(bistory))
         var countEmptyResponse = 0;
         var userCount = currentRound.length;
 
@@ -150,19 +153,21 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
     }
 
     renderResponses() {
-        if(this.state.simState.responses.response_type ==='radio'){
-            return (
-                <IonRadioGroup value={this.state.radioValue} onIonChange={(e) =>{this.setState({radioValue: e.detail.value!})}}>
-                    {this.renderResponseButtons()}
-                </IonRadioGroup>
-            )
-        } else if(this.state.simState.responses.response_type === 'slider'){
-            return (
-                <IonItem><IonRange pin={true} min={this.state.simState.responses.values.min_response} max={this.state.simState.responses.values.max_response} step={this.state.simState.responses.values.step_response} onIonChange={e =>{responseValue = e.detail.value.toString()}}></IonRange>
-                <IonLabel slot="start" color="tertiary">min: {this.state.simState.responses.values.min_response }</IonLabel>
-                <IonLabel slot="end" color="tertiary">Max: {this.state.simState.responses.values.max_response}</IonLabel>
-                </IonItem>
-            )
+        if(!user_waiting){    
+            if(this.state.simState.responses.response_type ==='radio'){
+                return (
+                    <IonRadioGroup value={this.state.radioValue} onIonChange={(e) =>{this.setState({radioValue: e.detail.value!})}}>
+                        {this.renderResponseButtons()}
+                    </IonRadioGroup>
+                )
+            } else if(this.state.simState.responses.response_type === 'slider'){
+                return (
+                    <IonItem><IonRange pin={true} min={this.state.simState.responses.values.min_response} max={this.state.simState.responses.values.max_response} step={this.state.simState.responses.values.step_response} onIonChange={e =>{responseValue = e.detail.value.toString()}}></IonRange>
+                    <IonLabel slot="start" color="tertiary">min: {this.state.simState.responses.values.min_response }</IonLabel>
+                    <IonLabel slot="end" color="tertiary">Max: {this.state.simState.responses.values.max_response}</IonLabel>
+                    </IonItem>
+                )
+            }
         }
     }
 
@@ -205,7 +210,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
                     <IonItem>
                         {/*globalResource is accessed at 0 statically on purpose
                         currently there is only one value accessed at that point, the method just returns an array of strings*/}
-                        <IonLabel>{Object.keys(this.state.simState.history[this.state.simState.history.length-1].resources)}: { Object.values(this.state.simState.history[this.state.simState.history.length-1].resources) }</IonLabel>
+                        <IonLabel>{Object.keys(this.state.simState.history[0].resources)}: { Object.values(this.state.simState.history[0].resources) }</IonLabel>
                     </IonItem>
 
                     {this.renderCurrentUser()}
@@ -223,7 +228,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         }
     }
     renderCurrentUser(){
-        var currentSim = this.state.simState.history[this.state.simState.history.length-1];
+        var currentSim = this.state.simState.history[0];
         for(var i = 0; i < currentSim.user_history.length; i++){
             return(
                 <IonItem>
