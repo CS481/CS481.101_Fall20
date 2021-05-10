@@ -312,7 +312,7 @@ const FactoryContent: React.FC = () => {
                             </IonItem>
 
                             <IonItem>
-                                <IonInput value={password} placeholder="Password" onIonChange={e => setPassword(e.detail.value!)}></IonInput>
+                                <IonInput value={password} type="password" placeholder="Password" onIonChange={e => setPassword(e.detail.value!)}></IonInput>
                             </IonItem>
                         </IonList> 
 
