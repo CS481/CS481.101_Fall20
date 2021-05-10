@@ -6,10 +6,11 @@ import FactoryContent from '../components/FactoryContent';
 import AboutContent from '../components/AboutContent';
 import AccountContent from '../components/AccountContent';
 import './Page.css';
+import PlayerId from '../components/PlayerId';
 import PlayerContent from '../components/PlayerContent';
 import SignInContent from '../components/SignInContent';
 
-const Page: React.FC = () => {
+const Page: React.FC<any> = (props) => {
 
   const { name } = useParams<{ name: string; }>();
 
@@ -28,7 +29,7 @@ const Page: React.FC = () => {
       title: 'Create Simulation'
     },
     {
-      param: 'player',
+      param: 'playerid',
       title: 'Join Simulation'
     },
     {
@@ -42,6 +43,10 @@ const Page: React.FC = () => {
     {
       param: 'about',
       title: 'About'
+    },
+    {
+      param: 'player',
+      title: 'Simulation Player'
     }
   ];
   
@@ -71,13 +76,16 @@ const Page: React.FC = () => {
       {name === 'account' &&
         <AccountContent />
       }
-      {name === 'player' &&
-        <PlayerContent />
+      {name === 'playerid' &&
+        <PlayerId />
       }
       {name === 'loginsignup' &&
         <SignInContent />
       }
-        
+      {name == 'player' &&
+        <PlayerContent id={props.match.params.id}/>
+      }
+
       </IonContent>
     </IonPage>
   );

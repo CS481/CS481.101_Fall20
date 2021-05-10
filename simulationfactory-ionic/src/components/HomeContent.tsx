@@ -49,7 +49,7 @@ const HomeContent: React.FC = () => {
                                     <IonLabel className="ion-text-center">Contribute to research studies</IonLabel>
                                 </IonItem>
                             </IonList>
-                            <IonButton className='playerButton'>
+                            <IonButton routerLink="/page/playerid" routerDirection="root">
                                 Join Simulation
                                 <IonRippleEffect></IonRippleEffect>
                             </IonButton>

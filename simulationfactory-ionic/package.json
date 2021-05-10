@@ -18,6 +18,7 @@
     "@types/react-dom": "^16.9.10",
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
+    "ionic": "^5.4.16",
     "aws-amplify": "^3.3.26",
     "gulp-zip": "^5.1.0",
     "ionicons": "^5.4.0",

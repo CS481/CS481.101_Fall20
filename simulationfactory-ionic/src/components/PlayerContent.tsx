@@ -1,5 +1,6 @@
 import { IonButton, IonCard, IonCardContent, IonRefresher, IonRefresherContent, IonItemDivider, IonRange, IonCardHeader, IonInput, IonCardTitle, IonCol, IonContent, IonGrid, IonItem, IonLabel, IonRadioGroup, IonRadio, IonList, IonRippleEffect, IonRow, IonSlide, IonSlides, IonTextarea, IonHeader, IonListHeader, IonText } from "@ionic/react";
 import React, {useRef, useState } from "react";
+import { useParams } from 'react-router';
 
 import './PlayerContent.css';
 import { BeginSim, SubmitResponse, GetState } from "./../util/Backend";
@@ -7,15 +8,25 @@ import { RefresherEventDetail } from '@ionic/core';
 import { chevronDownCircleOutline } from 'ionicons/icons';
 
 import FormatString from "../util/FormatString.js";
+import { stringify } from "node:querystring";
+import { runInThisContext } from "node:vm";
 
-type MyProps = {};
+type MyProps = {
+    id: string
+};
 type MyState = {
     radioValue: boolean,
+    showRoundSummary:boolean,
+    globalResources:string[],
+    userResources:string[],
+    numPlayers: number,
     logged_in:boolean,
     username: string,
     password:string,
-    simulation_id:string
+    simulation_id:string,
+    response:number,
     simState: {
+        user_waiting:boolean,
         turn_number:number,
         response_deadline:string,
         prompt:string,
@@ -33,20 +44,22 @@ type MyState = {
         }]
     }
 }
-var responseValue = '0';
-//variable to determine if the current user needs to wait
-//true means the user needs to wait
-//false means the user does not need to wait
-var user_waiting = false;
-var bistory;
+
 
 class SimulationPlayer extends React.Component<MyProps,MyState> {
     constructor(props){
+        // this.props.match.params.id
         super(props);
         this.state = {
             radioValue: false,
+            showRoundSummary: false,
+            globalResources: [],
+            userResources: [],
+            numPlayers: 2,
             logged_in: false,
+            response: 0,
             simState: {
+                user_waiting:false,
                 turn_number: 1,
                 response_deadline:'',
                 prompt:'',
@@ -72,7 +85,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             },
             username:'',
             password:'',
-            simulation_id:''
+            simulation_id: props.id
         };
     }
 
@@ -84,29 +97,6 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         }
     }
 
-    isUserWaiting(){
-        var currentRound = this.state.simState.history[0].user_history;
-        //console.log(JSON.stringify(this.state.simState.history[0].user_history));
-        //old test variable
-        //console.log("REad me meooooo "+JSON.stringify(bistory))
-        var countEmptyResponse = 0;
-        var userCount = currentRound.length;
-
-        for(let i = 0; i < userCount; i++){
-            //console.log("Here is the stuff " + i + "here is empty " + countEmptyResponse)
-            if(currentRound[i].response === ""){
-                countEmptyResponse++;
-            }
-        }
-        if (countEmptyResponse == 2){
-            user_waiting = false;
-            countEmptyResponse = 0;
-        }
-        else{
-            user_waiting = true;
-            countEmptyResponse = 0;
-        }
-    }
 
     getUser() {
         return {username: this.state.username, password: this.state.password};
@@ -117,18 +107,39 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
     }
 
     beginSim() {
-        BeginSim(this.getSimulationInstance(), () => {
-            this.setState({logged_in: true});
-            this.setSimState();
+        BeginSim(this.getSimulationInstance(), (newState) => {
+            this.setState({logged_in: true, simState: newState});
+            var resourceArray = Object.keys(this.state.simState.history[0].resources);
+            var userResourceArray = Object.keys(this.state.simState.history[0].user_history[0].resources);
+            console.log(resourceArray.toString());
+            for(var i = 0; i < resourceArray.length; i++){
+                if(resourceArray[i] === 'Profit Multiplier' || resourceArray[i] === 'Decision Weight' || resourceArray[i] === 'Impact Multiplier'){
+                    resourceArray.splice(i);
+                }
+            }
+            console.log(resourceArray.toString());
+            console.log(userResourceArray.toString());
+            this.setState({globalResources:resourceArray});
+            this.setState({userResources: userResourceArray});
+            this.setState({numPlayers: Object.keys(this.state.simState.history[0].user_history).length});
         });
-        this.isUserWaiting();
+        
     }
 
     setSimState() {
-        GetState(this.getSimulationInstance(), (newState) => this.setState({simState : newState}));
-        console.log("Updating state info ")
-        console.log(this.state);
-        this.isUserWaiting();
+        var userWaitingBegin = this.state.simState.user_waiting;
+        var userWaitingNewState = false;
+        console.log(userWaitingBegin);
+        GetState(this.getSimulationInstance(), (newState) => {
+            this.setState({simState : newState}); 
+            userWaitingNewState = this.state.simState.user_waiting;
+            if(userWaitingBegin === true && userWaitingNewState === false){
+                this.setState({showRoundSummary:true});
+            }
+        });
+        console.log("Updating state info ");
+        console.log(userWaitingNewState);
+        
     }
 
     renderLogin(){
@@ -136,24 +147,34 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             <IonCard>
                 <IonInput id="username_field" placeholder="Username" onIonChange={(t) => this.setState({username:t.detail.value!})}></IonInput>
                 <IonInput id="password_field" type="password" placeholder="Password" onIonChange={(t) => this.setState({password:t.detail.value!})}></IonInput>
-                <IonInput id="simulation_id_field" placeholder="Simulation ID" onIonChange={(t) => this.setState({simulation_id: t.detail.value!})}/>
                 {this.renderSubmitButton()}
             </IonCard>
         )
     }
 
     renderPlayer() {
-        return (
-            <IonCard>
-                {this.renderPrompt()}
-                {this.renderResponses()}
-                {this.renderSubmitButton()}
-            </IonCard>
-        )
+
+        if(this.state.showRoundSummary === true){
+            return (
+                <IonCard>
+                    {this.renderSummary()}
+                    <IonButton onClick={()=>this.setState({showRoundSummary:false})}>Continue</IonButton>
+                </IonCard>
+            )
+        } else {
+            return (
+                <IonCard>
+                    {this.renderPrompt()}
+                    {this.renderResponses()}
+                    {this.renderSubmitButton()}
+                </IonCard>
+            )
+
+        }
     }
 
     renderResponses() {
-        if(!user_waiting){    
+        if(!this.state.simState.user_waiting){
             if(this.state.simState.responses.response_type ==='radio'){
                 return (
                     <IonRadioGroup value={this.state.radioValue} onIonChange={(e) =>{this.setState({radioValue: e.detail.value!})}}>
@@ -162,9 +183,11 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
                 )
             } else if(this.state.simState.responses.response_type === 'slider'){
                 return (
-                    <IonItem><IonRange pin={true} min={this.state.simState.responses.values.min_response} max={this.state.simState.responses.values.max_response} step={this.state.simState.responses.values.step_response} onIonChange={e =>{responseValue = e.detail.value.toString()}}></IonRange>
-                    <IonLabel slot="start" color="tertiary">min: {this.state.simState.responses.values.min_response }</IonLabel>
-                    <IonLabel slot="end" color="tertiary">Max: {this.state.simState.responses.values.max_response}</IonLabel>
+                    <IonItem>
+                        <IonRange pin={true} min={this.state.simState.responses.values.min_response} max={this.state.simState.responses.values.max_response} step={this.state.simState.responses.values.step_response} onIonChange={e =>this.setState({response:e.detail.value as number})}>
+                            <IonLabel slot="start" color="tertiary">{this.state.simState.responses.values.min_response }</IonLabel>
+                            <IonLabel slot="end" color="tertiary">{this.state.simState.responses.values.max_response}</IonLabel>
+                        </IonRange>
                     </IonItem>
                 )
             }
@@ -173,7 +196,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
 
     renderResponseButtons() {
         //TODO: USER WAITING    
-        if(!user_waiting) {
+        if(!this.state.simState.user_waiting) {
             let responses = this.state.simState.responses.items;
             return responses.map((response) => {
                 <IonItem><IonLabel>{response}</IonLabel><IonRadio slot="start" value={response}/></IonItem>
@@ -188,7 +211,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
                 <IonButton onClick={() => this.beginSim()}>Begin</IonButton>
             )
             //TODO: USER WAITING
-        } else if (!user_waiting) {
+        } else if (!this.state.simState.user_waiting) {
             return (
                 //NOT WORKING, this.submitResponse is functioning, the booleon radioValue is just not formatted.
                 <IonButton onClick={() => this.submitResponse()}>Submit</IonButton>
@@ -201,67 +224,74 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
     }
 
     renderPrompt() {
-        //TODO: USER WAITING
-        if (user_waiting) {
-            return "Waiting..."
+        
+        if (this.state.simState.user_waiting) {
+            return (
+                <IonItem>
+                    <IonList>
+                        <IonListHeader>Waiting...</IonListHeader>
+                        <IonLabel>Please wait for other user(s) to respond to this round.</IonLabel>
+                    </IonList>
+                </IonItem>
+                );
         } else {
             return (
                 <IonList lines="none">
+                    <IonListHeader>Current round: {this.state.simState.turn_number + 1}</IonListHeader>
                     <IonItem>
-                        {/*globalResource is accessed at 0 statically on purpose
-                        currently there is only one value accessed at that point, the method just returns an array of strings*/}
-                        <IonLabel>{Object.keys(this.state.simState.history[0].resources)}: { Object.values(this.state.simState.history[0].resources) }</IonLabel>
-                    </IonItem>
 
-                    {this.renderCurrentUser()}
-
-                    <IonItem>
-                        <IonLabel>Simulation Prompt: {this.state.simState.prompt}</IonLabel>
-                    </IonItem>
-                    <IonItem>
-                        <IonLabel slot="start">How would you like to affect your production</IonLabel>
-                        <IonLabel slot="end">Current round: {this.state.simState.turn_number}</IonLabel>
+                        <IonLabel>{this.state.simState.prompt}</IonLabel>
                     </IonItem>
                 </IonList>
             )
             //FormatString(this.state.simState.prompt, this.state.simState)
         }
     }
-    renderCurrentUser(){
-        var currentSim = this.state.simState.history[0];
-        for(var i = 0; i < currentSim.user_history.length; i++){
-            return(
-                <IonItem>
-                    <IonLabel>{"Player "+ (i+1)+"'s " + Object.keys(currentSim.user_history[i].resources) + ": "+ Object.values(currentSim.user_history[i].resources)}</IonLabel>
-                </IonItem>
-
-            )
+    
+    renderSummary() {
+        console.log(this.state.globalResources);
+        var responseArray = [''];
+        for(var j = 0; j < this.state.simState.turn_number; j++){
+            for(var i = 0; i < this.state.numPlayers; i++){
+                responseArray.push(this.state.simState.history[j].user_history[i].response)
+            }
         }
+        responseArray.splice(0,3);
+        var playerArray = ["Player 1's "];
+        for(var k = 1; k<this.state.numPlayers; k++){
+            playerArray.push("Player " + (k+1).toString() + "'s ");
+
+        }
+        console.log(playerArray);
+        console.log(responseArray);
+        return (
+            <IonList>
+                <IonListHeader>This Round's Choices:</IonListHeader>
+                {playerArray.map((player, index)=><IonItem><IonLabel>{player}Response: {responseArray[index]}</IonLabel></IonItem>)}
+                
+                <IonListHeader>Global Resources:</IonListHeader>
+                {this.state.globalResources.map(resource=><IonItem><IonLabel>Current {resource} Value: {this.state.simState.history[0].resources[resource]}</IonLabel></IonItem>)}
+                <IonListHeader>User Resources</IonListHeader>
+                {playerArray.map((player,playerIndex)=>{console.log(this.state.simState.history[0].user_history); return this.state.userResources.map((resource)=><IonItem><IonLabel>{player + resource}: {this.state.simState.history[0].user_history[playerIndex].resources[resource]}</IonLabel></IonItem>)})}
+            </IonList>
+        );
     }
 
     submitResponse() {
-        // Do nothing if the user has not chosen a response
-        //TODO: RADIO VALUE?
-        // if (!this.state.radioValue) {
-        //     return
-        // }
-        SubmitResponse({user: this.getUser(), response: responseValue, id: this.state.simulation_id}, () => this.setState({radioValue: false, simState: {
-            turn_number:this.state.simState.turn_number,
-            response_deadline:this.state.simState.response_deadline,
-            prompt:this.state.simState.prompt,
-            start_text:this.state.simState.start_text,
-            end_text:this.state.simState.end_text,
-            user_id:this.state.simState.user_id,
-            responses:this.state.simState.responses,
-            history:this.state.simState.history
-        }}));
-        user_waiting = true;
+        var userWaitingNewState;
+        SubmitResponse({user: this.getUser(), response: this.state.response, id: this.state.simulation_id}, (newState) => {
+            this.setState({simState : newState}); 
+            userWaitingNewState = this.state.simState.user_waiting;
+            if(userWaitingNewState === false){
+                this.setState({showRoundSummary:true});
+            }
+        });
     }
 }
 
-function Playerpage() {
+function Playerpage(props) {
     return (
-        <SimulationPlayer/>
+        <SimulationPlayer {...props}/>
     );
 }
 
