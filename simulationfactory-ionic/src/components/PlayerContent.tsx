@@ -45,6 +45,7 @@ type MyState = {
     }
 }
 
+
 class SimulationPlayer extends React.Component<MyProps,MyState> {
     constructor(props){
         // this.props.match.params.id
@@ -95,6 +96,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             return this.renderLogin();
         }
     }
+
 
     getUser() {
         return {username: this.state.username, password: this.state.password};
@@ -151,6 +153,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
     }
 
     renderPlayer() {
+
         if(this.state.showRoundSummary === true){
             return (
                 <IonCard>
@@ -166,6 +169,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
                     {this.renderSubmitButton()}
                 </IonCard>
             )
+
         }
     }
 
@@ -235,6 +239,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
                 <IonList lines="none">
                     <IonListHeader>Current round: {this.state.simState.turn_number + 1}</IonListHeader>
                     <IonItem>
+
                         <IonLabel>{this.state.simState.prompt}</IonLabel>
                     </IonItem>
                 </IonList>
@@ -255,6 +260,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         var playerArray = ["Player 1's "];
         for(var k = 1; k<this.state.numPlayers; k++){
             playerArray.push("Player " + (k+1).toString() + "'s ");
+
         }
         console.log(playerArray);
         console.log(responseArray);
