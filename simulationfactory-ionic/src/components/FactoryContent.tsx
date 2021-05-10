@@ -12,11 +12,12 @@ const FactoryContent: React.FC = () => {
     const server_url = "simulation.dy2ewfz2jp1x8.amplifyapp.com/page/player";
     const [title,setTitle] = useState<string>();
     const [desc,setDesc] = useState<string>();
-    const [numPlayers, setNumPlayers] = useState<number>(0);
+    const [numPlayers, setNumPlayers] = useState<number>(2);
     const [simulation_id, setSimulationId] = useState<string>("");
-    const [playerResponseString, setPlayerResponseString] = useState([
-        'Player 1 Response'
-    ])
+    const [playerResponseString, setPlayerResponseString] = useState([{
+        chipText:'Player 1 Response',
+        number:0
+    }]);
     const [playerTitle, setPlayerTitle] = useState<string>();
     const [resourcesState, setResourcesState] = useState([
         {
@@ -32,11 +33,7 @@ const FactoryContent: React.FC = () => {
             starting_value: 0
         }
     ]);
-    const [equationState, setEquationState] = useState([
-        {
-            equation:''
-        }
-    ]);
+    
     const [numRounds, setNumRounds] = useState<number>(1);
     const [question, setQuestion] = useState('');
 
@@ -44,10 +41,13 @@ const FactoryContent: React.FC = () => {
     const [endTextCheck, setEndTextCheck] = useState<boolean>(false);
 
     const [startText, setStartText] = useState<string>('');
-    const [endText, setEndText] = useState<string>('');
+    const [endText, setEndText] = useState<string>('Thanks for participating!');
 
+    const [checkProfitMultiplier, setCheckProfitMultiplier] = useState<boolean>(false);
     const [profitMultiplier, setProfitMultiplier] = useState<number>(1);
+    const [checkDecisionWeight, setCheckDecisionWeight] = useState<boolean>(false);
     const [decisionWeight, setDecisionWeight] = useState<number>(1);
+    const [checkImpactMultiplier, setCheckImpactMultiplier] = useState<boolean>(false);
     const [impactMultiplier, setImpactMultiplier] = useState<number>(1);
     
     const factorySlides = useRef(document.createElement('ion-slides'));
@@ -64,7 +64,10 @@ const FactoryContent: React.FC = () => {
     
     const [responseType, setResponseType] = useState('radio');
     
-    const operators = ['+','-','*','/','=',];
+    const [resourceEquationSelect, setResourceEquationSelect] = useState<string>('');
+    const [currentEquationToDisplay, setCurrentEquationToDisplay] = useState<string>('');
+
+    const operators = ['+','-','*','/','(',')'];
 
     
 
@@ -83,15 +86,29 @@ const FactoryContent: React.FC = () => {
     }
 
     function changeResourceName(index: number, newResource: string){
-        resourcesState[index] = {name:newResource, equation:'NULL',starting_value:resourcesState[index].starting_value}
+        resourcesState[index] = {name:newResource, equation:resourcesState[index].equation,starting_value:resourcesState[index].starting_value}
         //Needed to refresh Chips
         setResourcesState(prevState => prevState.slice(0));
     }
 
     function changeResourceValue(index: number, newValue: number){
-        resourcesState[index] = {name:resourcesState[index].name, equation:'NULL', starting_value:newValue}
+        resourcesState[index] = {name:resourcesState[index].name, equation:resourcesState[index].equation, starting_value:newValue}
         //Needed to refresh Chips
         setResourcesState(prevState => prevState.slice(0));
+    }
+
+    function changeResourceEquation(newValue: string){
+        if(resourcesState.find(resource => resource.name === resourceEquationSelect.toString()) != undefined){
+            var index = resourcesState.findIndex(resource => resource.name === resourceEquationSelect.toString());
+            resourcesState[index] = {name: resourcesState[index].name, equation:newValue, starting_value: resourcesState[index].starting_value};
+            setCurrentEquationToDisplay(newValue);
+            console.log(resourcesState[index].equation);
+        } else {
+            index = userResourcesState.findIndex(resource => resource.name === resourceEquationSelect.toString());
+            userResourcesState[index] = {name: userResourcesState[index].name, equation:newValue, starting_value: userResourcesState[index].starting_value};
+            setCurrentEquationToDisplay(newValue);
+            console.log(userResourcesState[index].equation);
+        }
     }
 
     function appendUserResources(){
@@ -105,16 +122,18 @@ const FactoryContent: React.FC = () => {
     }
 
     function changeUserResourceName(index: number, newResource: string){
-        userResourcesState[index] = {name:newResource, equation:'NULL',starting_value:userResourcesState[index].starting_value}
+        userResourcesState[index] = {name:newResource, equation:userResourcesState[index].equation,starting_value:userResourcesState[index].starting_value}
         //Needed to refresh Chips
         setUserResourcesState(prevState => prevState.slice(0));
     }
 
     function changeUserResourceValue(index: number, newValue: number){
-        userResourcesState[index] = {name:userResourcesState[index].name, equation:'NULL', starting_value:newValue}
+        userResourcesState[index] = {name:userResourcesState[index].name, equation:userResourcesState[index].equation, starting_value:newValue}
         //Needed to refresh Chips
         setUserResourcesState(prevState => prevState.slice(0));
     }
+
+    
 
     function appendResponses(){
         setResponseValue(prevState=>prevState.concat('0'));
@@ -129,47 +148,26 @@ const FactoryContent: React.FC = () => {
         setResponseValue(prevState => prevState.slice(0));
     }
 
-    function changeEquationState(index:number, newValue:string){
-        equationState[index] = {equation:newValue};
-        setEquationState(prevState => prevState.slice(0));
-    }
-    function appendEquationState(newValue:string){
-        setEquationState(prevState => prevState.concat({equation:newValue}));
-    }
-
     function handlePlayerChange(newPlayerCount: number){
         setNumPlayers(newPlayerCount);
         console.log(numPlayers);
-        var responseString = [`Player 1 Response`];
+        var chipObject = [{
+            chipText: 'Player 1 Response',
+            number: 0
+        }]
         for(let i = 1; i < newPlayerCount; i++){
-            responseString.push(`Player ${i+1} Response`);
+            chipObject.push({chipText:`Player ${i+1} Response`,number:i});
         }
-        console.log(responseString);
-        setPlayerResponseString(responseString);
+        setPlayerResponseString(chipObject);
         console.log(playerResponseString);
     }
 
-    function updateValues(){
-        console.log("METHOD RAN");
-        setTitle(title);
-        setDesc(desc);
-        setNumPlayers(numPlayers);
-        setPlayerTitle(playerTitle);
-        setResourcesState(resourcesState);
-        setNumRounds(numRounds);
-        setQuestion(question);
-        setProfitMultiplier(profitMultiplier);
-        setDecisionWeight(decisionWeight);
-        setImpactMultiplier(impactMultiplier);
-    }
 
     const handleNext = () => {
-        updateValues();
         factorySlides.current.slideNext();
     }
 
     const handlePrev = () => {
-        updateValues();
         factorySlides.current.slidePrev();
     }
 
@@ -177,6 +175,18 @@ const FactoryContent: React.FC = () => {
         console.log("HANDLE SUBMIT CLICK");
         InitializeSimulation({"username":username, "password":password},(response)=>afterInit(response));
         handleNext();
+    }
+
+    function handleResourceChangeEquationSlide(newResource: string){
+        console.log(newResource);
+        setResourceEquationSelect(newResource);
+        if(resourcesState.find(resource => resource.name === newResource) !== undefined){
+            var index = resourcesState.findIndex(resource => resource.name === newResource);
+            setCurrentEquationToDisplay(resourcesState[index].equation);
+        } else {
+            index = userResourcesState.findIndex(resource => resource.name === newResource);
+            setCurrentEquationToDisplay(userResourcesState[index].equation);
+        }
     }
 
     function radioSliderBuild(){
@@ -265,7 +275,7 @@ const FactoryContent: React.FC = () => {
 
     return (
     <IonContent className="ion-padding">
-        <IonSlides ref={factorySlides} pager={true} options={slideOpts} onIonSlideDidChange={()=>updateValues}>
+        <IonSlides ref={factorySlides} pager={true} options={slideOpts}>
             <IonSlide class="container">
 
                 <IonCard className="container">
@@ -426,18 +436,41 @@ const FactoryContent: React.FC = () => {
                         <IonListHeader>
                             <IonLabel><strong>Variables and Equations</strong></IonLabel>
                         </IonListHeader>
-                        <IonInput type="number" value={profitMultiplier} onIonChange={e=> setProfitMultiplier(parseInt(e.detail.value!, 10))}>Set Profit Multiplier</IonInput>
-                        <IonInput type="number" value={decisionWeight} onIonChange={e=> setDecisionWeight(parseInt(e.detail.value!, 10))}>Set Decision Weight</IonInput>
-                        <IonInput type="number" value={impactMultiplier} onIonChange={e=> setImpactMultiplier(parseInt(e.detail.value!, 10))}>Set Impact of Resource Multiplier</IonInput>
-                        <IonListHeader>Global Resources</IonListHeader>
-                        {resourcesState.map(resource =><IonChip onClick={()=>appendEquationState(resource.name)}><IonLabel>{resource.name}</IonLabel></IonChip>)}
-                        <IonListHeader>User Resources</IonListHeader>
-                        {userResourcesState.map(resource=><IonChip onClick={()=>appendEquationState(resource.name)}><IonLabel>{resource.name}</IonLabel></IonChip>)}
+                        <IonItem><IonToggle checked={checkProfitMultiplier} onIonChange={e=>setCheckProfitMultiplier(e.detail.checked)}></IonToggle><IonInput type="number" placeholder="Set Profit Multiplier..." disabled={!checkProfitMultiplier}value={profitMultiplier} onIonChange={e=> setProfitMultiplier(parseInt(e.detail.value!, 10))}>Set Profit Multiplier...</IonInput></IonItem>
+                        <IonItem><IonToggle checked={checkDecisionWeight} onIonChange={e=>setCheckDecisionWeight(e.detail.checked)}></IonToggle><IonInput type="number" value={decisionWeight} disabled={!checkDecisionWeight}onIonChange={e=> setDecisionWeight(parseInt(e.detail.value!, 10))}>Set Decision Weight...</IonInput></IonItem>
+                        <IonItem><IonToggle checked={checkImpactMultiplier} onIonChange={e=>setCheckImpactMultiplier(e.detail.checked)}></IonToggle><IonInput type="number" value={impactMultiplier} disabled={!checkImpactMultiplier}onIonChange={e=> setImpactMultiplier(parseInt(e.detail.value!, 10))}>Set Magnitude of Impact on Resource Multiplier...</IonInput></IonItem>
+                        <IonSelect value={resourceEquationSelect} placeholder="Resource Equation..." onIonChange={e => handleResourceChangeEquationSlide(e.detail.value!)}>
+                            {resourcesState.map(resource =><IonSelectOption value={resource.name}>{resource.name}</IonSelectOption>)}
+                            {userResourcesState.map(resource=><IonSelectOption value={resource.name}>{resource.name}</IonSelectOption>)}
+                        </IonSelect>
+                        <IonItem>
+                            <IonInput value={currentEquationToDisplay} placeholder="Enter Equation..." onIonChange={e=>changeResourceEquation(e.detail.value!)}></IonInput>
+                        </IonItem>
                         <IonListHeader>Player Response</IonListHeader>
-                        {playerResponseString.map(playerResponse=><IonChip onClick={()=>appendEquationState(playerResponse)}><IonLabel>{playerResponse}</IonLabel></IonChip>)}
+                        <IonChip onClick={()=>changeResourceEquation(currentEquationToDisplay.toString() + '${current_user.response}')}><IonLabel>Current User's Response</IonLabel></IonChip>
+                        {playerResponseString.map(playerResponse=><IonChip onClick={()=>changeResourceEquation(currentEquationToDisplay.toString() + '${user' + playerResponse.number.toString() + '.response}')}><IonLabel>{playerResponse.chipText}</IonLabel></IonChip>)}
+                        <IonChip onClick={()=>{
+                            var totalString = ''; 
+                            for(var i = 0; i < numPlayers; i++){
+                                totalString += '${user'+i.toString()+'.response}';
+                                if(i<numPlayers-1){
+                                    totalString+='+';
+                                }
+                            }
+                            changeResourceEquation(currentEquationToDisplay.toString() + totalString);
+                        }}>Total Response</IonChip>
+                        <IonListHeader>Global Resource Values</IonListHeader>
+                        {resourcesState.map(resource=><IonChip onClick={()=>changeResourceEquation(currentEquationToDisplay.toString() + '${' + resource.name + '}')}>{resource.name}</IonChip>)}
+                        <IonListHeader>User Resource Values</IonListHeader>
+                        {userResourcesState.map(resource=><IonChip onClick={()=>changeResourceEquation(currentEquationToDisplay.toString() + '${current_user.'+resource.name+'}')}>Current User's {resource.name}</IonChip>)}
+                        {userResourcesState.map(resource=>{return playerResponseString.map((player,index)=>(<IonChip onClick={()=>changeResourceEquation(currentEquationToDisplay.toString()+'${user'+index+'.'+resource.name+'}')}><IonLabel>Player {index+1}'s {resource.name}</IonLabel></IonChip>))})}
+                        <IonListHeader>Global Impacts</IonListHeader>
+                        <IonChip onClick={()=>changeResourceEquation(currentEquationToDisplay.toString() + numPlayers.toString())}>Number of Participants</IonChip>
+                        <IonChip disabled={!checkProfitMultiplier} onClick={()=>changeResourceEquation(currentEquationToDisplay.toString() + '${Profit Multiplier}')}>Profit Multiplier</IonChip>
+                        <IonChip disabled={!checkDecisionWeight} onClick={()=>changeResourceEquation(currentEquationToDisplay.toString() + '${Decision Weight}')}>Decision Weight</IonChip>
+                        <IonChip disabled={!checkImpactMultiplier} onClick={()=>changeResourceEquation(currentEquationToDisplay.toString() + '${Impact Multiplier}')}>Impact Multiplier</IonChip>
                         <IonListHeader>Operations</IonListHeader>
-                        {operators.map(operator=><IonChip onClick={()=>appendEquationState(operator)}><IonLabel>{operator}</IonLabel></IonChip>)}
-                        {equationState.map((equation, index)=><IonInput value={equation.equation} onIonChange={e=> changeEquationState(index, e.detail.value!)}></IonInput>)} 
+                        {operators.map(operator=><IonChip onClick={()=>changeResourceEquation(currentEquationToDisplay.toString()+operator)}><IonLabel>{operator}</IonLabel></IonChip>)}
                     </IonList>
                     <IonButton onClick={() => handlePrev()}>Previous Slide</IonButton>
                     <IonButton onClick={() => handleNext()}>Next Slide</IonButton>
