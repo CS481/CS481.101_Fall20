@@ -60,7 +60,7 @@ const FactoryContent: React.FC = () => {
 
     const [sliderMinResponse, setSliderMinResponse] = useState<number>(0);
     const [sliderMaxResponse, setSliderMaxResponse] = useState<number>(10);
-    const [sliderStepResponse, setSliderStepResponse] = useState<number>(0);
+    const [sliderStepResponse, setSliderStepResponse] = useState<number>(1);
     
     const [responseType, setResponseType] = useState('radio');
     
