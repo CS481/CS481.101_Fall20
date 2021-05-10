@@ -172,6 +172,7 @@ const FactoryContent: React.FC = () => {
     }
 
     function handleSubmitClick(){
+        
         console.log("HANDLE SUBMIT CLICK");
         InitializeSimulation({"username":username, "password":password},(response)=>afterInit(response));
         handleNext();
@@ -254,6 +255,25 @@ const FactoryContent: React.FC = () => {
             userResourceStateJSON[userResourceIndex] = userResourceJSON;
         }
         console.log(userResourceStateJSON);
+        
+        if(checkProfitMultiplier ===true){
+            console.log("fbnjhrfgbnj2");
+            //setResourcesState(prevState => (prevState.concat({name:'Profit Multiplier', equation:'null', starting_value:0})));
+            
+            console.log(resourcesState);
+        }
+
+        if(checkDecisionWeight === true){
+            console.log("fbnjhrfgbnj1");
+            setResourcesState(prevState => (prevState.concat({name:'Decision Weight', equation:decisionWeight.toString(), starting_value:decisionWeight})));
+            console.log(resourcesState);
+        }
+
+        if(checkImpactMultiplier === true){
+            console.log("fbnjhrfgbnj3");
+            setResourcesState(prevState => (prevState.concat({name:'Impact Multiplier', equation:impactMultiplier.toString(), starting_value:impactMultiplier})));
+            
+        }
 
         var modifySimJson = {
             "user":{"username": username, "password": password},
