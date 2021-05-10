@@ -8,8 +8,7 @@ import { RefresherEventDetail } from '@ionic/core';
 import { chevronDownCircleOutline } from 'ionicons/icons';
 
 import FormatString from "../util/FormatString.js";
-import { stringify } from "node:querystring";
-import { runInThisContext } from "node:vm";
+
 
 type MyProps = {
     id: string
@@ -119,7 +118,6 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             console.log(userResourceArray.toString());
             this.setState({globalResources:resourceArray});
             this.setState({userResources: userResourceArray});
-            this.setState({numPlayers: Object.keys(this.state.simState.history[0].user_history).length});
         });
         
     }
@@ -131,10 +129,12 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         GetState(this.getSimulationInstance(), (newState) => {
             this.setState({simState : newState}); 
             userWaitingNewState = this.state.simState.user_waiting;
-            if(userWaitingBegin === true && userWaitingNewState === false){
+            if((userWaitingBegin === true && userWaitingNewState === false) && this.state.simState.turn_number !== 0){
                 this.setState({showRoundSummary:true});
+                this.setState({numPlayers: Object.keys(this.state.simState.history[0].user_history).length});
             }
         });
+
         console.log("Updating state info ");
         console.log(userWaitingNewState);
         
@@ -233,7 +233,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         } else {
             return (
                 <IonList lines="none">
-                    <IonListHeader>Current round: {this.state.simState.turn_number + 1}</IonListHeader>
+                    <IonListHeader>Current round: {this.state.simState.turn_number}</IonListHeader>
                     <IonItem>
                         <IonLabel>{this.state.simState.prompt}</IonLabel>
                     </IonItem>
@@ -244,16 +244,15 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
     }
     
     renderSummary() {
-        console.log(this.state.globalResources);
-        var responseArray = [''];
-        for(var j = 0; j < this.state.simState.turn_number; j++){
+        var responseArray:string[] = [];
+        for(var j = 0; j <= this.state.simState.turn_number; j++){
             for(var i = 0; i < this.state.numPlayers; i++){
                 responseArray.push(this.state.simState.history[j].user_history[i].response)
             }
         }
-        responseArray.splice(0,3);
-        var playerArray = ["Player 1's "];
-        for(var k = 1; k<this.state.numPlayers; k++){
+        //responseArray.splice(0);
+        var playerArray:string[] = [];
+        for(var k = 0; k<this.state.numPlayers; k++){
             playerArray.push("Player " + (k+1).toString() + "'s ");
         }
         console.log(playerArray);
@@ -261,7 +260,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         return (
             <IonList>
                 <IonListHeader>This Round's Choices:</IonListHeader>
-                {playerArray.map((player, index)=><IonItem><IonLabel>{player}Response: {responseArray[index]}</IonLabel></IonItem>)}
+                {playerArray.map((player, index)=><IonItem><IonLabel>{player}Response: {responseArray[index+this.state.numPlayers]}</IonLabel></IonItem>)}
                 
                 <IonListHeader>Global Resources:</IonListHeader>
                 {this.state.globalResources.map(resource=><IonItem><IonLabel>Current {resource} Value: {this.state.simState.history[0].resources[resource]}</IonLabel></IonItem>)}
