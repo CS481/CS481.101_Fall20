@@ -5,6 +5,7 @@ import User from "../simulation-schema/js/User";
 import UserResponse from "../simulation-schema/js/UserResponse";
 import FrameModification from "../simulation-schema/js/FrameModification";
 import SimulationModification from "../simulation-schema/js/SimulationModification";
+import AccountCreation from "../simulation-schema/js/AccountCreation";
 
 let server_url = process.env.REACT_APP_SIMULATION_FACTORY_URL;
 
@@ -42,6 +43,15 @@ export async function SubmitResponse(request, callback) {
 //                         This callback accepts no arguments.
 export async function CheckCredentials(request, callback) {
     return Post(request, callback, 'CheckCredentials', User);
+}
+
+// Executes the CreateAccount procedure on the backend
+// Args:
+//      request (object): The request to POST to the backend
+//      callback (object): The callback to execute once the backend responds.
+//                         This callback accepts no arguments.
+export async function CreateAccount(request, callback) {
+    return Post(request, callback, 'CreateAccount', AccountCreation);
 }
 
 // Executes the SimulationInitialization procedure on the backend
