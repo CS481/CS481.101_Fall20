@@ -14,7 +14,7 @@ let server_url = process.env.REACT_APP_SIMULATION_FACTORY_URL;
 //      callback (object): The callback to execute once the backend responds.
 //                         This callback accepts no arguments.
 export async function BeginSim(request, callback) {
-    Post(request, callback, 'BeginSim', IdRequest, State);
+    return Post(request, callback, 'BeginSim', IdRequest, State);
 }
 
 // Executes the GetSimState procedure on the backend
@@ -23,7 +23,7 @@ export async function BeginSim(request, callback) {
 //      callback (object): The callback to execute once the backend responds.
 //                         This callback accepts one State argument.
 export async function GetState(request, callback) {
-    Post(request, callback, 'GetSimState', IdRequest, State);
+    return Post(request, callback, 'GetSimState', IdRequest, State);
 }
 
 // Executes the SubmitResponse procedure on the backend
@@ -32,7 +32,7 @@ export async function GetState(request, callback) {
 //      callback (object): The callback to execute once the backend responds.
 //                         This callback accepts no arguments.
 export async function SubmitResponse(request, callback) {
-    Post(request, callback, 'SubmitResponse', UserResponse, State);
+    return Post(request, callback, 'SubmitResponse', UserResponse, State);
 }
 
 // Executes the CheckCredentials procedure on the backend
@@ -41,7 +41,7 @@ export async function SubmitResponse(request, callback) {
 //      callback (object): The callback to execute once the backend responds.
 //                         This callback accepts no arguments.
 export async function CheckCredentials(request, callback) {
-    Post(request, callback, 'CheckCredentials', User);
+    return Post(request, callback, 'CheckCredentials', User);
 }
 
 // Executes the SimulationInitialization procedure on the backend
@@ -50,7 +50,7 @@ export async function CheckCredentials(request, callback) {
 //      callback (object): The callback to execute once the backend responds.
 //                         This callback accepts one IdResponse argument.
 export async function InitializeSimulation(request, callback) {
-    Post(request, callback, 'SimulationInitialization', User, IdResponse);
+    return Post(request, callback, 'SimulationInitialization', User, IdResponse);
 }
 
 // Executes the FrameInitialization procedure on the backend
@@ -59,7 +59,7 @@ export async function InitializeSimulation(request, callback) {
 //      callback (object): The callback to execute once the backend responds.
 //                         This callback accepts one IdResponse argument.
 export async function InitializeFrame(request, callback) {
-    Post(request, callback, 'FrameInitialization', IdRequest, IdResponse);
+    return Post(request, callback, 'FrameInitialization', IdRequest, IdResponse);
 }
 
 /**
@@ -68,7 +68,7 @@ export async function InitializeFrame(request, callback) {
  * @param {object} callback The callback to execute once the backend responds.
  */
 export async function ModifyFrame(frameModification, callback) {
-    Post(frameModification, callback, 'FrameModification', FrameModification);
+    return Post(frameModification, callback, 'FrameModification', FrameModification);
 }
 
 /**
@@ -77,7 +77,7 @@ export async function ModifyFrame(frameModification, callback) {
  * @param {object} callback The callback to execute once the backend responds.
  */
 export async function ModifySimulation(simulationModification, callback) {
-    Post(simulationModification, callback, 'SimulationModification', SimulationModification);
+    return Post(simulationModification, callback, 'SimulationModification', SimulationModification);
 }
 
 // Private method to issue a POST request to the backend

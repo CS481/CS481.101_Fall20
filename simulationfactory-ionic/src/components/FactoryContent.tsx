@@ -1,11 +1,12 @@
 import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonChip, IonCol, IonContent, IonGrid, IonIcon, IonInput, IonItem, IonLabel, IonList, IonListHeader, IonRadio, IonRow, IonSelect, IonSelectOption, IonSlide, IonSlides, IonTextarea, IonToggle } from "@ionic/react";
-import React, { useRef, useState} from "react";
+import React, { useEffect, useRef, useState} from "react";
 
 
 import './FactoryContent.css';
 
 import {  trashOutline } from "ionicons/icons";
 import { InitializeSimulation, ModifySimulation } from "../util/Backend.js";
+import { Component } from "ionicons/dist/types/stencil-public-runtime";
 
 
 const FactoryContent: React.FC = () => {
@@ -26,6 +27,7 @@ const FactoryContent: React.FC = () => {
             starting_value: 0
         }
     ]);
+    
     const [userResourcesState, setUserResourcesState] = useState([
         {
             name: 'User Resource 1',
@@ -67,9 +69,16 @@ const FactoryContent: React.FC = () => {
     const [resourceEquationSelect, setResourceEquationSelect] = useState<string>('');
     const [currentEquationToDisplay, setCurrentEquationToDisplay] = useState<string>('');
 
+    const [initSim, setInitSim] = useState<boolean>(false);
+
     const operators = ['+','-','*','/','(',')'];
 
-    
+    useEffect(() => {
+        if(initSim === true){
+            InitializeSimulation({"username":username, "password":password},(response)=>afterInit(response));
+            setInitSim(false);
+        }
+    });
 
     // User information
     const [username, setUsername] = useState("");
@@ -173,8 +182,25 @@ const FactoryContent: React.FC = () => {
 
     function handleSubmitClick(){
         
+        if(checkProfitMultiplier === true){
+            console.log("fbnjhrfgbnj2");
+            setResourcesState(prevState => (prevState.concat({name:'Profit Multiplier', equation:profitMultiplier.toString(), starting_value:profitMultiplier})));
+            console.log(resourcesState);
+        }
+        if(checkDecisionWeight === true){
+            console.log("fbnjhrfgbnj1");
+            setResourcesState(prevState => (prevState.concat({name:'Decision Weight', equation:decisionWeight.toString(), starting_value:decisionWeight})));
+            console.log(resourcesState);
+        }
+
+        if(checkImpactMultiplier === true){
+            console.log("fbnjhrfgbnj3");
+            setResourcesState(prevState => (prevState.concat({name:'Impact Multiplier', equation:impactMultiplier.toString(), starting_value:impactMultiplier})));
+            
+        }
+
         console.log("HANDLE SUBMIT CLICK");
-        InitializeSimulation({"username":username, "password":password},(response)=>afterInit(response));
+        setInitSim(true);
         handleNext();
     }
 
@@ -256,24 +282,9 @@ const FactoryContent: React.FC = () => {
         }
         console.log(userResourceStateJSON);
         
-        if(checkProfitMultiplier ===true){
-            console.log("fbnjhrfgbnj2");
-            //setResourcesState(prevState => (prevState.concat({name:'Profit Multiplier', equation:'null', starting_value:0})));
-            
-            console.log(resourcesState);
-        }
+        
 
-        if(checkDecisionWeight === true){
-            console.log("fbnjhrfgbnj1");
-            setResourcesState(prevState => (prevState.concat({name:'Decision Weight', equation:decisionWeight.toString(), starting_value:decisionWeight})));
-            console.log(resourcesState);
-        }
-
-        if(checkImpactMultiplier === true){
-            console.log("fbnjhrfgbnj3");
-            setResourcesState(prevState => (prevState.concat({name:'Impact Multiplier', equation:impactMultiplier.toString(), starting_value:impactMultiplier})));
-            
-        }
+        
 
         var modifySimJson = {
             "user":{"username": username, "password": password},
@@ -456,7 +467,7 @@ const FactoryContent: React.FC = () => {
                         <IonListHeader>
                             <IonLabel><strong>Variables and Equations</strong></IonLabel>
                         </IonListHeader>
-                        <IonItem><IonToggle checked={checkProfitMultiplier} onIonChange={e=>setCheckProfitMultiplier(e.detail.checked)}></IonToggle><IonInput type="number" placeholder="Set Profit Multiplier..." disabled={!checkProfitMultiplier}value={profitMultiplier} onIonChange={e=> setProfitMultiplier(parseInt(e.detail.value!, 10))}>Set Profit Multiplier...</IonInput></IonItem>
+                        <IonItem><IonToggle checked={checkProfitMultiplier} onIonChange={e=>{setCheckProfitMultiplier(e.detail.checked)}}></IonToggle><IonInput type="number" placeholder="Set Profit Multiplier..." disabled={!checkProfitMultiplier}value={profitMultiplier} onIonChange={e=> {setProfitMultiplier(parseInt(e.detail.value!, 10))}}>Set Profit Multiplier...</IonInput></IonItem>
                         <IonItem><IonToggle checked={checkDecisionWeight} onIonChange={e=>setCheckDecisionWeight(e.detail.checked)}></IonToggle><IonInput type="number" value={decisionWeight} disabled={!checkDecisionWeight}onIonChange={e=> setDecisionWeight(parseInt(e.detail.value!, 10))}>Set Decision Weight...</IonInput></IonItem>
                         <IonItem><IonToggle checked={checkImpactMultiplier} onIonChange={e=>setCheckImpactMultiplier(e.detail.checked)}></IonToggle><IonInput type="number" value={impactMultiplier} disabled={!checkImpactMultiplier}onIonChange={e=> setImpactMultiplier(parseInt(e.detail.value!, 10))}>Set Magnitude of Impact on Resource Multiplier...</IonInput></IonItem>
                         <IonSelect value={resourceEquationSelect} placeholder="Resource Equation..." onIonChange={e => handleResourceChangeEquationSlide(e.detail.value!)}>
