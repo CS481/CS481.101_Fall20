@@ -8,8 +8,7 @@ import { RefresherEventDetail } from '@ionic/core';
 import { chevronDownCircleOutline } from 'ionicons/icons';
 
 import FormatString from "../util/FormatString.js";
-import { stringify } from "node:querystring";
-import { runInThisContext } from "node:vm";
+
 
 type MyProps = {
     id: string
@@ -17,6 +16,8 @@ type MyProps = {
 type MyState = {
     radioValue: boolean,
     showRoundSummary:boolean,
+    viewedStartText:boolean,
+    showEndText:boolean,
     globalResources:string[],
     userResources:string[],
     numPlayers: number,
@@ -53,6 +54,8 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         this.state = {
             radioValue: false,
             showRoundSummary: false,
+            viewedStartText: false,
+            showEndText:false,
             globalResources: [],
             userResources: [],
             numPlayers: 2,
@@ -121,25 +124,40 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
             console.log(userResourceArray.toString());
             this.setState({globalResources:resourceArray});
             this.setState({userResources: userResourceArray});
-            this.setState({numPlayers: Object.keys(this.state.simState.history[0].user_history).length});
         });
         
     }
 
-    setSimState() {
-        var userWaitingBegin = this.state.simState.user_waiting;
-        var userWaitingNewState = false;
-        console.log(userWaitingBegin);
-        GetState(this.getSimulationInstance(), (newState) => {
-            this.setState({simState : newState}); 
-            userWaitingNewState = this.state.simState.user_waiting;
-            if(userWaitingBegin === true && userWaitingNewState === false){
-                this.setState({showRoundSummary:true});
-            }
-        });
-        console.log("Updating state info ");
-        console.log(userWaitingNewState);
-        
+    renderStartText() {
+        return (
+            <IonItem>
+                <IonLabel>{this.state.simState.start_text}</IonLabel>
+                <IonButton onClick={()=>this.setState({viewedStartText:true})}>Continue</IonButton>
+            </IonItem>
+        )
+    }
+
+    async setSimState() {
+        try{
+            var userWaitingBegin = this.state.simState.user_waiting;
+            var userWaitingNewState = false;
+            console.log(userWaitingBegin);
+            await GetState(this.getSimulationInstance(), (newState) => {
+                this.setState({simState : newState}); 
+                userWaitingNewState = this.state.simState.user_waiting;
+                if((userWaitingBegin === true && userWaitingNewState === false) && this.state.simState.turn_number !== 0){
+                    this.setState({showRoundSummary:true});
+                    this.setState({numPlayers: Object.keys(this.state.simState.history[0].user_history).length});
+                }
+            });
+            console.log("Updating state info ");
+            console.log(userWaitingNewState);
+        } catch (e){
+            console.log("CAUGHT EXCEPTION");
+            this.setState({showEndText:true});
+            this.renderPlayer();
+            return null;
+        }
     }
 
     renderLogin(){
@@ -153,15 +171,30 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
     }
 
     renderPlayer() {
-
-        if(this.state.showRoundSummary === true){
+        if(this.state.simState.start_text !== '' && this.state.viewedStartText === false){
+            return (
+                <IonCard>
+                    {this.renderStartText()}
+                </IonCard>
+            )
+        }
+        else if(this.state.showEndText === true){
+            return (
+                <IonCard>
+                    <IonItem><IonLabel>{this.state.simState.end_text}</IonLabel></IonItem>
+                </IonCard>
+            );
+        }
+        else if(this.state.showRoundSummary === true){
             return (
                 <IonCard>
                     {this.renderSummary()}
                     <IonButton onClick={()=>this.setState({showRoundSummary:false})}>Continue</IonButton>
                 </IonCard>
             )
-        } else {
+        }
+        
+        else {
             return (
                 <IonCard>
                     {this.renderPrompt()}
@@ -237,7 +270,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         } else {
             return (
                 <IonList lines="none">
-                    <IonListHeader>Current round: {this.state.simState.turn_number + 1}</IonListHeader>
+                    <IonListHeader>Current round: {this.state.simState.turn_number}</IonListHeader>
                     <IonItem>
 
                         <IonLabel>{this.state.simState.prompt}</IonLabel>
@@ -249,16 +282,15 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
     }
     
     renderSummary() {
-        console.log(this.state.globalResources);
-        var responseArray = [''];
-        for(var j = 0; j < this.state.simState.turn_number; j++){
+        var responseArray:string[] = [];
+        for(var j = 0; j <= this.state.simState.turn_number; j++){
             for(var i = 0; i < this.state.numPlayers; i++){
                 responseArray.push(this.state.simState.history[j].user_history[i].response)
             }
         }
-        responseArray.splice(0,3);
-        var playerArray = ["Player 1's "];
-        for(var k = 1; k<this.state.numPlayers; k++){
+        //responseArray.splice(0);
+        var playerArray:string[] = [];
+        for(var k = 0; k<this.state.numPlayers; k++){
             playerArray.push("Player " + (k+1).toString() + "'s ");
 
         }
@@ -267,7 +299,7 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         return (
             <IonList>
                 <IonListHeader>This Round's Choices:</IonListHeader>
-                {playerArray.map((player, index)=><IonItem><IonLabel>{player}Response: {responseArray[index]}</IonLabel></IonItem>)}
+                {playerArray.map((player, index)=><IonItem><IonLabel>{player}Response: {responseArray[index+this.state.numPlayers]}</IonLabel></IonItem>)}
                 
                 <IonListHeader>Global Resources:</IonListHeader>
                 {this.state.globalResources.map(resource=><IonItem><IonLabel>Current {resource} Value: {this.state.simState.history[0].resources[resource]}</IonLabel></IonItem>)}
@@ -277,15 +309,24 @@ class SimulationPlayer extends React.Component<MyProps,MyState> {
         );
     }
 
-    submitResponse() {
-        var userWaitingNewState;
-        SubmitResponse({user: this.getUser(), response: this.state.response, id: this.state.simulation_id}, (newState) => {
-            this.setState({simState : newState}); 
-            userWaitingNewState = this.state.simState.user_waiting;
-            if(userWaitingNewState === false){
-                this.setState({showRoundSummary:true});
-            }
-        });
+    async submitResponse() {
+        try {
+            var userWaitingNewState;
+            await SubmitResponse({user: this.getUser(), response: this.state.response, id: this.state.simulation_id}, (newState) => {
+                this.setState({simState : newState}); 
+                userWaitingNewState = this.state.simState.user_waiting;
+                if(userWaitingNewState === false){
+                    this.setState({showRoundSummary:true});
+                }
+            });
+        }
+        catch (e){
+            console.log("CAUGHT EXCEPTION");
+            this.setState({showEndText:true});
+            this.renderPlayer();
+            return null;
+        }
+
     }
 }
 
